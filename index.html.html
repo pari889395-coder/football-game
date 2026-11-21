@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>بازی کارتی آنلاین جام جهانی ۲۰۲۶</title>
+  <style>
+    :root {
+      --gold-light: #f3d778;
+      --gold-main: #d4af37;
+      --panel-bg: rgba(11, 20, 31, 0.92);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #103824 0%, #07131e 50%, #04070c 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 12px 32px;
+    }
+
+    #globalErrorBar {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #7f1d1d;
+      border: 1.5px solid #f87171;
+      color: #fecaca;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .screen {
+      width: 100%;
+      max-width: 460px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .screen.wide { max-width: 980px; }
+
+    .panel {
+      width: 100%;
+      background: var(--panel-bg);
+      border: 2px solid rgba(212, 175, 55, 0.65);
+      border-radius: 26px;
+      padding: 24px 20px;
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      text-align: center;
+    }
+
+    .logo-trophy {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(243, 215, 120, 0.28), rgba(14, 58, 34, 0.7));
+      border: 2px solid var(--gold-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+    }
+
+    .main-title { font-size: 1.5rem; font-weight: 900; color: var(--gold-light); line-height: 1.4; }
+    .subtitle { font-size: 0.9rem; color: #cbd5e1; line-height: 1.8; }
+
+    .btn {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 14px 18px;
+      border-radius: 16px;
+      border: 1.6px solid rgba(212, 175, 55, 0.65);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover { filter: brightness(1.14); }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-play {
+      font-size: 1.25rem;
+      font-weight: 900;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #f3d778 0%, #c9a227 55%, #8c6d1f 100%);
+      color: #140f02;
+      border-color: #fff3b0;
+    }
+
+    .btn-green { background: linear-gradient(135deg, #1b7a43, #0e4a27); border-color: #4ade80; }
+    .btn-blue { background: linear-gradient(135deg, #154c8a, #0a284d); border-color: #60a5fa; }
+    .btn-ghost { background: transparent; border-color: rgba(255, 255, 255, 0.22); color: #cbd5e1; font-size: 0.9rem; padding: 10px 14px; }
+    .btn-small { width: auto; font-size: 0.84rem; padding: 8px 14px; border-radius: 11px; }
+
+    .field-group { width: 100%; text-align: right; display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 0.88rem; font-weight: 700; color: var(--gold-light); }
+
+    .text-input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1.6px solid rgba(212, 175, 55, 0.5);
+      background: rgba(0, 0, 0, 0.45);
+      color: #ffffff;
+      outline: none;
+      text-align: center;
+    }
+
+    .mode-grid { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .mode-btn { justify-content: space-between; padding: 14px 18px; }
+
+    .mode-meta {
+      font-size: 0.8rem;
+      color: var(--gold-light);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    .room-code-box {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.48);
+      border: 2px dashed var(--gold-main);
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .room-code-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: var(--gold-light);
+      direction: ltr;
+    }
+
+    .copy-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .players-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+
+    .player-slot {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 13px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.2px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .player-slot.joined { background: rgba(24, 165, 88, 0.16); border-color: rgba(74, 222, 128, 0.55); }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-left: 8px; background: #64748b; }
+    .player-slot.joined .dot { background: #4ade80; }
+
+    .status-msg {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: rgba(212, 175, 55, 0.14);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--gold-light);
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.6;
+    }
+
+    .status-msg.error { background: rgba(217, 65, 78, 0.18); border-color: #f87171; color: #fecaca; }
+
+    .table-top-bar {
+      width: 100%;
+      background: var(--panel-bg);
+      border: 1.5px solid rgba(212, 175, 55, 0.55);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .roster-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .roster-chip { padding: 6px 12px; border-radius: 12px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(212, 175, 55, 0.45); font-size: 0.82rem; font-weight: 700; }
+    .roster-chip.me { background: rgba(212, 175, 55, 0.22); border-color: var(--gold-light); color: var(--gold-light); }
+
+    .game-stage { width: 100%; display: grid; grid-template-columns: 1fr; gap: 18px; align-items: start; }
+    @media (min-width: 820px) { .game-stage { grid-template-columns: 390px 1fr; } }
+
+    .hand-panel {
+      width: 100%;
+      background: var(--panel-bg);
+      border: 1.5px solid rgba(212, 175, 55, 0.45);
+      border-radius: 22px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .hand-header { display: flex; align-items: center; justify-content: space-between; font-size: 0.92rem; font-weight: 700; color: var(--gold-light); }
+    .mini-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 8px; max-height: 520px; overflow-y: auto; }
+
+    .mini-card {
+      font-family: inherit;
+      background: linear-gradient(155deg, var(--mc1), #09101a);
+      border: 1.5px solid rgba(212, 175, 55, 0.55);
+      border-radius: 14px;
+      padding: 8px 6px;
+      color: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mini-card.active { border-color: #fff3b0; box-shadow: 0 0 0 2px rgba(243, 215, 120, 0.65); }
+    .mini-flag { width: 46px; height: 30px; border-radius: 5px; overflow: hidden; border: 1px solid rgba(243, 215, 120, 0.6); background: #101820; }
+    .mini-flag img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mini-name { font-size: 0.78rem; font-weight: 700; text-align: center; }
+    .mini-rank { font-size: 0.68rem; color: var(--gold-light); }
+
+    .active-card-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .card-pager { width: 100%; max-width: 380px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+    .football-card {
+      width: 100%;
+      max-width: 380px;
+      border-radius: 24px;
+      padding: 13px;
+      background: linear-gradient(165deg, var(--c1) 0%, #070b10 48%, var(--c3) 100%);
+      border: 2.4px solid var(--gold-main);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.75);
+    }
+
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 10px; direction: ltr; }
+    .flag-box { width: 68px; height: 44px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(243, 215, 120, 0.7); background: #101820; flex-shrink: 0; }
+    .flag-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .country-title { flex: 1; text-align: center; font-size: 1.45rem; font-weight: 900; color: #ffffff; }
+    .crest-box { width: 54px; height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+    .crest-stars { min-height: 12px; color: var(--gold-light); font-size: 9px; margin-bottom: 2px; }
+    .crest-shield { width: 38px; height: 38px; border-radius: 8px 8px 18px 18px; background: var(--c1); border: 1.5px solid var(--gold-main); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 900; color: var(--gold-light); }
+
+    .team-photo-frame { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border: 1.6px solid var(--gold-main); background: #060b10; position: relative; margin-bottom: 10px; }
+    .team-photo-frame img.custom-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 2; display: none; }
+    .team-photo-frame.has-photo img.custom-img { display: block; }
+    .generated-art { width: 100%; height: 100%; }
+    .generated-art svg { width: 100%; height: 100%; display: block; }
+
+    .stats-list { display: flex; flex-direction: column; gap: 5px; }
+    .stat-row {
+      width: 100%;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px 6px 14px;
+      border-radius: 11px;
+      border: 1.3px solid rgba(212, 175, 55, 0.75);
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .stat-row:nth-child(odd) { background: linear-gradient(90deg, var(--row-odd-a) 0%, var(--row-odd-b) 50%, var(--row-odd-a) 100%); }
+    .stat-row:nth-child(even) { background: linear-gradient(90deg, #08121f 0%, var(--row-even-b) 50%, #08121f 100%); }
+    .stat-row.selected { border-color: #fff6c2; box-shadow: 0 0 0 2px rgba(243, 215, 120, 0.75); }
+    .stat-label { font-size: 0.84rem; font-weight: 700; color: #f8f4e3; }
+    .stat-value { font-size: 0.98rem; font-weight: 900; min-width: 50px; text-align: left; }
+  </style>
+</head>
+<body>
+
+  <div id="globalErrorBar"></div>
+
+  <!-- صفحه ۱: صفحه اصلی -->
+  <section id="screenHome" class="screen" style="display:flex;">
+    <div class="panel">
+      <div class="logo-trophy">🏆</div>
+      <h1 class="main-title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
+      <p class="subtitle">
+        بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />
+        کارت‌ها به صورت مساوی بین دوستان شما تقسیم می‌شوند!
+      </p>
+      <button type="button" class="btn btn-play" id="btnPlay">▶ پلی (شروع)</button>
+    </div>
+  </section>
+
+  <!-- صفحه ۲: ورود به بخش آنلاین -->
+  <section id="screenMenu" class="screen">
+    <div class="panel">
+      <h2 class="main-title" style="font-size:1.4rem;">ورود به بخش آنلاین</h2>
+      <div class="field-group">
+        <label class="field-label" for="playerNameInput">نام شما در بازی:</label>
+        <input type="text" id="playerNameInput" class="text-input" placeholder="مثلاً: هیراد، علی، رضا..." maxlength="18" />
+      </div>
+      <button type="button" class="btn btn-green" id="btnCreateRoomMenu">➕ ایجاد اتاق</button>
+      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu">🚪 رفتن به اتاق دوستان</button>
+      <button type="button" class="btn btn-ghost" id="btnBackHome">بازگشت به صفحه اصلی</button>
+    </div>
+  </section>
+
+  <!-- صفحه ۳-الف: انتخاب تعداد نفرات -->
+  <section id="screenCreate" class="screen">
+    <div class="panel">
+      <h2 class="main-title" style="font-size:1.35rem;">تعداد بازیکنان اتاق را انتخاب کن</h2>
+      <p class="subtitle">هر ۴۸ کارت جام جهانی ۲۰۲۶ به تعداد مساوی تقسیم می‌شود:</p>
+      <div class="mode-grid">
+        <button type="button" class="btn btn-green mode-btn" id="btnMode2">
+          <span>👥 بازی ۲ نفره آنلاین</span>
+          <span class="mode-meta">نفری ۲۴ کارت</span>
+        </button>
+        <button type="button" class="btn btn-green mode-btn" id="btnMode3">
+          <span>👥 بازی ۳ نفره آنلاین</span>
+          <span class="mode-meta">نفری ۱۶ کارت</span>
+        </button>
+        <button type="button" class="btn btn-green mode-btn" id="btnMode4">
+          <span>👥 بازی ۴ نفره آنلاین</span>
+          <span class="mode-meta">نفری ۱۲ کارت</span>
+        </button>
+      </div>
+      <button type="button" class="btn btn-ghost" id="btnBackFromCreate">بازگشت</button>
+    </div>
+  </section>
+
+  <!-- صفحه ۳-ب: رفتن به اتاق دوستان -->
+  <section id="screenJoin" class="screen">
+    <div class="panel">
+      <h2 class="main-title" style="font-size:1.35rem;">رفتن به اتاق دوستان</h2>
+      <p class="subtitle">کد ۵ رقمی اتاقی که دوستت ساخته را اینجا وارد کن:</p>
+      <div class="field-group">
+        <label class="field-label" for="joinCodeInput">کد اتاق:</label>
+        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" />
+      </div>
+      <div id="joinStatus" class="status-msg" style="display:none;"></div>
+      <button type="button" class="btn btn-blue" id="btnSubmitJoin">ورود به اتاق</button>
+      <button type="button" class="btn btn-ghost" id="btnBackFromJoin">بازگشت</button>
+    </div>
+  </section>
+
+  <!-- صفحه ۴: اتاق انتظار -->
+  <section id="screenLobby" class="screen">
+    <div class="panel">
+      <h2 class="main-title" style="font-size:1.3rem;" id="lobbyHeading">اتاق انتظار آنلاین</h2>
+      <div class="room-code-box">
+        <span style="font-size:0.82rem; color:#cbd5e1;">این کد را برای دوستانت بفرست تا وارد اتاق شوند:</span>
+        <div class="room-code-num" id="lobbyRoomCode">-----</div>
+        <div class="copy-row">
+          <button type="button" class="btn btn-small" id="btnCopyCode">📋 کپی کد اتاق</button>
+          <button type="button" class="btn btn-small" id="btnCopyLink">🔗 کپی لینک دعوت</button>
+        </div>
+      </div>
+      <div class="status-msg" id="lobbyStatus">اتاق ساخته شد...</div>
+      <div class="players-list" id="lobbyPlayersList"></div>
+      <button type="button" class="btn btn-ghost" id="btnFillBots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">
+        🤖 تست سریع (تکمیل اتاق و پخش ۴۸ کارت)
+      </button>
+      <button type="button" class="btn btn-ghost" id="btnLeaveLobby">خروج از اتاق</button>
+    </div>
+  </section>
+
+  <!-- صفحه ۵: داخل بازی -->
+  <section id="screenGame" class="screen wide">
+    <div class="table-top-bar">
+      <div class="roster-chips" id="gameRoster"></div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <button type="button" class="btn btn-small" id="btnRedeal" style="display:none;">🔀 بُر زدن مجدد</button>
+        <button type="button" class="btn btn-small btn-ghost" id="btnExitGame">خروج به منو</button>
+      </div>
+    </div>
+    <div class="status-msg" id="gameToast">کارت‌های ۴۸ تیم جام جهانی ۲۰۲۶ به صورت مساوی پخش شد!</div>
+    <div class="game-stage">
+      <div class="active-card-col">
+        <div class="card-pager">
+          <button type="button" class="btn btn-small" id="btnPrevCard">◀ کارت قبلی</button>
+          <span style="font-size:0.88rem; font-weight:700; color:var(--gold-light);" id="handCounter">۱ از ۱۲</span>
+          <button type="button" class="btn btn-small" id="btnNextCard">کارت بعدی ▶</button>
+        </div>
+        <div id="activeCardMount" style="width:100%; display:flex; justify-content:center;"></div>
+      </div>
+      <div class="hand-panel">
+        <div class="hand-header">
+          <span>🃏 کارت‌های دست شما</span>
+          <span id="myHandBadge">۰ کارت</span>
+        </div>
+        <div class="mini-cards-grid" id="myHandGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    window.onerror = function(msg, url, line) {
+      var bar = document.getElementById("globalErrorBar");
+      if (bar) {
+        bar.style.display = "block";
+        bar.textContent = "خطای مرورگر در خط " + line + ": " + msg;
+      }
+    };
+
+    var PEER_PREFIX = "wc26-cardgame-ir-";
+    var peerLoaded = false;
+
+    // اطلاعات فشرده و کامل ۴۸ تیم ملی جام جهانی ۲۰۲۶ (آمار ۱۹۳۰ تا پایان ۲۰۲۶)
+    // ترتیب: [شناسه, کدپرچم, نام, حضور, قهرمانی, بازی, گل‌زده, گل‌خورده, برد, مساوی, باخت, بهترین‌فیفا, فیفا۲۰۲۶, رنگ۱, رنگ۲, رنگ۳, پیراهن, خط‌پیراهن]
+    var RAW_TEAMS = [
+      [1,"es","اسپانیا",17,2,75,122,76,38,18,19,1,1,"#7d0a12","#b88a0b","#380509","#c8102e","#f1bf00"],
+      [2,"ar","آرژانتین",19,3,96,171,109,54,17,25,1,2,"#145b8f","#1e4b75","#081d38","#75aadb","#ffffff"],
+      [3,"fr","فرانسه",17,2,81,156,95,45,14,22,1,3,"#0a2257","#730f1e","#05102b","#002395","#ed2939"],
+      [4,"gb-eng","انگلیس",17,1,82,124,80,38,23,21,3,4,"#7d0c17","#16243d","#2b070c","#f2f4f8","#cf142b"],
+      [5,"ma","مراکش",7,0,29,30,33,8,9,12,5,5,"#750c17","#0a4523","#33050a","#c1272d","#006233"],
+      [6,"pt","پرتغال",9,0,40,69,44,19,8,13,3,6,"#750a15","#074221","#052613","#da291c","#006600"],
+      [7,"br","برزیل",23,5,119,247,112,79,20,20,1,7,"#09381c","#545214","#061830","#ffdf00","#009c3b"],
+      [8,"be","بلژیک",15,0,57,83,81,24,12,21,1,8,"#780d18","#5e4909","#141414","#c8102e","#fdda24"],
+      [9,"nl","هلند",12,0,59,107,57,32,16,11,1,9,"#9c3e05","#0c2859","#401802","#f36c21","#21468b"],
+      [10,"co","کلمبیا",7,0,27,37,31,12,5,10,3,10,"#6e5204","#0a2154","#4a0810","#fcd116","#003893"],
+      [11,"de","آلمان",21,4,116,243,135,70,22,24,1,11,"#1f1f1f","#6e0d15","#3d2f04","#f5f5f5","#dd0000"],
+      [12,"ch","سوئیس",13,0,47,65,79,17,10,20,3,12,"#8c0c15","#4d070c","#290407","#d52b1e","#ffffff"],
+      [13,"mx","مکزیک",18,0,65,72,104,21,15,29,4,13,"#074726","#6e0e18","#042112","#006847","#ce1126"],
+      [14,"hr","کرواسی",7,0,34,49,40,15,8,11,3,15,"#820e1a","#0b2861","#071536","#ff0000","#ffffff"],
+      [15,"us","آمریکا",12,0,42,51,74,12,8,22,4,16,"#0b2252","#73101d","#07122b","#f0f2f5","#b22234"],
+      [16,"jp","ژاپن",8,0,29,33,38,8,8,13,9,17,"#092661","#750d1b","#051230","#002395","#bc002d"],
+      [17,"sn","سنگال",4,0,16,26,26,6,3,7,12,18,"#084a22","#695309","#4d0a12","#00853f","#fdef42"],
+      [18,"no","نروژ",4,0,14,20,19,6,3,5,2,19,"#7d0c1a","#0a2154","#33050b","#ba0c2f","#00205b"],
+      [19,"uy","اروگوئه",15,2,62,92,80,25,15,22,2,20,"#125785","#0a2245","#061529","#5fa8d3","#fcd116"],
+      [20,"at","اتریش",8,0,33,49,56,13,5,15,10,22,"#850d1a","#2b1619","#3b050b","#ed2939","#ffffff"],
+      [21,"ir","ایران",7,0,21,16,34,3,7,11,15,23,"#0a4a24","#730d19","#052411","#f7f7f7","#239f40"],
+      [22,"ec","اکوادور",5,0,17,16,18,6,3,8,10,24,"#705404","#0a255c","#4f0912","#ffdd00","#034ea2"],
+      [23,"ca","کانادا",3,0,11,11,18,2,1,8,25,25,"#870a15","#3b060b","#210508","#d80621","#ffffff"],
+      [24,"eg","مصر",4,0,12,13,19,1,5,6,9,26,"#780b15","#241d14","#141110","#ce1126","#c09300"],
+      [25,"au","استرالیا",7,0,24,20,40,5,6,13,14,27,"#073d21","#6b5408","#071d45","#ffcd00","#00843d"],
+      [26,"ci","ساحل عاج",4,0,13,18,18,5,1,7,12,28,"#943f06","#074a23","#381802","#f77f00","#009e60"],
+      [27,"kr","کره جنوبی",12,0,41,41,81,8,10,23,17,30,"#7d0c1c","#0a2559","#171421","#cd2e3a","#0047a0"],
+      [28,"py","پاراگوئه",9,0,32,33,44,8,12,12,8,31,"#800c18","#0a2457","#2b0912","#d52b1e","#0038a8"],
+      [29,"dz","الجزایر",5,0,17,18,28,4,4,9,15,32,"#064a24","#660d17","#032412","#ffffff","#006233"],
+      [30,"tr","ترکیه",3,0,13,23,22,6,1,6,5,33,"#8a0a15","#47050b","#240407","#e30a17","#ffffff"],
+      [31,"se","سوئد",13,0,55,87,83,20,14,21,2,34,"#0a3b75","#6e5708","#061b38","#fecc00","#006aa7"],
+      [32,"cd","کنگو (ج.د.)",2,0,7,5,19,1,1,5,28,39,"#0c4985","#6e0e1a","#061f3d","#007fff","#f7d618"],
+      [33,"gb-sct","اسکاتلند",9,0,26,26,45,5,7,14,13,44,"#092354","#133a7d","#041026","#00247d","#ffffff"],
+      [34,"pa","پاناما",2,0,6,2,15,0,0,6,29,45,"#0b2c63","#7a0e1b","#051430","#da121a","#072357"],
+      [35,"za","آفریقای جنوبی",4,0,13,13,20,3,5,5,16,48,"#074a27","#6b5409","#081c42","#ffb612","#007a4d"],
+      [36,"cz","جمهوری چک",10,0,36,49,55,12,6,18,2,53,"#7d0d19","#0a2a5e","#1a0b17","#d7141a","#11457e"],
+      [37,"sa","عربستان سعودی",7,0,22,15,49,4,4,14,21,54,"#064a23","#0b331c","#032110","#006c35","#ffffff"],
+      [38,"ba","بوسنی و هرزگوین",2,0,7,9,12,2,1,4,13,57,"#0a2969","#705909","#051436","#002395","#fecb00"],
+      [39,"uz","ازبکستان",1,0,3,2,11,0,0,3,45,60,"#09506b","#094722","#04212e","#1eb53a","#0099b5"],
+      [40,"qa","قطر",2,0,6,3,17,0,1,5,34,61,"#630b24","#3d0717","#26040e","#8a1538","#ffffff"],
+      [41,"iq","عراق",2,0,6,2,16,0,0,6,39,62,"#730c16","#083d1f","#171717","#007a3d","#ffffff"],
+      [42,"tn","تونس",7,0,21,16,38,3,5,13,14,64,"#870a17","#42050c","#240408","#e70013","#ffffff"],
+      [43,"gh","غنا",5,0,19,20,26,6,4,9,14,69,"#750c15","#6b5408","#063b1d","#f7f7f7","#fcd116"],
+      [44,"cv","کیپ‌ورد",1,0,4,4,5,0,3,1,27,71,"#0a2d6b","#6e0e1b","#051536","#003893","#f7d116"],
+      [45,"jo","اردن",1,0,3,3,8,0,0,3,37,72,"#074221","#730c16","#141414","#ce1126","#007a3d"],
+      [46,"cw","کوراسائو",1,0,3,1,9,0,1,2,68,81,"#082c6b","#735c07","#041433","#002b7f","#f9e814"],
+      [47,"nz","نیوزیلند",3,0,9,8,24,0,4,5,47,84,"#1a202c","#0a2252","#0b0e14","#f2f4f8","#111827"],
+      [48,"ht","هائیتی",2,0,6,4,22,0,0,6,38,86,"#09235c","#780c1a","#04102e","#00209f","#d21034"]
+    ];
+
+    var TEAMS_2026 = RAW_TEAMS.map(function(r) {
+      return {
+        id: r[0], iso: r[1], name: r[2], appearances: r[3], titles: r[4],
+        played: r[5], goalsFor: r[6], goalsAgainst: r[7], wins: r[8], draws: r[9],
+        losses: r[10], highestFifa: r[11], currentFifa: r[12],
+        c1: r[13], c2: r[14], c3: r[15], jersey: r[16], trim: r[17]
+      };
+    });
+
+    var STAT_DEFS = [
+      { key: "appearances", label: "⚽ حضور در جام جهانی", prefix: "" },
+      { key: "titles", label: "🏆 قهرمانی جام جهانی", prefix: "" },
+      { key: "played", label: "🏟️ تعداد بازی", prefix: "" },
+      { key: "goalsFor", label: "🎯 گل زده", prefix: "" },
+      { key: "goalsAgainst", label: "🥅 گل خورده", prefix: "" },
+      { key: "wins", label: "✅ برد", prefix: "" },
+      { key: "draws", label: "🤝 مساوی", prefix: "" },
+      { key: "losses", label: "❌ باخت", prefix: "" },
+      { key: "highestFifa", label: "📈 بالاترین رده‌بندی فیفا", prefix: "رتبه " },
+      { key: "currentFifa", label: "🌍 رتبه فعلی فیفا", prefix: "رتبه " }
+    ];
+
+    var state = {
+      myName: "بازیکن",
+      isHost: false,
+      roomCode: "",
+      maxPlayers: 2,
+      peer: null,
+      hostConn: null,
+      clientConns: {},
+      players: [],
+      myId: "",
+      myHand: [],
+      selectedCardIdx: 0
+    };
+
+    var FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+    var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+
+    function toFa(num) {
+      var s = String(num);
+      var out = "";
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") out += FA_DIGITS.charAt(Number(ch));
+        else out += ch;
+      }
+      return out;
+    }
+
+    function normalizeDigits(str) {
+      var s = String(str);
+      var out = "";
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        var faIdx = FA_DIGITS.indexOf(ch);
+        var arIdx = AR_DIGITS.indexOf(ch);
+        if (ch >= "0" && ch <= "9") out += ch;
+        else if (faIdx !== -1) out += String(faIdx);
+        else if (arIdx !== -1) out += String(arIdx);
+      }
+      return out;
+    }
+
+    function goScreen(id) {
+      var list = document.querySelectorAll(".screen");
+      for (var i = 0; i < list.length; i++) {
+        list[i].style.display = "none";
+      }
+      var target = document.getElementById(id);
+      if (target) target.style.display = "flex";
+    }
+
+    function getPlayerName() {
+      var val = document.getElementById("playerNameInput").value.trim();
+      state.myName = val || ("بازیکن " + toFa(Math.floor(10 + Math.random() * 89)));
+      return state.myName;
+    }
+
+    function cleanupNetwork() {
+      Object.keys(state.clientConns).forEach(function(k) {
+        try { state.clientConns[k].close(); } catch (e) {}
+      });
+      state.clientConns = {};
+      if (state.hostConn) { try { state.hostConn.close(); } catch (e) {} state.hostConn = null; }
+      if (state.peer) { try { state.peer.destroy(); } catch (e) {} state.peer = null; }
+      state.players = [];
+      state.myHand = [];
+      state.roomCode = "";
+      state.isHost = false;
+    }
+
+    function ensurePeerLoaded(cb) {
+      if (typeof window.Peer !== "undefined") { cb(true); return; }
+      if (peerLoaded) { cb(false); return; }
+      peerLoaded = true;
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js";
+      s.onload = function() { cb(typeof window.Peer !== "undefined"); };
+      s.onerror = function() { cb(false); };
+      document.body.appendChild(s);
+    }
+
+    function shuffleDeck(arr) {
+      var copy = arr.slice();
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = copy[i]; copy[i] = copy[j]; copy[j] = t;
+      }
+      return copy;
+    }
+
+    function setLobbyStatus(text, isError) {
+      var el = document.getElementById("lobbyStatus");
+      el.textContent = text;
+      el.className = isError ? "status-msg error" : "status-msg";
+    }
+
+    function renderLobbyPlayers() {
+      var list = document.getElementById("lobbyPlayersList");
+      list.innerHTML = "";
+      for (var i = 0; i < state.maxPlayers; i++) {
+        var p = state.players[i];
+        var row = document.createElement("div");
+        row.className = p ? "player-slot joined" : "player-slot";
+        var left = document.createElement("span");
+        var dot = document.createElement("span");
+        dot.className = "dot";
+        left.appendChild(dot);
+        left.appendChild(document.createTextNode(p ? (p.name + (p.id === "host" ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i + 1))));
+        var right = document.createElement("span");
+        right.style.color = p ? "#4ade80" : "#94a3b8";
+        right.textContent = p ? "حاضر" : "در انتظار ورود...";
+        row.appendChild(left);
+        row.appendChild(right);
+        list.appendChild(row);
+      }
+    }
+
+    function createRoom(maxPlayers) {
+      cleanupNetwork();
+      getPlayerName();
+      state.isHost = true;
+      state.maxPlayers = maxPlayers;
+      state.roomCode = String(Math.floor(10000 + Math.random() * 90000));
+      state.myId = "host";
+      state.players = [{ id: "host", name: state.myName, isBot: false, cardCount: 0 }];
+
+      goScreen("screenLobby");
+      document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(maxPlayers) + " نفره آنلاین";
+      document.getElementById("lobbyRoomCode").textContent = toFa(state.roomCode);
+      document.getElementById("btnFillBots").style.display = "flex";
+      renderLobbyPlayers();
+      setLobbyStatus("در حال اتصال به سرور رایگان آنلاین... (دکمه تست سریع زیر همین الان آماده است)", false);
+
+      ensurePeerLoaded(function(ok) {
+        if (!ok) {
+          setLobbyStatus("اتصال آنلاین در دسترس نیست؛ برای تست تقسیم ۴۸ کارت روی دکمه «تست سریع» زیر کلیک کن!", true);
+          return;
+        }
+        try {
+          var peer = new window.Peer(PEER_PREFIX + state.roomCode);
+          state.peer = peer;
+
+          peer.on("open", function() {
+            setLobbyStatus("اتاق آنلاین آماده است! کد (" + toFa(state.roomCode) + ") را به دوستانت بده تا وارد شوند.", false);
+          });
+
+          peer.on("connection", function(conn) {
+            conn.on("data", function(msg) {
+              if (msg && msg.type === "join") {
+                if (state.players.length >= state.maxPlayers) {
+                  conn.send({ type: "error", text: "ظرفیت اتاق تکمیل است." });
+                  return;
+                }
+                state.clientConns[conn.peer] = conn;
+                state.players.push({ id: conn.peer, name: msg.name || "دوست جدید", isBot: false, cardCount: 0 });
+                broadcastLobbyState();
+                checkAutoStart();
+              }
+            });
+
+            conn.on("close", function() {
+              if (state.clientConns[conn.peer]) {
+                delete state.clientConns[conn.peer];
+                state.players = state.players.filter(function(p) { return p.id !== conn.peer; });
+                broadcastLobbyState();
+              }
+            });
+          });
+
+          peer.on("error", function() {
+            setLobbyStatus("اتصال آنلاین برقرار نشد؛ همین الان با دکمه «تست سریع» زیر می‌توانی بازی را تست کنی.", true);
+          });
+        } catch (e) {
+          setLobbyStatus("با دکمه «تست سریع» زیر می‌توانید پخش ۴۸ کارت را آزمایش کنید.", true);
+        }
+      });
+    }
+
+    function broadcastLobbyState() {
+      renderLobbyPlayers();
+      var summary = state.players.map(function(p) {
+        return { id: p.id, name: p.name, isBot: p.isBot, cardCount: p.cardCount };
+      });
+      Object.keys(state.clientConns).forEach(function(id) {
+        try {
+          state.clientConns[id].send({
+            type: "lobby_update",
+            roomCode: state.roomCode,
+            maxPlayers: state.maxPlayers,
+            players: summary
+          });
+        } catch (e) {}
+      });
+    }
+
+    function checkAutoStart() {
+      if (state.players.length === state.maxPlayers) {
+        setLobbyStatus("ظرفیت اتاق پر شد! در حال بُر زدن و تقسیم مساوی ۴۸ کارت...", false);
+        setTimeout(dealCardsToAll, 600);
+      }
+    }
+
+    function dealCardsToAll() {
+      var shuffled = shuffleDeck(TEAMS_2026);
+      var count = state.players.length;
+      var perPlayer = Math.floor(shuffled.length / count);
+
+      var handsMap = {};
+      state.players.forEach(function(p, idx) {
+        var hand = shuffled.slice(idx * perPlayer, (idx + 1) * perPlayer);
+        handsMap[p.id] = hand.map(function(t) { return t.id; });
+        p.cardCount = hand.length;
+      });
+
+      var roster = state.players.map(function(p) {
+        return { id: p.id, name: p.name, cardCount: p.cardCount };
+      });
+
+      Object.keys(state.clientConns).forEach(function(guestId) {
+        try {
+          state.clientConns[guestId].send({
+            type: "game_dealt",
+            yourId: guestId,
+            handIds: handsMap[guestId],
+            roster: roster
+          });
+        } catch (e) {}
+      });
+
+      openGameTable(handsMap["host"], roster);
+    }
+
+    function joinRoom() {
+      var code = normalizeDigits(document.getElementById("joinCodeInput").value);
+      var joinStatus = document.getElementById("joinStatus");
+
+      if (code.length < 4) {
+        joinStatus.style.display = "flex";
+        joinStatus.className = "status-msg error";
+        joinStatus.textContent = "لطفاً کد ۵ رقمی اتاق دوستت را درست وارد کن.";
+        return;
+      }
+
+      cleanupNetwork();
+      getPlayerName();
+      state.isHost = false;
+      state.roomCode = code;
+
+      joinStatus.style.display = "flex";
+      joinStatus.className = "status-msg";
+      joinStatus.textContent = "در حال اتصال به اتاق (" + toFa(code) + ")...";
+
+      ensurePeerLoaded(function(ok) {
+        if (!ok) {
+          joinStatus.className = "status-msg error";
+          joinStatus.textContent = "اتصال اینترنت برای ورود به اتاق آنلاین برقرار نشد.";
+          return;
+        }
+        var peer = new window.Peer();
+        state.peer = peer;
+
+        peer.on("open", function(myPeerId) {
+          state.myId = myPeerId;
+          var conn = peer.connect(PEER_PREFIX + code, { reliable: true });
+          state.hostConn = conn;
+
+          conn.on("open", function() {
+            conn.send({ type: "join", name: state.myName });
+            goScreen("screenLobby");
+            document.getElementById("lobbyRoomCode").textContent = toFa(code);
+            document.getElementById("btnFillBots").style.display = "none";
+            setLobbyStatus("وارد اتاق شدی! منتظر تکمیل ظرفیت و پخش کارت‌ها...", false);
+          });
+
+          conn.on("data", function(msg) {
+            if (msg.type === "error") {
+              goScreen("screenJoin");
+              joinStatus.style.display = "flex";
+              joinStatus.className = "status-msg error";
+              joinStatus.textContent = msg.text;
+              cleanupNetwork();
+            } else if (msg.type === "lobby_update") {
+              state.maxPlayers = msg.maxPlayers;
+              state.players = msg.players;
+              document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(msg.maxPlayers) + " نفره آنلاین";
+              renderLobbyPlayers();
+            } else if (msg.type === "game_dealt") {
+              state.myId = msg.yourId;
+              openGameTable(msg.handIds, msg.roster);
+            }
+          });
+        });
+
+        peer.on("error", function() {
+          goScreen("screenJoin");
+          joinStatus.style.display = "flex";
+          joinStatus.className = "status-msg error";
+          joinStatus.textContent = "اتاقی با این کد پیدا نشد!";
+          cleanupNetwork();
+        });
+      });
+    }
+
+    function openGameTable(handIds, roster) {
+      state.myHand = handIds.map(function(id) {
+        return TEAMS_2026.find(function(t) { return t.id === id; });
+      }).filter(Boolean);
+      state.selectedCardIdx = 0;
+
+      goScreen("screenGame");
+      document.getElementById("btnRedeal").style.display = state.isHost ? "inline-flex" : "none";
+
+      var rosterEl = document.getElementById("gameRoster");
+      rosterEl.innerHTML = "";
+      roster.forEach(function(p) {
+        var chip = document.createElement("div");
+        var isMe = p.id === state.myId;
+        chip.className = isMe ? "roster-chip me" : "roster-chip";
+        chip.textContent = p.name + ": " + toFa(p.cardCount) + " کارت" + (isMe ? " (شما)" : "");
+        rosterEl.appendChild(chip);
+      });
+
+      document.getElementById("myHandBadge").textContent = toFa(state.myHand.length) + " کارت";
+      document.getElementById("gameToast").textContent =
+        "بازی شروع شد! از ۴۸ تیم جام جهانی ۲۰۲۶، دقیقاً " + toFa(state.myHand.length) + " کارت به شما رسید.";
+
+      renderMyHand();
+    }
+
+    function buildTeamArtSvg(team) {
+      var lightList = ["#f5f5f5", "#f7f7f7", "#ffffff", "#f2f4f8", "#f0f2f5"];
+      var textCol = lightList.indexOf(team.jersey) !== -1 ? "#111827" : "#ffffff";
+      return '<svg viewBox="0 0 360 202" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+        '<rect width="360" height="202" fill="' + team.c1 + '"/>' +
+        '<path d="M0,144 Q180,128 360,144 L360,202 L0,202 Z" fill="#0c3a1d"/>' +
+        '<g transform="translate(115, 28)">' +
+        '<path d="M36,14 L65,6 L94,14 L122,36 L108,64 L92,54 L92,126 L38,126 L38,54 L22,64 L8,36 Z" fill="' + team.jersey + '" stroke="#d4af37" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<line x1="38" y1="72" x2="92" y2="72" stroke="' + team.trim + '" stroke-width="8" opacity="0.88"/>' +
+        '<text x="65" y="106" text-anchor="middle" fill="' + textCol + '" font-family="Tahoma" font-size="22" font-weight="900">۲۶</text>' +
+        '</g></svg>';
+    }
+
+    function renderMyHand() {
+      var grid = document.getElementById("myHandGrid");
+      grid.innerHTML = "";
+
+      state.myHand.forEach(function(team, idx) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = idx === state.selectedCardIdx ? "mini-card active" : "mini-card";
+        btn.style.setProperty("--mc1", team.c1);
+
+        var flagBox = document.createElement("div");
+        flagBox.className = "mini-flag";
+        var img = document.createElement("img");
+        img.src = "https://flagcdn.com/w80/" + team.iso + ".png";
+        img.alt = team.name;
+        img.onerror = function() { img.style.display = "none"; };
+        flagBox.appendChild(img);
+
+        var nm = document.createElement("div");
+        nm.className = "mini-name";
+        nm.textContent = team.name;
+
+        var rk = document.createElement("div");
+        rk.className = "mini-rank";
+        rk.textContent = "فیفا: " + toFa(team.currentFifa);
+
+        btn.appendChild(flagBox);
+        btn.appendChild(nm);
+        btn.appendChild(rk);
+
+        btn.onclick = function() {
+          state.selectedCardIdx = idx;
+          renderMyHand();
+        };
+        grid.appendChild(btn);
+      });
+
+      renderActiveCard();
+    }
+
+    function renderActiveCard() {
+      var team = state.myHand[state.selectedCardIdx];
+      if (!team) return;
+
+      document.getElementById("handCounter").textContent =
+        "کارت " + toFa(state.selectedCardIdx + 1) + " از " + toFa(state.myHand.length);
+
+      var mount = document.getElementById("activeCardMount");
+      mount.innerHTML = "";
+
+      var card = document.createElement("article");
+      card.className = "football-card";
+      card.style.setProperty("--c1", team.c1);
+      card.style.setProperty("--c3", team.c3);
+      card.style.setProperty("--row-odd-a", team.c1);
+      card.style.setProperty("--row-odd-b", team.c2);
+      card.style.setProperty("--row-even-b", team.c3);
+
+      var header = document.createElement("header");
+      header.className = "card-header";
+
+      var fbox = document.createElement("div");
+      fbox.className = "flag-box";
+      var fimg = document.createElement("img");
+      fimg.src = "https://flagcdn.com/w160/" + team.iso + ".png";
+      fimg.alt = team.name;
+      fimg.onerror = function() { fimg.style.display = "none"; };
+      fbox.appendChild(fimg);
+
+      var title = document.createElement("h2");
+      title.className = "country-title";
+      title.textContent = team.name;
+
+      var crest = document.createElement("div");
+      crest.className = "crest-box";
+      var stars = document.createElement("div");
+      stars.className = "crest-stars";
+      stars.textContent = team.titles > 0 ? "★".repeat(team.titles) : "جام ۲۶";
+      var shield = document.createElement("div");
+      shield.className = "crest-shield";
+      shield.textContent = toFa(team.currentFifa);
+      crest.appendChild(stars);
+      crest.appendChild(shield);
+
+      header.appendChild(fbox);
+      header.appendChild(title);
+      header.appendChild(crest);
+      card.appendChild(header);
+
+      var photoFrame = document.createElement("div");
+      photoFrame.className = "team-photo-frame";
+      var cimg = document.createElement("img");
+      cimg.className = "custom-img";
+      cimg.src = "images/" + team.iso + ".jpg";
+      cimg.onload = function() { photoFrame.classList.add("has-photo"); };
+      cimg.onerror = function() { photoFrame.classList.remove("has-photo"); };
+      var art = document.createElement("div");
+      art.className = "generated-art";
+      art.innerHTML = buildTeamArtSvg(team);
+      photoFrame.appendChild(cimg);
+      photoFrame.appendChild(art);
+      card.appendChild(photoFrame);
+
+      var statsList = document.createElement("section");
+      statsList.className = "stats-list";
+
+      STAT_DEFS.forEach(function(st) {
+        var displayVal = st.prefix + toFa(team[st.key]);
+        var row = document.createElement("button");
+        row.type = "button";
+        row.className = "stat-row";
+
+        var lbl = document.createElement("span");
+        lbl.className = "stat-label";
+        lbl.textContent = st.label;
+
+        var val = document.createElement("span");
+        val.className = "stat-value";
+        val.textContent = displayVal;
+
+        row.appendChild(lbl);
+        row.appendChild(val);
+
+        row.onclick = function() {
+          var allRows = statsList.querySelectorAll(".stat-row");
+          for (var i = 0; i < allRows.length; i++) allRows[i].classList.remove("selected");
+          row.classList.add("selected");
+          document.getElementById("gameToast").textContent =
+            "روی کارت «" + team.name + "» گزینه «" + st.label + "» (" + displayVal + ") انتخاب شد!";
+        };
+        statsList.appendChild(row);
+      });
+
+      card.appendChild(statsList);
+      mount.appendChild(card);
+    }
+
+    // اتصال مستقیم و مطمئن همه دکمه‌ها
+    document.getElementById("btnPlay").onclick = function() { goScreen("screenMenu"); };
+    document.getElementById("btnBackHome").onclick = function() { goScreen("screenHome"); };
+    document.getElementById("btnCreateRoomMenu").onclick = function() { getPlayerName(); goScreen("screenCreate"); };
+    document.getElementById("btnJoinRoomMenu").onclick = function() {
+      getPlayerName();
+      document.getElementById("joinStatus").style.display = "none";
+      goScreen("screenJoin");
+    };
+    document.getElementById("btnBackFromCreate").onclick = function() { goScreen("screenMenu"); };
+    document.getElementById("btnBackFromJoin").onclick = function() { goScreen("screenMenu"); };
+
+    document.getElementById("btnMode2").onclick = function() { createRoom(2); };
+    document.getElementById("btnMode3").onclick = function() { createRoom(3); };
+    document.getElementById("btnMode4").onclick = function() { createRoom(4); };
+
+    document.getElementById("btnSubmitJoin").onclick = joinRoom;
+    document.getElementById("joinCodeInput").onkeydown = function(e) {
+      if (e.key === "Enter") joinRoom();
+    };
+
+    document.getElementById("btnCopyCode").onclick = function() {
+      if (navigator.clipboard) navigator.clipboard.writeText(state.roomCode);
+      setLobbyStatus("کد اتاق (" + toFa(state.roomCode) + ") کپی شد!", false);
+    };
+
+    document.getElementById("btnCopyLink").onclick = function() {
+      var baseUrl = window.location.href.split("?")[0];
+      if (navigator.clipboard) navigator.clipboard.writeText(baseUrl + "?room=" + state.roomCode);
+      setLobbyStatus("لینک دعوت کپی شد!", false);
+    };
+
+    document.getElementById("btnFillBots").onclick = function() {
+      var botNames = ["مهدی (آزمایشی)", "سارا (آزمایشی)", "امیر (آزمایشی)"];
+      var idx = 0;
+      while (state.players.length < state.maxPlayers) {
+        state.players.push({ id: "bot-" + state.players.length, name: botNames[idx++], isBot: true, cardCount: 0 });
+      }
+      broadcastLobbyState();
+      checkAutoStart();
+    };
+
+    document.getElementById("btnLeaveLobby").onclick = function() { cleanupNetwork(); goScreen("screenMenu"); };
+    document.getElementById("btnExitGame").onclick = function() { cleanupNetwork(); goScreen("screenHome"); };
+    document.getElementById("btnRedeal").onclick = function() { if (state.isHost) dealCardsToAll(); };
+
+    document.getElementById("btnPrevCard").onclick = function() {
+      if (!state.myHand.length) return;
+      state.selectedCardIdx = (state.selectedCardIdx - 1 + state.myHand.length) % state.myHand.length;
+      renderMyHand();
+    };
+
+    document.getElementById("btnNextCard").onclick = function() {
+      if (!state.myHand.length) return;
+      state.selectedCardIdx = (state.selectedCardIdx + 1) % state.myHand.length;
+      renderMyHand();
+    };
+  </script>
+</body>
+</html>

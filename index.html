@@ -199,6 +199,7 @@
       line-height: 1.6;
     }
 
+    .status-msg.ok { background: rgba(24, 165, 88, 0.18); border-color: #4ade80; color: #86efac; }
     .status-msg.error { background: rgba(217, 65, 78, 0.18); border-color: #f87171; color: #fecaca; }
 
     .table-top-bar {
@@ -361,10 +362,13 @@
   <section id="screenJoin" class="screen">
     <div class="panel">
       <h2 class="main-title" style="font-size:1.35rem;">رفتن به اتاق دوستان</h2>
-      <p class="subtitle">کد ۵ رقمی اتاقی که دوستت ساخته را اینجا وارد کن:</p>
       <div class="field-group">
-        <label class="field-label" for="joinCodeInput">کد اتاق:</label>
-        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" />
+        <label class="field-label" for="joinNameInput">نام شما:</label>
+        <input type="text" id="joinNameInput" class="text-input" placeholder="اسم خودت را بنویس..." maxlength="18" />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="joinCodeInput">کد ۵ رقمی اتاق:</label>
+        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" />
       </div>
       <div id="joinStatus" class="status-msg" style="display:none;"></div>
       <button type="button" class="btn btn-blue" id="btnSubmitJoin">ورود به اتاق</button>
@@ -377,14 +381,14 @@
     <div class="panel">
       <h2 class="main-title" style="font-size:1.3rem;" id="lobbyHeading">اتاق انتظار آنلاین</h2>
       <div class="room-code-box">
-        <span style="font-size:0.82rem; color:#cbd5e1;">این کد را برای دوستانت بفرست تا وارد اتاق شوند:</span>
+        <span style="font-size:0.82rem; color:#cbd5e1;">این کد یا لینک را برای دوستانت بفرست تا وارد اتاق شوند:</span>
         <div class="room-code-num" id="lobbyRoomCode">-----</div>
         <div class="copy-row">
           <button type="button" class="btn btn-small" id="btnCopyCode">📋 کپی کد اتاق</button>
           <button type="button" class="btn btn-small" id="btnCopyLink">🔗 کپی لینک دعوت</button>
         </div>
       </div>
-      <div class="status-msg" id="lobbyStatus">اتاق ساخته شد...</div>
+      <div class="status-msg" id="lobbyStatus">در حال اتصال به سرور آنلاین...</div>
       <div class="players-list" id="lobbyPlayersList"></div>
       <button type="button" class="btn btn-ghost" id="btnFillBots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">
         🤖 تست سریع (تکمیل اتاق و پخش ۴۸ کارت)
@@ -402,7 +406,7 @@
         <button type="button" class="btn btn-small btn-ghost" id="btnExitGame">خروج به منو</button>
       </div>
     </div>
-    <div class="status-msg" id="gameToast">کارت‌های ۴۸ تیم جام جهانی ۲۰۲۶ به صورت مساوی پخش شد!</div>
+    <div class="status-msg ok" id="gameToast">کارت‌های ۴۸ تیم جام جهانی ۲۰۲۶ به صورت مساوی پخش شد!</div>
     <div class="game-stage">
       <div class="active-card-col">
         <div class="card-pager">
@@ -431,11 +435,12 @@
       }
     };
 
-    var PEER_PREFIX = "wc26-cardgame-ir-";
-    var peerLoaded = false;
+    // آدرس سرور سریع و رایگان آنلاین (بدون نیاز به ثبت‌نام)
+    var MQTT_BROKER = "wss://broker.emqx.io:8084/mqtt";
+    var TOPIC_PREFIX = "wc26_persian_cards_v2/room/";
+    var mqttLibState = "idle"; // idle | loading | ready | failed
+    var mqttWaiters = [];
 
-    // اطلاعات فشرده و کامل ۴۸ تیم ملی جام جهانی ۲۰۲۶ (آمار ۱۹۳۰ تا پایان ۲۰۲۶)
-    // ترتیب: [شناسه, کدپرچم, نام, حضور, قهرمانی, بازی, گل‌زده, گل‌خورده, برد, مساوی, باخت, بهترین‌فیفا, فیفا۲۰۲۶, رنگ۱, رنگ۲, رنگ۳, پیراهن, خط‌پیراهن]
     var RAW_TEAMS = [
       [1,"es","اسپانیا",17,2,75,122,76,38,18,19,1,1,"#7d0a12","#b88a0b","#380509","#c8102e","#f1bf00"],
       [2,"ar","آرژانتین",19,3,96,171,109,54,17,25,1,2,"#145b8f","#1e4b75","#081d38","#75aadb","#ffffff"],
@@ -511,16 +516,18 @@
 
     var state = {
       myName: "بازیکن",
+      myId: "p_" + Math.random().toString(36).slice(2, 10),
       isHost: false,
       roomCode: "",
+      roomTopic: "",
       maxPlayers: 2,
-      peer: null,
-      hostConn: null,
-      clientConns: {},
+      client: null,
       players: [],
-      myId: "",
       myHand: [],
-      selectedCardIdx: 0
+      selectedCardIdx: 0,
+      dealtDone: false,
+      joinRetryTimer: null,
+      joinTimeoutTimer: null
     };
 
     var FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
@@ -553,41 +560,76 @@
 
     function goScreen(id) {
       var list = document.querySelectorAll(".screen");
-      for (var i = 0; i < list.length; i++) {
-        list[i].style.display = "none";
-      }
+      for (var i = 0; i < list.length; i++) list[i].style.display = "none";
       var target = document.getElementById(id);
       if (target) target.style.display = "flex";
     }
 
-    function getPlayerName() {
-      var val = document.getElementById("playerNameInput").value.trim();
+    function getPlayerName(fromJoin) {
+      var inputId = fromJoin ? "joinNameInput" : "playerNameInput";
+      var val = document.getElementById(inputId).value.trim();
+      if (!val) val = document.getElementById(fromJoin ? "playerNameInput" : "joinNameInput").value.trim();
       state.myName = val || ("بازیکن " + toFa(Math.floor(10 + Math.random() * 89)));
+      document.getElementById("playerNameInput").value = val;
+      document.getElementById("joinNameInput").value = val;
       return state.myName;
     }
 
+    function ensureMqttLoaded(cb) {
+      if (typeof window.mqtt !== "undefined") { cb(true); return; }
+      mqttWaiters.push(cb);
+      if (mqttLibState === "loading") return;
+      mqttLibState = "loading";
+
+      function finish(ok) {
+        mqttLibState = ok ? "ready" : "failed";
+        var list = mqttWaiters.slice();
+        mqttWaiters = [];
+        for (var i = 0; i < list.length; i++) list[i](ok);
+      }
+
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";
+      s.onload = function() { finish(typeof window.mqtt !== "undefined"); };
+      s.onerror = function() {
+        var s2 = document.createElement("script");
+        s2.src = "https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";
+        s2.onload = function() { finish(typeof window.mqtt !== "undefined"); };
+        s2.onerror = function() { finish(false); };
+        document.body.appendChild(s2);
+      };
+      document.body.appendChild(s);
+    }
+
+    function clearJoinTimers() {
+      if (state.joinRetryTimer) { clearInterval(state.joinRetryTimer); state.joinRetryTimer = null; }
+      if (state.joinTimeoutTimer) { clearTimeout(state.joinTimeoutTimer); state.joinTimeoutTimer = null; }
+    }
+
     function cleanupNetwork() {
-      Object.keys(state.clientConns).forEach(function(k) {
-        try { state.clientConns[k].close(); } catch (e) {}
-      });
-      state.clientConns = {};
-      if (state.hostConn) { try { state.hostConn.close(); } catch (e) {} state.hostConn = null; }
-      if (state.peer) { try { state.peer.destroy(); } catch (e) {} state.peer = null; }
+      clearJoinTimers();
+      if (state.client) {
+        try {
+          if (!state.isHost && state.roomTopic) {
+            state.client.publish(state.roomTopic, JSON.stringify({ type: "leave", from: state.myId }));
+          }
+          state.client.end(true);
+        } catch (e) {}
+        state.client = null;
+      }
       state.players = [];
       state.myHand = [];
       state.roomCode = "";
+      state.roomTopic = "";
       state.isHost = false;
+      state.dealtDone = false;
     }
 
-    function ensurePeerLoaded(cb) {
-      if (typeof window.Peer !== "undefined") { cb(true); return; }
-      if (peerLoaded) { cb(false); return; }
-      peerLoaded = true;
-      var s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js";
-      s.onload = function() { cb(typeof window.Peer !== "undefined"); };
-      s.onerror = function() { cb(false); };
-      document.body.appendChild(s);
+    function publishMsg(obj) {
+      if (!state.client || !state.roomTopic) return;
+      try {
+        state.client.publish(state.roomTopic, JSON.stringify(obj), { qos: 1 });
+      } catch (e) {}
     }
 
     function shuffleDeck(arr) {
@@ -599,10 +641,10 @@
       return copy;
     }
 
-    function setLobbyStatus(text, isError) {
+    function setLobbyStatus(text, kind) {
       var el = document.getElementById("lobbyStatus");
       el.textContent = text;
-      el.className = isError ? "status-msg error" : "status-msg";
+      el.className = kind === "err" ? "status-msg error" : (kind === "ok" ? "status-msg ok" : "status-msg");
     }
 
     function renderLobbyPlayers() {
@@ -616,7 +658,7 @@
         var dot = document.createElement("span");
         dot.className = "dot";
         left.appendChild(dot);
-        left.appendChild(document.createTextNode(p ? (p.name + (p.id === "host" ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i + 1))));
+        left.appendChild(document.createTextNode(p ? (p.name + (p.isHost ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i + 1))));
         var right = document.createElement("span");
         right.style.color = p ? "#4ade80" : "#94a3b8";
         right.textContent = p ? "حاضر" : "در انتظار ورود...";
@@ -626,88 +668,95 @@
       }
     }
 
+    // ---------------- ایجاد اتاق آنلاین (میزبان) ----------------
     function createRoom(maxPlayers) {
       cleanupNetwork();
-      getPlayerName();
+      getPlayerName(false);
       state.isHost = true;
       state.maxPlayers = maxPlayers;
       state.roomCode = String(Math.floor(10000 + Math.random() * 90000));
-      state.myId = "host";
-      state.players = [{ id: "host", name: state.myName, isBot: false, cardCount: 0 }];
+      state.roomTopic = TOPIC_PREFIX + state.roomCode;
+      state.players = [{ id: state.myId, name: state.myName, isHost: true, isBot: false, cardCount: 0 }];
 
       goScreen("screenLobby");
       document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(maxPlayers) + " نفره آنلاین";
       document.getElementById("lobbyRoomCode").textContent = toFa(state.roomCode);
       document.getElementById("btnFillBots").style.display = "flex";
       renderLobbyPlayers();
-      setLobbyStatus("در حال اتصال به سرور رایگان آنلاین... (دکمه تست سریع زیر همین الان آماده است)", false);
+      setLobbyStatus("در حال اتصال به سرور آنلاین...", "info");
 
-      ensurePeerLoaded(function(ok) {
+      ensureMqttLoaded(function(ok) {
         if (!ok) {
-          setLobbyStatus("اتصال آنلاین در دسترس نیست؛ برای تست تقسیم ۴۸ کارت روی دکمه «تست سریع» زیر کلیک کن!", true);
+          setLobbyStatus("اتصال اینترنت برقرار نشد؛ با دکمه «تست سریع» زیر می‌توانی بازی را آزمایش کنی.", "err");
           return;
         }
-        try {
-          var peer = new window.Peer(PEER_PREFIX + state.roomCode);
-          state.peer = peer;
+        var client = window.mqtt.connect(MQTT_BROKER, {
+          clientId: "wc26_h_" + Math.random().toString(36).slice(2, 10),
+          clean: true,
+          connectTimeout: 8000,
+          reconnectPeriod: 3000
+        });
+        state.client = client;
 
-          peer.on("open", function() {
-            setLobbyStatus("اتاق آنلاین آماده است! کد (" + toFa(state.roomCode) + ") را به دوستانت بده تا وارد شوند.", false);
+        client.on("connect", function() {
+          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
+            if (err) {
+              setLobbyStatus("خطا در ساخت کانال اتاق؛ لطفاً دوباره تلاش کن.", "err");
+              return;
+            }
+            setLobbyStatus("✅ اتاق آنلاین آماده است! کد (" + toFa(state.roomCode) + ") یا لینک را برای دوستانت بفرست.", "ok");
           });
+        });
 
-          peer.on("connection", function(conn) {
-            conn.on("data", function(msg) {
-              if (msg && msg.type === "join") {
-                if (state.players.length >= state.maxPlayers) {
-                  conn.send({ type: "error", text: "ظرفیت اتاق تکمیل است." });
-                  return;
-                }
-                state.clientConns[conn.peer] = conn;
-                state.players.push({ id: conn.peer, name: msg.name || "دوست جدید", isBot: false, cardCount: 0 });
-                broadcastLobbyState();
-                checkAutoStart();
-              }
-            });
+        client.on("message", function(topic, payload) {
+          var msg;
+          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+          if (!msg || msg.from === state.myId) return;
 
-            conn.on("close", function() {
-              if (state.clientConns[conn.peer]) {
-                delete state.clientConns[conn.peer];
-                state.players = state.players.filter(function(p) { return p.id !== conn.peer; });
-                broadcastLobbyState();
-              }
-            });
-          });
+          if (msg.type === "join_req") {
+            var existing = state.players.find(function(p) { return p.id === msg.from; });
+            if (existing) {
+              broadcastLobbyState();
+              return;
+            }
+            if (state.players.length >= state.maxPlayers) {
+              publishMsg({ type: "join_err", from: state.myId, target: msg.from, text: "ظرفیت این اتاق تکمیل شده است." });
+              return;
+            }
+            state.players.push({ id: msg.from, name: msg.name || "دوست جدید", isHost: false, isBot: false, cardCount: 0 });
+            broadcastLobbyState();
+            checkAutoStart();
+          } else if (msg.type === "leave" && !state.dealtDone) {
+            state.players = state.players.filter(function(p) { return p.id !== msg.from; });
+            broadcastLobbyState();
+          }
+        });
 
-          peer.on("error", function() {
-            setLobbyStatus("اتصال آنلاین برقرار نشد؛ همین الان با دکمه «تست سریع» زیر می‌توانی بازی را تست کنی.", true);
-          });
-        } catch (e) {
-          setLobbyStatus("با دکمه «تست سریع» زیر می‌توانید پخش ۴۸ کارت را آزمایش کنید.", true);
-        }
+        client.on("error", function() {
+          setLobbyStatus("خطا در اتصال به سرور آنلاین؛ اینترنت را بررسی کن.", "err");
+        });
       });
     }
 
     function broadcastLobbyState() {
       renderLobbyPlayers();
       var summary = state.players.map(function(p) {
-        return { id: p.id, name: p.name, isBot: p.isBot, cardCount: p.cardCount };
+        return { id: p.id, name: p.name, isHost: p.isHost, isBot: p.isBot, cardCount: p.cardCount };
       });
-      Object.keys(state.clientConns).forEach(function(id) {
-        try {
-          state.clientConns[id].send({
-            type: "lobby_update",
-            roomCode: state.roomCode,
-            maxPlayers: state.maxPlayers,
-            players: summary
-          });
-        } catch (e) {}
+      publishMsg({
+        type: "lobby_update",
+        from: state.myId,
+        roomCode: state.roomCode,
+        maxPlayers: state.maxPlayers,
+        players: summary
       });
     }
 
     function checkAutoStart() {
-      if (state.players.length === state.maxPlayers) {
-        setLobbyStatus("ظرفیت اتاق پر شد! در حال بُر زدن و تقسیم مساوی ۴۸ کارت...", false);
-        setTimeout(dealCardsToAll, 600);
+      if (state.players.length === state.maxPlayers && !state.dealtDone) {
+        state.dealtDone = true;
+        setLobbyStatus("🎉 ظرفیت اتاق پر شد! در حال بُر زدن و تقسیم مساوی ۴۸ کارت...", "ok");
+        setTimeout(dealCardsToAll, 700);
       }
     }
 
@@ -727,20 +776,19 @@
         return { id: p.id, name: p.name, cardCount: p.cardCount };
       });
 
-      Object.keys(state.clientConns).forEach(function(guestId) {
-        try {
-          state.clientConns[guestId].send({
-            type: "game_dealt",
-            yourId: guestId,
-            handIds: handsMap[guestId],
-            roster: roster
-          });
-        } catch (e) {}
+      // ارسال دست محرمانه هر مهمان فقط به شناسه خودش
+      state.players.forEach(function(p) {
+        if (!p.isHost && !p.isBot) {
+          var dealPayload = { type: "deal", from: state.myId, target: p.id, handIds: handsMap[p.id], roster: roster };
+          publishMsg(dealPayload);
+          setTimeout(function() { publishMsg(dealPayload); }, 350);
+        }
       });
 
-      openGameTable(handsMap["host"], roster);
+      openGameTable(handsMap[state.myId], roster);
     }
 
+    // ---------------- ورود به اتاق دوستان (مهمان) ----------------
     function joinRoom() {
       var code = normalizeDigits(document.getElementById("joinCodeInput").value);
       var joinStatus = document.getElementById("joinStatus");
@@ -753,61 +801,91 @@
       }
 
       cleanupNetwork();
-      getPlayerName();
+      getPlayerName(true);
       state.isHost = false;
       state.roomCode = code;
+      state.roomTopic = TOPIC_PREFIX + code;
 
       joinStatus.style.display = "flex";
       joinStatus.className = "status-msg";
-      joinStatus.textContent = "در حال اتصال به اتاق (" + toFa(code) + ")...";
+      joinStatus.textContent = "در حال اتصال سریع به اتاق (" + toFa(code) + ")...";
 
-      ensurePeerLoaded(function(ok) {
+      ensureMqttLoaded(function(ok) {
         if (!ok) {
           joinStatus.className = "status-msg error";
-          joinStatus.textContent = "اتصال اینترنت برای ورود به اتاق آنلاین برقرار نشد.";
+          joinStatus.textContent = "اتصال اینترنت برقرار نشد؛ لطفاً دوباره تلاش کن.";
           return;
         }
-        var peer = new window.Peer();
-        state.peer = peer;
 
-        peer.on("open", function(myPeerId) {
-          state.myId = myPeerId;
-          var conn = peer.connect(PEER_PREFIX + code, { reliable: true });
-          state.hostConn = conn;
+        var client = window.mqtt.connect(MQTT_BROKER, {
+          clientId: "wc26_g_" + Math.random().toString(36).slice(2, 10),
+          clean: true,
+          connectTimeout: 8000,
+          reconnectPeriod: 3000
+        });
+        state.client = client;
 
-          conn.on("open", function() {
-            conn.send({ type: "join", name: state.myName });
-            goScreen("screenLobby");
-            document.getElementById("lobbyRoomCode").textContent = toFa(code);
-            document.getElementById("btnFillBots").style.display = "none";
-            setLobbyStatus("وارد اتاق شدی! منتظر تکمیل ظرفیت و پخش کارت‌ها...", false);
-          });
-
-          conn.on("data", function(msg) {
-            if (msg.type === "error") {
-              goScreen("screenJoin");
-              joinStatus.style.display = "flex";
+        client.on("connect", function() {
+          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
+            if (err) {
               joinStatus.className = "status-msg error";
-              joinStatus.textContent = msg.text;
-              cleanupNetwork();
-            } else if (msg.type === "lobby_update") {
-              state.maxPlayers = msg.maxPlayers;
-              state.players = msg.players;
-              document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(msg.maxPlayers) + " نفره آنلاین";
-              renderLobbyPlayers();
-            } else if (msg.type === "game_dealt") {
-              state.myId = msg.yourId;
-              openGameTable(msg.handIds, msg.roster);
+              joinStatus.textContent = "خطا در ورود به کانال اتاق.";
+              return;
             }
+            var sendReq = function() {
+              publishMsg({ type: "join_req", from: state.myId, name: state.myName });
+            };
+            sendReq();
+            state.joinRetryTimer = setInterval(sendReq, 1800);
+            state.joinTimeoutTimer = setTimeout(function() {
+              clearJoinTimers();
+              if (state.players.length === 0) {
+                joinStatus.style.display = "flex";
+                joinStatus.className = "status-msg error";
+                joinStatus.textContent = "اتاقی با کد (" + toFa(code) + ") پیدا نشد! مطمئن شو دوستت داخل اتاق است و کد درست است.";
+                cleanupNetwork();
+              }
+            }, 9000);
           });
         });
 
-        peer.on("error", function() {
-          goScreen("screenJoin");
+        client.on("message", function(topic, payload) {
+          var msg;
+          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+          if (!msg || msg.from === state.myId) return;
+
+          if (msg.type === "join_err" && msg.target === state.myId) {
+            clearJoinTimers();
+            goScreen("screenJoin");
+            joinStatus.style.display = "flex";
+            joinStatus.className = "status-msg error";
+            joinStatus.textContent = msg.text;
+            cleanupNetwork();
+          } else if (msg.type === "lobby_update") {
+            clearJoinTimers();
+            state.maxPlayers = msg.maxPlayers;
+            state.players = msg.players;
+            goScreen("screenLobby");
+            document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(msg.maxPlayers) + " نفره آنلاین";
+            document.getElementById("lobbyRoomCode").textContent = toFa(code);
+            document.getElementById("btnFillBots").style.display = "none";
+            renderLobbyPlayers();
+            if (state.players.length < state.maxPlayers) {
+              setLobbyStatus("✅ وارد اتاق شدی! (" + toFa(state.players.length) + " از " + toFa(state.maxPlayers) + " نفر حاضرند)", "ok");
+            } else {
+              setLobbyStatus("🎉 ظرفیت پر شد! در حال دریافت کارت‌ها...", "ok");
+            }
+          } else if (msg.type === "deal" && msg.target === state.myId) {
+            clearJoinTimers();
+            openGameTable(msg.handIds, msg.roster);
+          }
+        });
+
+        client.on("error", function() {
+          clearJoinTimers();
           joinStatus.style.display = "flex";
           joinStatus.className = "status-msg error";
-          joinStatus.textContent = "اتاقی با این کد پیدا نشد!";
-          cleanupNetwork();
+          joinStatus.textContent = "خطا در اتصال به سرور آنلاین.";
         });
       });
     }
@@ -988,12 +1066,12 @@
       mount.appendChild(card);
     }
 
-    // اتصال مستقیم و مطمئن همه دکمه‌ها
+    // اتصال دکمه‌ها
     document.getElementById("btnPlay").onclick = function() { goScreen("screenMenu"); };
     document.getElementById("btnBackHome").onclick = function() { goScreen("screenHome"); };
-    document.getElementById("btnCreateRoomMenu").onclick = function() { getPlayerName(); goScreen("screenCreate"); };
+    document.getElementById("btnCreateRoomMenu").onclick = function() { getPlayerName(false); goScreen("screenCreate"); };
     document.getElementById("btnJoinRoomMenu").onclick = function() {
-      getPlayerName();
+      getPlayerName(false);
       document.getElementById("joinStatus").style.display = "none";
       goScreen("screenJoin");
     };
@@ -1005,26 +1083,24 @@
     document.getElementById("btnMode4").onclick = function() { createRoom(4); };
 
     document.getElementById("btnSubmitJoin").onclick = joinRoom;
-    document.getElementById("joinCodeInput").onkeydown = function(e) {
-      if (e.key === "Enter") joinRoom();
-    };
+    document.getElementById("joinCodeInput").onkeydown = function(e) { if (e.key === "Enter") joinRoom(); };
 
     document.getElementById("btnCopyCode").onclick = function() {
       if (navigator.clipboard) navigator.clipboard.writeText(state.roomCode);
-      setLobbyStatus("کد اتاق (" + toFa(state.roomCode) + ") کپی شد!", false);
+      setLobbyStatus("کد اتاق (" + toFa(state.roomCode) + ") کپی شد!", "ok");
     };
 
     document.getElementById("btnCopyLink").onclick = function() {
       var baseUrl = window.location.href.split("?")[0];
       if (navigator.clipboard) navigator.clipboard.writeText(baseUrl + "?room=" + state.roomCode);
-      setLobbyStatus("لینک دعوت کپی شد!", false);
+      setLobbyStatus("لینک دعوت کپی شد! دوستت فقط رویش کلیک کند مستقیم وارد صفحه ورود می‌شود.", "ok");
     };
 
     document.getElementById("btnFillBots").onclick = function() {
       var botNames = ["مهدی (آزمایشی)", "سارا (آزمایشی)", "امیر (آزمایشی)"];
       var idx = 0;
       while (state.players.length < state.maxPlayers) {
-        state.players.push({ id: "bot-" + state.players.length, name: botNames[idx++], isBot: true, cardCount: 0 });
+        state.players.push({ id: "bot_" + state.players.length, name: botNames[idx++], isHost: false, isBot: true, cardCount: 0 });
       }
       broadcastLobbyState();
       checkAutoStart();
@@ -1045,6 +1121,19 @@
       state.selectedCardIdx = (state.selectedCardIdx + 1) % state.myHand.length;
       renderMyHand();
     };
+
+    // اگر دوستت روی لینک دعوت کلیک کرد، مستقیم کد اتاق را پر کن
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var roomFromUrl = normalizeDigits(params.get("room") || "");
+      if (roomFromUrl.length >= 4) {
+        document.getElementById("joinCodeInput").value = toFa(roomFromUrl);
+        goScreen("screenJoin");
+      }
+    } catch (e) {}
+
+    // بارگذاری زودهنگام کتابخانه آنلاین در پس‌زمینه برای سرعت بیشتر
+    ensureMqttLoaded(function() {});
   </script>
 </body>
 </html>

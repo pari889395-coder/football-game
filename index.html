@@ -3,403 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <title>نبرد کارت‌های جام جهانی ۲۰۲۶</title>
   <style>
-    :root {
-      --gold-light: #f3d778;
-      --gold-main: #d4af37;
-      --panel-bg: rgba(11, 20, 31, 0.93);
-    }
-
+    :root { --gl: #f3d778; --gm: #d4af37; --bg: rgba(11, 20, 31, 0.93); }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
     body {
       font-family: Tahoma, "Segoe UI", Arial, sans-serif;
       background: radial-gradient(circle at 50% 0%, #103824 0%, #07131e 50%, #04070c 100%);
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 10px 30px;
+      color: #fff; min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 14px 10px 30px;
     }
-
-    #globalErrorBar {
-      display: none;
-      width: 100%;
-      max-width: 520px;
-      margin-bottom: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: #7f1d1d;
-      border: 1.5px solid #f87171;
-      color: #fecaca;
-      font-size: 0.84rem;
-      font-weight: 700;
-      text-align: center;
+    #errBar {
+      display: none; width: 100%; max-width: 520px; margin-bottom: 10px; padding: 10px 14px;
+      border-radius: 12px; background: #7f1d1d; border: 1.5px solid #f87171;
+      color: #fecaca; font-size: 0.84rem; font-weight: 700; text-align: center;
     }
-
-    .screen {
-      width: 100%;
-      max-width: 450px;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-
+    .screen { width: 100%; max-width: 450px; display: none; flex-direction: column; align-items: center; gap: 14px; }
     .screen.wide { max-width: 560px; }
-
     .panel {
-      width: 100%;
-      background: var(--panel-bg);
-      border: 2px solid rgba(212, 175, 55, 0.65);
-      border-radius: 26px;
-      padding: 22px 18px;
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.72);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      text-align: center;
+      width: 100%; background: var(--bg); border: 2px solid rgba(212,175,55,0.65); border-radius: 26px;
+      padding: 22px 18px; box-shadow: 0 22px 55px rgba(0,0,0,0.72);
+      display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
     }
-
     .logo-trophy {
-      width: 78px;
-      height: 78px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(243, 215, 120, 0.3), rgba(14, 58, 34, 0.75));
-      border: 2px solid var(--gold-main);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.4rem;
+      width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--gm); font-size: 2.3rem;
+      background: radial-gradient(circle, rgba(243,215,120,0.3), rgba(14,58,34,0.75));
+      display: flex; align-items: center; justify-content: center;
     }
-
     .trophy-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      border-radius: 999px;
-      background: rgba(212, 175, 55, 0.16);
-      border: 1.5px solid var(--gold-main);
-      color: var(--gold-light);
-      font-size: 0.95rem;
-      font-weight: 900;
+      padding: 8px 18px; border-radius: 999px; background: rgba(212,175,55,0.16);
+      border: 1.5px solid var(--gm); color: var(--gl); font-size: 0.94rem; font-weight: 900;
     }
-
-    .main-title { font-size: 1.48rem; font-weight: 900; color: var(--gold-light); line-height: 1.4; }
+    .main-title { font-size: 1.45rem; font-weight: 900; color: var(--gl); line-height: 1.4; }
     .subtitle { font-size: 0.88rem; color: #cbd5e1; line-height: 1.8; }
-
     .btn {
-      width: 100%;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 13px 16px;
-      border-radius: 15px;
-      border: 1.6px solid rgba(212, 175, 55, 0.65);
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      touch-action: manipulation;
+      width: 100%; font-family: inherit; font-size: 1rem; font-weight: 700; padding: 13px 16px;
+      border-radius: 15px; border: 1.6px solid rgba(212,175,55,0.65); background: rgba(255,255,255,0.08);
+      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-
     .btn:hover:not(:disabled) { filter: brightness(1.13); }
     .btn:active:not(:disabled) { transform: scale(0.98); }
     .btn:disabled { opacity: 0.55; cursor: default; }
-
-    .btn-play {
-      font-size: 1.22rem;
-      font-weight: 900;
-      padding: 14px 22px;
-      background: linear-gradient(135deg, #f3d778 0%, #c9a227 55%, #8c6d1f 100%);
-      color: #140f02;
-      border-color: #fff3b0;
-    }
-
-    .btn-green { background: linear-gradient(135deg, #1b7a43, #0e4a27); border-color: #4ade80; }
-    .btn-blue { background: linear-gradient(135deg, #154c8a, #0a284d); border-color: #60a5fa; }
-    .btn-ghost { background: transparent; border-color: rgba(255, 255, 255, 0.22); color: #cbd5e1; font-size: 0.88rem; padding: 10px 14px; }
+    .btn-play { font-size: 1.22rem; font-weight: 900; padding: 14px 22px; background: linear-gradient(135deg,#f3d778,#c9a227,#8c6d1f); color: #140f02; border-color: #fff3b0; }
+    .btn-green { background: linear-gradient(135deg,#1b7a43,#0e4a27); border-color: #4ade80; }
+    .btn-blue { background: linear-gradient(135deg,#154c8a,#0a284d); border-color: #60a5fa; }
+    .btn-ghost { background: transparent; border-color: rgba(255,255,255,0.22); color: #cbd5e1; font-size: 0.88rem; padding: 10px 14px; }
     .btn-small { width: auto; font-size: 0.82rem; padding: 7px 12px; border-radius: 11px; }
-
     .field-group { width: 100%; text-align: right; display: flex; flex-direction: column; gap: 6px; }
-    .field-label { font-size: 0.86rem; font-weight: 700; color: var(--gold-light); }
-
+    .field-label { font-size: 0.86rem; font-weight: 700; color: var(--gl); }
     .text-input {
-      width: 100%;
-      font-family: inherit;
-      font-size: 1rem;
-      font-weight: 700;
-      padding: 11px 14px;
-      border-radius: 13px;
-      border: 1.6px solid rgba(212, 175, 55, 0.5);
-      background: rgba(0, 0, 0, 0.45);
-      color: #ffffff;
-      outline: none;
-      text-align: center;
+      width: 100%; font-family: inherit; font-size: 1rem; font-weight: 700; padding: 11px 14px;
+      border-radius: 13px; border: 1.6px solid rgba(212,175,55,0.5); background: rgba(0,0,0,0.45);
+      color: #fff; outline: none; text-align: center;
     }
-
     .mode-grid { width: 100%; display: flex; flex-direction: column; gap: 10px; }
     .mode-btn { justify-content: space-between; padding: 13px 16px; }
-
-    .mode-meta {
-      font-size: 0.78rem;
-      color: var(--gold-light);
-      background: rgba(0, 0, 0, 0.35);
-      padding: 4px 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(212, 175, 55, 0.4);
-    }
-
+    .mode-meta { font-size: 0.78rem; color: var(--gl); background: rgba(0,0,0,0.35); padding: 4px 10px; border-radius: 10px; border: 1px solid rgba(212,175,55,0.4); }
     .room-code-box {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.48);
-      border: 2px dashed var(--gold-main);
-      border-radius: 18px;
-      padding: 13px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
+      width: 100%; background: rgba(0,0,0,0.48); border: 2px dashed var(--gm); border-radius: 18px;
+      padding: 13px; display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
-
-    .room-code-num {
-      font-size: 2.1rem;
-      font-weight: 900;
-      letter-spacing: 6px;
-      color: var(--gold-light);
-      direction: ltr;
-    }
-
+    .room-code-num { font-size: 2.1rem; font-weight: 900; letter-spacing: 6px; color: var(--gl); direction: ltr; }
     .copy-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
     .players-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-
     .player-slot {
-      width: 100%;
-      padding: 9px 13px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1.2px solid rgba(255, 255, 255, 0.14);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      font-weight: 700;
+      width: 100%; padding: 9px 13px; border-radius: 12px; background: rgba(255,255,255,0.05);
+      border: 1.2px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.88rem; font-weight: 700;
     }
-
-    .player-slot.joined { background: rgba(24, 165, 88, 0.16); border-color: rgba(74, 222, 128, 0.55); }
+    .player-slot.joined { background: rgba(24,165,88,0.16); border-color: rgba(74,222,128,0.55); }
     .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-left: 8px; background: #64748b; }
     .player-slot.joined .dot { background: #4ade80; }
-
     .status-msg {
-      width: 100%;
-      min-height: 36px;
-      padding: 8px 12px;
-      border-radius: 12px;
-      background: rgba(212, 175, 55, 0.15);
-      border: 1.3px solid rgba(212, 175, 55, 0.45);
-      color: var(--gold-light);
-      font-size: 0.85rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      line-height: 1.6;
+      width: 100%; min-height: 36px; padding: 8px 12px; border-radius: 12px; background: rgba(212,175,55,0.15);
+      border: 1.3px solid rgba(212,175,55,0.45); color: var(--gl); font-size: 0.85rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.6;
     }
-
-    .status-msg.ok { background: rgba(24, 165, 88, 0.2); border-color: #4ade80; color: #86efac; }
-    .status-msg.error { background: rgba(217, 65, 78, 0.2); border-color: #f87171; color: #fecaca; }
-    .status-msg.turn-me {
-      background: linear-gradient(90deg, rgba(212, 175, 55, 0.28), rgba(24, 165, 88, 0.28));
-      border-color: #fff3b0;
-      color: #ffffff;
-      box-shadow: 0 0 18px rgba(243, 215, 120, 0.35);
-    }
-
+    .status-msg.ok { background: rgba(24,165,88,0.2); border-color: #4ade80; color: #86efac; }
+    .status-msg.error { background: rgba(217,65,78,0.2); border-color: #f87171; color: #fecaca; }
+    .status-msg.turn-me { background: linear-gradient(90deg,rgba(212,175,55,0.28),rgba(24,165,88,0.28)); border-color: #fff3b0; color: #fff; }
     .table-top-bar {
-      width: 100%;
-      background: var(--panel-bg);
-      border: 1.5px solid rgba(212, 175, 55, 0.55);
-      border-radius: 18px;
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
+      width: 100%; background: var(--bg); border: 1.5px solid rgba(212,175,55,0.55);
+      border-radius: 18px; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px;
     }
-
-    .top-bar-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
+    .top-bar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
     .roster-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .roster-chip {
-      padding: 5px 10px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1.2px solid rgba(255, 255, 255, 0.18);
-      font-size: 0.8rem;
-      font-weight: 700;
-    }
-
-    .roster-chip.active-turn {
-      background: rgba(212, 175, 55, 0.26);
-      border-color: #fff3b0;
-      color: #fff3b0;
-      box-shadow: 0 0 10px rgba(243, 215, 120, 0.35);
-    }
-
+    .roster-chip { padding: 5px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1.2px solid rgba(255,255,255,0.18); font-size: 0.8rem; font-weight: 700; }
+    .roster-chip.active-turn { background: rgba(212,175,55,0.26); border-color: #fff3b0; color: #fff3b0; }
     .roster-chip.eliminated { opacity: 0.45; text-decoration: line-through; }
-
-    .pot-badge {
-      padding: 5px 11px;
-      border-radius: 10px;
-      background: rgba(234, 88, 12, 0.22);
-      border: 1.3px solid #fb923c;
-      color: #fed7aa;
-      font-size: 0.82rem;
-      font-weight: 800;
-    }
-
+    .pot-badge { padding: 5px 11px; border-radius: 10px; background: rgba(234,88,12,0.22); border: 1.3px solid #fb923c; color: #fed7aa; font-size: 0.82rem; font-weight: 800; }
     .football-card {
-      width: 100%;
-      max-width: 390px;
-      border-radius: 24px;
-      padding: 12px;
+      width: 100%; max-width: 390px; border-radius: 24px; padding: 12px;
       background: linear-gradient(165deg, var(--c1) 0%, #070b10 48%, var(--c3) 100%);
-      border: 2.4px solid var(--gold-main);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.78);
+      border: 2.4px solid var(--gm); box-shadow: 0 18px 42px rgba(0,0,0,0.78);
     }
-
     .card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 9px; direction: ltr; }
-    .flag-box { width: 64px; height: 42px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(243, 215, 120, 0.7); background: #101820; flex-shrink: 0; }
+    .flag-box { width: 64px; height: 42px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(243,215,120,0.7); background: #101820; flex-shrink: 0; }
     .flag-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .country-title { flex: 1; text-align: center; font-size: 1.4rem; font-weight: 900; color: #ffffff; }
+    .country-title { flex: 1; text-align: center; font-size: 1.4rem; font-weight: 900; color: #fff; }
     .crest-box { width: 52px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-    .crest-stars { min-height: 12px; color: var(--gold-light); font-size: 9px; margin-bottom: 2px; }
-    .crest-shield { width: 36px; height: 36px; border-radius: 8px 8px 18px 18px; background: var(--c1); border: 1.5px solid var(--gold-main); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: var(--gold-light); }
-
-    .team-photo-frame { width: 100%; aspect-ratio: 16 / 8.5; border-radius: 13px; overflow: hidden; border: 1.6px solid var(--gold-main); background: #060b10; position: relative; margin-bottom: 9px; }
+    .crest-stars { min-height: 12px; color: var(--gl); font-size: 9px; margin-bottom: 2px; }
+    .crest-shield { width: 36px; height: 36px; border-radius: 8px 8px 18px 18px; background: var(--c1); border: 1.5px solid var(--gm); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: var(--gl); }
+    .team-photo-frame { width: 100%; aspect-ratio: 16/8.5; border-radius: 13px; overflow: hidden; border: 1.6px solid var(--gm); background: #060b10; position: relative; margin-bottom: 9px; }
     .team-photo-frame img.custom-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 2; display: none; }
     .team-photo-frame.has-photo img.custom-img { display: block; }
     .generated-art { width: 100%; height: 100%; }
     .generated-art svg { width: 100%; height: 100%; display: block; }
-
     .stats-list { display: flex; flex-direction: column; gap: 5px; }
-
     .stat-row {
-      width: 100%;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 12px 7px 14px;
-      border-radius: 11px;
-      border: 1.3px solid rgba(212, 175, 55, 0.75);
-      color: #ffffff;
-      cursor: pointer;
-      transition: transform 0.1s ease, filter 0.15s ease;
+      width: 100%; font-family: inherit; display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 12px 7px 14px; border-radius: 11px; border: 1.3px solid rgba(212,175,55,0.75);
+      color: #fff; cursor: pointer;
     }
-
-    .stat-row:nth-child(odd) { background: linear-gradient(90deg, var(--row-odd-a) 0%, var(--row-odd-b) 50%, var(--row-odd-a) 100%); }
-    .stat-row:nth-child(even) { background: linear-gradient(90deg, #08121f 0%, var(--row-even-b) 50%, #08121f 100%); }
+    .stat-row:nth-child(odd) { background: linear-gradient(90deg, var(--oa) 0%, var(--ob) 50%, var(--oa) 100%); }
+    .stat-row:nth-child(even) { background: linear-gradient(90deg, #08121f 0%, var(--eb) 50%, #08121f 100%); }
     .stat-row:hover:not(:disabled) { filter: brightness(1.18); border-color: #fff3b0; }
-    .stat-row:active:not(:disabled) { transform: scale(0.98); }
     .stat-row:disabled { cursor: default; opacity: 0.84; }
-
     .stat-label { font-size: 0.86rem; font-weight: 700; color: #f8f4e3; }
     .stat-value { font-size: 1rem; font-weight: 900; min-width: 52px; text-align: left; }
-
     .round-result-box {
-      width: 100%;
-      background: rgba(9, 17, 28, 0.96);
-      border: 2px solid var(--gold-main);
-      border-radius: 22px;
-      padding: 18px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      text-align: center;
+      width: 100%; background: rgba(9,17,28,0.96); border: 2px solid var(--gm); border-radius: 22px;
+      padding: 18px 14px; display: flex; flex-direction: column; gap: 14px; text-align: center;
     }
-
-    .compare-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-      gap: 10px;
-    }
-
-    .compare-card {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1.6px solid rgba(255, 255, 255, 0.16);
-      border-radius: 15px;
-      padding: 10px 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .compare-card.winner {
-      background: rgba(24, 165, 88, 0.24);
-      border-color: #4ade80;
-      box-shadow: 0 0 18px rgba(74, 222, 128, 0.35);
-    }
-
-    .compare-card.tied { background: rgba(234, 88, 12, 0.2); border-color: #fb923c; }
-    .compare-flag { width: 52px; height: 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--gold-main); }
+    .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
+    .compare-card { background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.16); border-radius: 15px; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .compare-card.winner { background: rgba(24,165,88,0.24); border-color: #4ade80; }
+    .compare-card.tied { background: rgba(234,88,12,0.2); border-color: #fb923c; }
+    .compare-flag { width: 52px; height: 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--gm); }
     .compare-flag img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .compare-player { font-size: 0.78rem; color: #cbd5e1; font-weight: 700; }
-    .compare-team { font-size: 0.95rem; font-weight: 900; color: #ffffff; }
-    .compare-val { font-size: 1.22rem; font-weight: 900; color: var(--gold-light); }
-
+    .compare-team { font-size: 0.95rem; font-weight: 900; color: #fff; }
+    .compare-val { font-size: 1.22rem; font-weight: 900; color: var(--gl); }
     .victory-box {
-      width: 100%;
-      background: radial-gradient(circle at top, rgba(212, 175, 55, 0.28), rgba(11, 20, 31, 0.96));
-      border: 2.5px solid #fff3b0;
-      border-radius: 26px;
-      padding: 26px 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      text-align: center;
+      width: 100%; background: radial-gradient(circle at top,rgba(212,175,55,0.28),rgba(11,20,31,0.96));
+      border: 2.5px solid #fff3b0; border-radius: 26px; padding: 26px 18px;
+      display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
     }
   </style>
 </head>
 <body>
 
-  <div id="globalErrorBar"></div>
+  <div id="errBar"></div>
 
-  <!-- صفحه ۱: صفحه اصلی -->
   <section id="screenHome" class="screen" style="display:flex;">
     <div class="panel">
       <div class="logo-trophy">🏆</div>
       <h1 class="main-title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
       <div class="trophy-pill" id="homeTrophyBadge">🏆 تعداد جام‌های شما: ۰</div>
-      <p class="subtitle">
-        بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />
-        کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!
-      </p>
-      <button type="button" class="btn btn-play" id="btnPlay" onclick="goScreen('screenMenu')">▶ پلی (شروع)</button>
+      <p class="subtitle">بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!</p>
+      <button type="button" class="btn btn-play" id="btnPlay">▶ پلی (شروع)</button>
     </div>
   </section>
 
-  <!-- صفحه ۲: ورود به بخش آنلاین -->
   <section id="screenMenu" class="screen">
     <div class="panel">
       <h2 class="main-title" style="font-size:1.4rem;">ورود به بخش آنلاین</h2>
@@ -407,35 +162,24 @@
         <label class="field-label" for="playerNameInput">نام و نام خانوادگی شما:</label>
         <input type="text" id="playerNameInput" class="text-input" placeholder="مثلاً: هیراد عامل" maxlength="24" />
       </div>
-      <button type="button" class="btn btn-green" id="btnCreateRoomMenu" onclick="openCreatePage()">➕ ایجاد اتاق</button>
-      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu" onclick="openJoinPage()">🚪 رفتن به اتاق دوستان</button>
-      <button type="button" class="btn btn-ghost" id="btnBackHome" onclick="goScreen('screenHome')">بازگشت به صفحه اصلی</button>
+      <button type="button" class="btn btn-green" id="btnCreateRoomMenu">➕ ایجاد اتاق</button>
+      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu">🚪 رفتن به اتاق دوستان</button>
+      <button type="button" class="btn btn-ghost" id="btnBackHome">بازگشت به صفحه اصلی</button>
     </div>
   </section>
 
-  <!-- صفحه ۳-الف: انتخاب تعداد بازیکنان -->
   <section id="screenCreate" class="screen">
     <div class="panel">
       <h2 class="main-title" style="font-size:1.35rem;">تعداد بازیکنان اتاق را انتخاب کن</h2>
       <div class="mode-grid">
-        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(2)">
-          <span>👥 بازی ۲ نفره آنلاین</span>
-          <span class="mode-meta">نفری ۲۴ کارت</span>
-        </button>
-        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(3)">
-          <span>👥 بازی ۳ نفره آنلاین</span>
-          <span class="mode-meta">نفری ۱۶ کارت</span>
-        </button>
-        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(4)">
-          <span>👥 بازی ۴ نفره آنلاین</span>
-          <span class="mode-meta">نفری ۱۲ کارت</span>
-        </button>
+        <button type="button" class="btn btn-green mode-btn" id="btnMode2"><span>👥 بازی ۲ نفره آنلاین</span><span class="mode-meta">نفری ۲۴ کارت</span></button>
+        <button type="button" class="btn btn-green mode-btn" id="btnMode3"><span>👥 بازی ۳ نفره آنلاین</span><span class="mode-meta">نفری ۱۶ کارت</span></button>
+        <button type="button" class="btn btn-green mode-btn" id="btnMode4"><span>👥 بازی ۴ نفره آنلاین</span><span class="mode-meta">نفری ۱۲ کارت</span></button>
       </div>
-      <button type="button" class="btn btn-ghost" onclick="goScreen('screenMenu')">بازگشت</button>
+      <button type="button" class="btn btn-ghost" id="btnBackFromCreate">بازگشت</button>
     </div>
   </section>
 
-  <!-- صفحه ۳-ب: رفتن به اتاق دوستان -->
   <section id="screenJoin" class="screen">
     <div class="panel">
       <h2 class="main-title" style="font-size:1.35rem;">رفتن به اتاق دوستان</h2>
@@ -445,15 +189,14 @@
       </div>
       <div class="field-group">
         <label class="field-label" for="joinCodeInput">کد ۵ رقمی اتاق:</label>
-        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" onkeydown="if(event.key==='Enter') joinRoom()" />
+        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" />
       </div>
       <div id="joinStatus" class="status-msg" style="display:none;"></div>
-      <button type="button" class="btn btn-blue" onclick="joinRoom()">ورود به اتاق</button>
-      <button type="button" class="btn btn-ghost" onclick="goScreen('screenMenu')">بازگشت</button>
+      <button type="button" class="btn btn-blue" id="btnSubmitJoin">ورود به اتاق</button>
+      <button type="button" class="btn btn-ghost" id="btnBackFromJoin">بازگشت</button>
     </div>
   </section>
 
-  <!-- صفحه ۴: اتاق انتظار -->
   <section id="screenLobby" class="screen">
     <div class="panel">
       <h2 class="main-title" style="font-size:1.3rem;" id="lobbyHeading">اتاق انتظار آنلاین</h2>
@@ -461,60 +204,53 @@
         <span style="font-size:0.82rem; color:#cbd5e1;">کد یا لینک زیر را برای دوستانت بفرست:</span>
         <div class="room-code-num" id="lobbyRoomCode">-----</div>
         <div class="copy-row">
-          <button type="button" class="btn btn-small" onclick="copyRoomCode()">📋 کپی کد</button>
-          <button type="button" class="btn btn-small" onclick="copyInviteLink()">🔗 کپی لینک دعوت</button>
+          <button type="button" class="btn btn-small" id="btnCopyCode">📋 کپی کد</button>
+          <button type="button" class="btn btn-small" id="btnCopyLink">🔗 کپی لینک دعوت</button>
         </div>
       </div>
       <div class="status-msg" id="lobbyStatus">در حال اتصال به سرور آنلاین...</div>
       <div class="players-list" id="lobbyPlayersList"></div>
-      <button type="button" class="btn btn-ghost" id="btnFillBots" onclick="fillWithBots()" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">
-        🤖 تست سریع (بازی با ربات آزمایشی)
-      </button>
-      <button type="button" class="btn btn-ghost" onclick="leaveToMenu()">خروج از اتاق</button>
+      <button type="button" class="btn btn-ghost" id="btnFillBots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">🤖 تست سریع (بازی با ربات آزمایشی)</button>
+      <button type="button" class="btn btn-ghost" id="btnLeaveLobby">خروج از اتاق</button>
     </div>
   </section>
 
-  <!-- صفحه ۵: میز مسابقه زنده -->
   <section id="screenGame" class="screen wide">
     <div class="table-top-bar">
       <div class="top-bar-row">
         <div class="roster-chips" id="gameRoster"></div>
-        <button type="button" class="btn btn-small btn-ghost" onclick="exitToHome()">خروج</button>
+        <button type="button" class="btn btn-small btn-ghost" id="btnExitGame">خروج</button>
       </div>
       <div class="top-bar-row">
         <span style="font-size:0.82rem; color:#cbd5e1;" id="myDeckInfo">کارت‌های دست شما: ۰</span>
         <span class="pot-badge" id="potBadge" style="display:none;">📦 کارت‌های جمع‌شده وسط: ۰</span>
       </div>
     </div>
-
     <div class="status-msg" id="turnBanner">در حال شروع مسابقه...</div>
     <div id="roundResultMount" style="width:100%; display:none;"></div>
     <div id="victoryMount" style="width:100%; display:none;"></div>
     <div id="activeCardMount" style="width:100%; display:flex; justify-content:center;"></div>
   </section>
 
-  <!-- اسکریپت فوری جابه‌جایی صفحات (همیشه در لحظه فعال حتی پس از رفرش) -->
   <script>
-    function goScreen(id) {
-      var list = document.querySelectorAll(".screen");
-      for (var i = 0; i < list.length; i++) list[i].style.display = "none";
-      var target = document.getElementById(id);
-      if (target) target.style.display = "flex";
-      if (id === "screenHome" && typeof refreshHomeTrophies === "function") refreshHomeTrophies();
-    }
+    window.onerror = function(msg, url, line) {
+      var b = document.getElementById("errBar");
+      if (b) { b.style.display = "block"; b.textContent = "خطا در خط " + line + ": " + msg; }
+    };
+    setTimeout(function() {
+      if (!window.__WC26_OK__) {
+        var b = document.getElementById("errBar");
+        if (b && b.style.display !== "block") {
+          b.style.display = "block";
+          b.textContent = "کد ناقص کپی شده است! لطفاً کل کد را کامل از اول تا آخر کپی و در گیت‌هاب ذخیره کنید.";
+        }
+      }
+    }, 800);
   </script>
 
   <script>
-    window.onerror = function(msg, url, line) {
-      var bar = document.getElementById("globalErrorBar");
-      if (bar) {
-        bar.style.display = "block";
-        bar.textContent = "خطا در خط " + line + ": " + msg;
-      }
-    };
-
     var MQTT_BROKER = "wss://broker.emqx.io:8084/mqtt";
-    var TOPIC_PREFIX = "wc26_persian_battle_v4/room/";
+    var TOPIC_PREFIX = "wc26_persian_battle_v5/room/";
     var TROPHY_KEY = "wc26_local_trophies_v1";
     var NAME_KEY = "wc26_local_name_v1";
     var mqttLibState = "idle";
@@ -571,818 +307,119 @@
       [48,"ht","هائیتی",2,0,6,4,22,0,0,6,38,86,"#09235c","#780c1a","#04102e","#00209f","#d21034"]
     ];
 
-    var TEAMS_2026 = RAW_TEAMS.map(function(r) {
-      return {
-        id: r[0], iso: r[1], name: r[2], appearances: r[3], titles: r[4],
-        played: r[5], goalsFor: r[6], goalsAgainst: r[7], wins: r[8], draws: r[9],
-        losses: r[10], highestFifa: r[11], currentFifa: r[12],
-        c1: r[13], c2: r[14], c3: r[15], jersey: r[16], trim: r[17]
-      };
+    var TEAMS = RAW_TEAMS.map(function(r) {
+      return { id:r[0], iso:r[1], name:r[2], appearances:r[3], titles:r[4], played:r[5], goalsFor:r[6], goalsAgainst:r[7], wins:r[8], draws:r[9], losses:r[10], highestFifa:r[11], currentFifa:r[12], c1:r[13], c2:r[14], c3:r[15], jersey:r[16], trim:r[17] };
     });
 
     var STAT_DEFS = [
-      { key: "appearances", label: "⚽ حضور در جام جهانی", prefix: "", mode: "high" },
-      { key: "titles", label: "🏆 قهرمانی جام جهانی", prefix: "", mode: "high" },
-      { key: "played", label: "🏟️ تعداد بازی", prefix: "", mode: "high" },
-      { key: "goalsFor", label: "🎯 گل زده", prefix: "", mode: "high" },
-      { key: "goalsAgainst", label: "🥅 گل خورده", prefix: "", mode: "low" },
-      { key: "wins", label: "✅ برد", prefix: "", mode: "high" },
-      { key: "draws", label: "🤝 مساوی", prefix: "", mode: "high" },
-      { key: "losses", label: "❌ باخت", prefix: "", mode: "low" },
-      { key: "highestFifa", label: "📈 بالاترین رده‌بندی فیفا", prefix: "رتبه ", mode: "low" },
-      { key: "currentFifa", label: "🌍 رتبه فعلی فیفا", prefix: "رتبه ", mode: "low" }
+      { key:"appearances", label:"⚽ حضور در جام جهانی", prefix:"", mode:"high" },
+      { key:"titles", label:"🏆 قهرمانی جام جهانی", prefix:"", mode:"high" },
+      { key:"played", label:"🏟️ تعداد بازی", prefix:"", mode:"high" },
+      { key:"goalsFor", label:"🎯 گل زده", prefix:"", mode:"high" },
+      { key:"goalsAgainst", label:"🥅 گل خورده", prefix:"", mode:"low" },
+      { key:"wins", label:"✅ برد", prefix:"", mode:"high" },
+      { key:"draws", label:"🤝 مساوی", prefix:"", mode:"high" },
+      { key:"losses", label:"❌ باخت", prefix:"", mode:"low" },
+      { key:"highestFifa", label:"📈 بالاترین رده‌بندی فیفا", prefix:"رتبه ", mode:"low" },
+      { key:"currentFifa", label:"🌍 رتبه فعلی فیفا", prefix:"رتبه ", mode:"low" }
     ];
 
-    var state = {
-      myName: "بازیکن",
-      myId: "p_" + Math.random().toString(36).slice(2, 10),
-      isHost: false,
-      roomCode: "",
-      roomTopic: "",
-      maxPlayers: 2,
-      client: null,
-      players: [],
-      pot: [],
-      turnPlayerId: "",
-      phase: "lobby",
-      lastReveal: null,
-      winnerId: "",
-      winnerName: "",
-      seq: 0,
-      lastSeenSeq: -1,
-      trophyAwardedMatch: false,
-      myView: null,
-      joinRetryTimer: null,
-      joinTimeoutTimer: null,
-      botTimer: null
+    var st = {
+      myName:"بازیکن", myId:"p_"+Math.random().toString(36).slice(2,10), isHost:false,
+      roomCode:"", roomTopic:"", maxPlayers:2, client:null, players:[], pot:[],
+      turnPlayerId:"", phase:"lobby", lastReveal:null, winnerId:"", winnerName:"",
+      seq:0, lastSeenSeq:-1, trophyAwarded:false, myView:null,
+      joinRetry:null, joinTimeout:null, botTimer:null
     };
 
-    var FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
-    var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-
-    function toFa(num) {
-      var s = String(num);
-      var out = "";
+    var FA = "۰۱۲۳۴۵۶۷۸۹", AR = "٠١٢٣٤٥٦٧٨٩";
+    function toFa(n) {
+      var s = String(n), o = "";
+      for (var i = 0; i < s.length; i++) o += (s[i] >= "0" && s[i] <= "9") ? FA[Number(s[i])] : s[i];
+      return o;
+    }
+    function normNum(str) {
+      var s = String(str), o = "";
       for (var i = 0; i < s.length; i++) {
-        var ch = s.charAt(i);
-        if (ch >= "0" && ch <= "9") out += FA_DIGITS.charAt(Number(ch));
-        else out += ch;
+        var f = FA.indexOf(s[i]), a = AR.indexOf(s[i]);
+        if (s[i] >= "0" && s[i] <= "9") o += s[i];
+        else if (f !== -1) o += String(f);
+        else if (a !== -1) o += String(a);
       }
-      return out;
+      return o;
+    }
+    function teamById(id) { for (var i=0; i<TEAMS.length; i++) if (TEAMS[i].id===id) return TEAMS[i]; return null; }
+    function statByKey(k) { for (var i=0; i<STAT_DEFS.length; i++) if (STAT_DEFS[i].key===k) return STAT_DEFS[i]; return STAT_DEFS[0]; }
+    function loadTrophies() { try { return Number(localStorage.getItem(TROPHY_KEY)||"0")||0; } catch(e) { return 0; } }
+    function addTrophy() { try { localStorage.setItem(TROPHY_KEY, String(loadTrophies()+1)); } catch(e) {} refreshTrophies(); }
+    function refreshTrophies() { document.getElementById("homeTrophyBadge").textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies()); }
+
+    function goScreen(id) {
+      var list = document.querySelectorAll(".screen");
+      for (var i = 0; i < list.length; i++) list[i].style.display = "none";
+      var t = document.getElementById(id);
+      if (t) t.style.display = "flex";
+      if (id === "screenHome") refreshTrophies();
     }
 
-    function normalizeDigits(str) {
-      var s = String(str);
-      var out = "";
-      for (var i = 0; i < s.length; i++) {
-        var ch = s.charAt(i);
-        var faIdx = FA_DIGITS.indexOf(ch);
-        var arIdx = AR_DIGITS.indexOf(ch);
-        if (ch >= "0" && ch <= "9") out += ch;
-        else if (faIdx !== -1) out += String(faIdx);
-        else if (arIdx !== -1) out += String(arIdx);
-      }
-      return out;
+    function readName(fromJoin) {
+      var a = document.getElementById(fromJoin ? "joinNameInput" : "playerNameInput").value.trim();
+      if (!a) a = document.getElementById(fromJoin ? "playerNameInput" : "joinNameInput").value.trim();
+      if (a) { try { localStorage.setItem(NAME_KEY, a); } catch(e) {} }
+      st.myName = a || ("بازیکن " + toFa(Math.floor(10 + Math.random()*89)));
+      document.getElementById("playerNameInput").value = a;
+      document.getElementById("joinNameInput").value = a;
+      return st.myName;
     }
 
-    function getTeamById(id) {
-      for (var i = 0; i < TEAMS_2026.length; i++) {
-        if (TEAMS_2026[i].id === id) return TEAMS_2026[i];
-      }
-      return null;
-    }
-
-    function getStatDef(key) {
-      for (var i = 0; i < STAT_DEFS.length; i++) {
-        if (STAT_DEFS[i].key === key) return STAT_DEFS[i];
-      }
-      return STAT_DEFS[0];
-    }
-
-    function loadTrophies() {
-      try { return Number(localStorage.getItem(TROPHY_KEY) || "0") || 0; } catch (e) { return 0; }
-    }
-
-    function addTrophy() {
-      var next = loadTrophies() + 1;
-      try { localStorage.setItem(TROPHY_KEY, String(next)); } catch (e) {}
-      refreshHomeTrophies();
-    }
-
-    function refreshHomeTrophies() {
-      var el = document.getElementById("homeTrophyBadge");
-      if (el) el.textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies());
-    }
-
-    function getPlayerName(fromJoin) {
-      var inputId = fromJoin ? "joinNameInput" : "playerNameInput";
-      var val = document.getElementById(inputId).value.trim();
-      if (!val) val = document.getElementById(fromJoin ? "playerNameInput" : "joinNameInput").value.trim();
-      if (val) {
-        try { localStorage.setItem(NAME_KEY, val); } catch (e) {}
-      }
-      state.myName = val || ("بازیکن " + toFa(Math.floor(10 + Math.random() * 89)));
-      document.getElementById("playerNameInput").value = val;
-      document.getElementById("joinNameInput").value = val;
-      return state.myName;
-    }
-
-    function openCreatePage() {
-      getPlayerName(false);
-      goScreen("screenCreate");
-    }
-
-    function openJoinPage() {
-      getPlayerName(false);
-      document.getElementById("joinStatus").style.display = "none";
-      goScreen("screenJoin");
-    }
-
-    function ensureMqttLoaded(cb) {
+    function loadMqtt(cb) {
       if (typeof window.mqtt !== "undefined") { cb(true); return; }
       mqttWaiters.push(cb);
       if (mqttLibState === "loading") return;
       mqttLibState = "loading";
-
-      function finish(ok) {
+      function done(ok) {
         mqttLibState = ok ? "ready" : "failed";
-        var list = mqttWaiters.slice();
-        mqttWaiters = [];
-        for (var i = 0; i < list.length; i++) list[i](ok);
+        var w = mqttWaiters.slice(); mqttWaiters = [];
+        for (var i=0; i<w.length; i++) w[i](ok);
       }
-
       var s = document.createElement("script");
       s.src = "https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";
-      s.onload = function() { finish(typeof window.mqtt !== "undefined"); };
+      s.onload = function() { done(typeof window.mqtt !== "undefined"); };
       s.onerror = function() {
         var s2 = document.createElement("script");
         s2.src = "https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";
-        s2.onload = function() { finish(typeof window.mqtt !== "undefined"); };
-        s2.onerror = function() { finish(false); };
+        s2.onload = function() { done(typeof window.mqtt !== "undefined"); };
+        s2.onerror = function() { done(false); };
         document.body.appendChild(s2);
       };
       document.body.appendChild(s);
     }
 
     function clearTimers() {
-      if (state.joinRetryTimer) { clearInterval(state.joinRetryTimer); state.joinRetryTimer = null; }
-      if (state.joinTimeoutTimer) { clearTimeout(state.joinTimeoutTimer); state.joinTimeoutTimer = null; }
-      if (state.botTimer) { clearTimeout(state.botTimer); state.botTimer = null; }
+      if (st.joinRetry) { clearInterval(st.joinRetry); st.joinRetry = null; }
+      if (st.joinTimeout) { clearTimeout(st.joinTimeout); st.joinTimeout = null; }
+      if (st.botTimer) { clearTimeout(st.botTimer); st.botTimer = null; }
     }
 
-    function cleanupNetwork() {
+    function cleanup() {
       clearTimers();
-      if (state.client) {
+      if (st.client) {
         try {
-          if (!state.isHost && state.roomTopic) {
-            state.client.publish(state.roomTopic, JSON.stringify({ type: "leave", from: state.myId }));
-          }
-          state.client.end(true);
-        } catch (e) {}
-        state.client = null;
+          if (!st.isHost && st.roomTopic) st.client.publish(st.roomTopic, JSON.stringify({ type:"leave", from:st.myId }));
+          st.client.end(true);
+        } catch(e) {}
+        st.client = null;
       }
-      state.players = [];
-      state.pot = [];
-      state.roomCode = "";
-      state.roomTopic = "";
-      state.isHost = false;
-      state.phase = "lobby";
-      state.lastReveal = null;
-      state.winnerId = "";
-      state.winnerName = "";
-      state.seq = 0;
-      state.lastSeenSeq = -1;
-      state.myView = null;
+      st.players=[]; st.pot=[]; st.roomCode=""; st.roomTopic=""; st.isHost=false;
+      st.phase="lobby"; st.lastReveal=null; st.winnerId=""; st.winnerName="";
+      st.seq=0; st.lastSeenSeq=-1; st.myView=null;
     }
 
-    function publishMsg(obj) {
-      if (!state.client || !state.roomTopic) return;
-      try { state.client.publish(state.roomTopic, JSON.stringify(obj), { qos: 1 }); } catch (e) {}
+    function sendMsg(obj) {
+      if (!st.client || !st.roomTopic) return;
+      try { st.client.publish(st.roomTopic, JSON.stringify(obj), { qos:1 }); } catch(e) {}
     }
 
-    function shuffleDeck(arr) {
-      var copy = arr.slice();
-      for (var i = copy.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var t = copy[i]; copy[i] = copy[j]; copy[j] = t;
-      }
-      return copy;
-    }
-
-    function setLobbyStatus(text, kind) {
-      var el = document.getElementById("lobbyStatus");
-      el.textContent = text;
-      el.className = kind === "err" ? "status-msg error" : (kind === "ok" ? "status-msg ok" : "status-msg");
-    }
-
-    function renderLobbyPlayers() {
-      var list = document.getElementById("lobbyPlayersList");
-      list.innerHTML = "";
-      for (var i = 0; i < state.maxPlayers; i++) {
-        var p = state.players[i];
-        var row = document.createElement("div");
-        row.className = p ? "player-slot joined" : "player-slot";
-        var left = document.createElement("span");
-        var dot = document.createElement("span");
-        dot.className = "dot";
-        left.appendChild(dot);
-        left.appendChild(document.createTextNode(p ? (p.name + (p.isHost ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i + 1))));
-        var right = document.createElement("span");
-        right.style.color = p ? "#4ade80" : "#94a3b8";
-        right.textContent = p ? "حاضر" : "در انتظار ورود...";
-        row.appendChild(left);
-        row.appendChild(right);
-        list.appendChild(row);
-      }
-    }
-
-    function createRoom(maxPlayers) {
-      cleanupNetwork();
-      getPlayerName(false);
-      state.isHost = true;
-      state.maxPlayers = maxPlayers;
-      state.roomCode = String(Math.floor(10000 + Math.random() * 90000));
-      state.roomTopic = TOPIC_PREFIX + state.roomCode;
-      state.players = [{ id: state.myId, name: state.myName, isHost: true, isBot: false, deck: [] }];
-
-      goScreen("screenLobby");
-      document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(maxPlayers) + " نفره آنلاین";
-      document.getElementById("lobbyRoomCode").textContent = toFa(state.roomCode);
-      document.getElementById("btnFillBots").style.display = "flex";
-      renderLobbyPlayers();
-      setLobbyStatus("در حال اتصال به سرور آنلاین...", "info");
-
-      ensureMqttLoaded(function(ok) {
-        if (!ok) {
-          setLobbyStatus("اتصال اینترنت برقرار نشد؛ می‌توانی با دکمه «تست سریع» زیر با ربات بازی کنی.", "err");
-          return;
-        }
-        var client = window.mqtt.connect(MQTT_BROKER, {
-          clientId: "wc26_h_" + Math.random().toString(36).slice(2, 10),
-          clean: true,
-          connectTimeout: 8000,
-          reconnectPeriod: 3000
-        });
-        state.client = client;
-
-        client.on("connect", function() {
-          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
-            if (err) { setLobbyStatus("خطا در ساخت اتاق.", "err"); return; }
-            setLobbyStatus("✅ اتاق آنلاین آماده است! کد (" + toFa(state.roomCode) + ") یا لینک را برای دوستانت بفرست.", "ok");
-          });
-        });
-
-        client.on("message", function(topic, payload) {
-          var msg;
-          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
-          if (!msg || msg.from === state.myId) return;
-
-          if (msg.type === "join_req") {
-            var existing = state.players.find(function(p) { return p.id === msg.from; });
-            if (existing) { broadcastLobbyState(); return; }
-            if (state.phase !== "lobby" || state.players.length >= state.maxPlayers) {
-              publishMsg({ type: "join_err", from: state.myId, target: msg.from, text: "ظرفیت این اتاق تکمیل شده است." });
-              return;
-            }
-            state.players.push({ id: msg.from, name: msg.name || "دوست جدید", isHost: false, isBot: false, deck: [] });
-            broadcastLobbyState();
-            checkAutoStart();
-          } else if (msg.type === "leave" && state.phase === "lobby") {
-            state.players = state.players.filter(function(p) { return p.id !== msg.from; });
-            broadcastLobbyState();
-          } else if (msg.type === "pick_stat") {
-            if (state.phase === "playing" && state.turnPlayerId === msg.from) {
-              resolveRoundHost(msg.statKey);
-            }
-          } else if (msg.type === "next_round") {
-            if (state.phase === "reveal" && msg.seq === state.seq) {
-              advanceAfterRevealHost();
-            }
-          }
-        });
-      });
-    }
-
-    function broadcastLobbyState() {
-      renderLobbyPlayers();
-      var summary = state.players.map(function(p) {
-        return { id: p.id, name: p.name, isHost: p.isHost, isBot: p.isBot };
-      });
-      publishMsg({
-        type: "lobby_update",
-        from: state.myId,
-        roomCode: state.roomCode,
-        maxPlayers: state.maxPlayers,
-        players: summary
-      });
-    }
-
-    function checkAutoStart() {
-      if (state.players.length === state.maxPlayers && state.phase === "lobby") {
-        setLobbyStatus("🎉 ظرفیت پر شد! در حال بُر زدن و پخش مساوی ۴۸ کارت...", "ok");
-        setTimeout(startMatchHost, 750);
-      }
-    }
-
-    function startMatchHost() {
-      clearTimers();
-      var shuffled = shuffleDeck(TEAMS_2026);
-      var count = state.players.length;
-      var perPlayer = Math.floor(shuffled.length / count);
-
-      state.players.forEach(function(p, idx) {
-        p.deck = shuffled.slice(idx * perPlayer, (idx + 1) * perPlayer).map(function(t) { return t.id; });
-      });
-
-      state.pot = [];
-      state.phase = "playing";
-      state.lastReveal = null;
-      state.winnerId = "";
-      state.winnerName = "";
-      state.trophyAwardedMatch = false;
-      state.turnPlayerId = state.players[0].id;
-
-      broadcastGameState();
-      scheduleBotIfNeeded();
-    }
-
-    function broadcastGameState() {
-      state.seq++;
-      var roster = state.players.map(function(p) {
-        return { id: p.id, name: p.name, count: p.deck.length, isHost: p.isHost };
-      });
-
-      var topCardsByPlayer = {};
-      state.players.forEach(function(p) {
-        topCardsByPlayer[p.id] = p.deck.length > 0 ? p.deck[0] : null;
-      });
-
-      var packet = {
-        type: "state_sync",
-        from: state.myId,
-        seq: state.seq,
-        phase: state.phase,
-        turnPlayerId: state.turnPlayerId,
-        potCount: state.pot.length,
-        roster: roster,
-        topCardsByPlayer: topCardsByPlayer,
-        lastReveal: state.lastReveal,
-        winnerId: state.winnerId,
-        winnerName: state.winnerName
-      };
-
-      publishMsg(packet);
-      setTimeout(function() {
-        if (state.seq === packet.seq) publishMsg(packet);
-      }, 280);
-
-      applyGameStateToView(packet);
-    }
-
-    function resolveRoundHost(statKey) {
-      if (state.phase !== "playing") return;
-      clearTimers();
-
-      var statDef = getStatDef(statKey);
-      var activePlayers = state.players.filter(function(p) { return p.deck.length > 0; });
-      if (activePlayers.length <= 1) { finishMatchHost(); return; }
-
-      var playedEntries = [];
-      var roundCardIds = [];
-
-      activePlayers.forEach(function(p) {
-        var cardId = p.deck.shift();
-        var team = getTeamById(cardId);
-        roundCardIds.push(cardId);
-        playedEntries.push({
-          playerId: p.id,
-          playerName: p.name,
-          teamId: cardId,
-          value: team[statKey]
-        });
-      });
-
-      var bestVal = playedEntries[0].value;
-      for (var i = 1; i < playedEntries.length; i++) {
-        if (statDef.mode === "high") {
-          if (playedEntries[i].value > bestVal) bestVal = playedEntries[i].value;
-        } else {
-          if (playedEntries[i].value < bestVal) bestVal = playedEntries[i].value;
-        }
-      }
-
-      var winners = playedEntries.filter(function(e) { return e.value === bestVal; });
-      var isTie = winners.length > 1;
-      var revealMsg = "";
-
-      if (isTie) {
-        for (var k = 0; k < roundCardIds.length; k++) state.pot.push(roundCardIds[k]);
-        revealMsg = "🤝 مساوی شد! کارت‌ها به «کارت‌های جمع‌شده وسط» (" + toFa(state.pot.length) + " کارت) رفتند.";
-      } else {
-        var winEntry = winners[0];
-        var winnerObj = state.players.find(function(p) { return p.id === winEntry.playerId; });
-        var wonCards = state.pot.concat(roundCardIds);
-        state.pot = [];
-        for (var w = 0; w < wonCards.length; w++) winnerObj.deck.push(wonCards[w]);
-        state.turnPlayerId = winnerObj.id;
-        revealMsg = "🎉 «" + winnerObj.name + "» این دست را برد و " + toFa(wonCards.length) + " کارت گرفت!";
-      }
-
-      state.lastReveal = {
-        statKey: statKey,
-        statLabel: statDef.label,
-        statPrefix: statDef.prefix,
-        isTie: isTie,
-        winnerIds: winners.map(function(x) { return x.playerId; }),
-        entries: playedEntries,
-        message: revealMsg
-      };
-
-      state.phase = "reveal";
-      broadcastGameState();
-    }
-
-    function advanceAfterRevealHost() {
-      if (state.phase !== "reveal") return;
-      clearTimers();
-
-      var alive = state.players.filter(function(p) { return p.deck.length > 0; });
-      if (alive.length <= 1) {
-        finishMatchHost();
-        return;
-      }
-
-      var currentAlive = alive.find(function(p) { return p.id === state.turnPlayerId; });
-      if (!currentAlive) state.turnPlayerId = alive[0].id;
-
-      state.phase = "playing";
-      state.lastReveal = null;
-      broadcastGameState();
-      scheduleBotIfNeeded();
-    }
-
-    function finishMatchHost() {
-      var alive = state.players.filter(function(p) { return p.deck.length > 0; });
-      var champ = alive.length === 1 ? alive[0] : state.players[0];
-
-      if (state.pot.length > 0 && champ) {
-        for (var i = 0; i < state.pot.length; i++) champ.deck.push(state.pot[i]);
-        state.pot = [];
-      }
-
-      state.phase = "ended";
-      state.winnerId = champ ? champ.id : "";
-      state.winnerName = champ ? champ.name : "برنده";
-      state.lastReveal = null;
-      broadcastGameState();
-    }
-
-    function scheduleBotIfNeeded() {
-      if (!state.isHost || state.phase !== "playing") return;
-      var turnPlayer = state.players.find(function(p) { return p.id === state.turnPlayerId; });
-      if (!turnPlayer || !turnPlayer.isBot) return;
-
-      state.botTimer = setTimeout(function() {
-        if (state.phase !== "playing" || state.turnPlayerId !== turnPlayer.id) return;
-        var card = getTeamById(turnPlayer.deck[0]);
-        var pickKey = STAT_DEFS[Math.floor(Math.random() * STAT_DEFS.length)].key;
-        if (card) {
-          if (card.currentFifa <= 10) pickKey = "currentFifa";
-          else if (card.titles >= 2) pickKey = "titles";
-          else if (card.goalsFor >= 80) pickKey = "goalsFor";
-          else if (card.losses <= 5) pickKey = "losses";
-        }
-        resolveRoundHost(pickKey);
-      }, 1400);
-    }
-
-    function joinRoom() {
-      var code = normalizeDigits(document.getElementById("joinCodeInput").value);
-      var joinStatus = document.getElementById("joinStatus");
-
-      if (code.length < 4) {
-        joinStatus.style.display = "flex";
-        joinStatus.className = "status-msg error";
-        joinStatus.textContent = "لطفاً کد ۵ رقمی اتاق دوستت را درست وارد کن.";
-        return;
-      }
-
-      cleanupNetwork();
-      getPlayerName(true);
-      state.isHost = false;
-      state.roomCode = code;
-      state.roomTopic = TOPIC_PREFIX + code;
-
-      joinStatus.style.display = "flex";
-      joinStatus.className = "status-msg";
-      joinStatus.textContent = "در حال اتصال سریع به اتاق (" + toFa(code) + ")...";
-
-      ensureMqttLoaded(function(ok) {
-        if (!ok) {
-          joinStatus.className = "status-msg error";
-          joinStatus.textContent = "اتصال اینترنت برقرار نشد.";
-          return;
-        }
-
-        var client = window.mqtt.connect(MQTT_BROKER, {
-          clientId: "wc26_g_" + Math.random().toString(36).slice(2, 10),
-          clean: true,
-          connectTimeout: 8000,
-          reconnectPeriod: 3000
-        });
-        state.client = client;
-
-        client.on("connect", function() {
-          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
-            if (err) { joinStatus.className = "status-msg error"; joinStatus.textContent = "خطا در ورود به اتاق."; return; }
-            var sendReq = function() {
-              publishMsg({ type: "join_req", from: state.myId, name: state.myName });
-            };
-            sendReq();
-            state.joinRetryTimer = setInterval(sendReq, 1800);
-            state.joinTimeoutTimer = setTimeout(function() {
-              clearTimers();
-              if (state.players.length === 0 && !state.myView) {
-                joinStatus.style.display = "flex";
-                joinStatus.className = "status-msg error";
-                joinStatus.textContent = "اتاقی با کد (" + toFa(code) + ") پیدا نشد!";
-                cleanupNetwork();
-              }
-            }, 9000);
-          });
-        });
-
-        client.on("message", function(topic, payload) {
-          var msg;
-          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
-          if (!msg || msg.from === state.myId) return;
-
-          if (msg.type === "join_err" && msg.target === state.myId) {
-            clearTimers();
-            goScreen("screenJoin");
-            joinStatus.style.display = "flex";
-            joinStatus.className = "status-msg error";
-            joinStatus.textContent = msg.text;
-            cleanupNetwork();
-          } else if (msg.type === "lobby_update") {
-            clearTimers();
-            state.maxPlayers = msg.maxPlayers;
-            state.players = msg.players;
-            goScreen("screenLobby");
-            document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(msg.maxPlayers) + " نفره آنلاین";
-            document.getElementById("lobbyRoomCode").textContent = toFa(code);
-            document.getElementById("btnFillBots").style.display = "none";
-            renderLobbyPlayers();
-            setLobbyStatus("✅ وارد اتاق شدی! (" + toFa(state.players.length) + " از " + toFa(state.maxPlayers) + " نفر حاضرند)", "ok");
-          } else if (msg.type === "state_sync") {
-            clearTimers();
-            applyGameStateToView(msg);
-          }
-        });
-      });
-    }
-
-    function applyGameStateToView(pkt) {
-      if (pkt.seq <= state.lastSeenSeq) return;
-      state.lastSeenSeq = pkt.seq;
-      state.myView = pkt;
-
-      goScreen("screenGame");
-
-      if (pkt.phase === "ended") {
-        if (pkt.winnerId === state.myId && !state.trophyAwardedMatch) {
-          state.trophyAwardedMatch = true;
-          addTrophy();
-        }
-      } else {
-        state.trophyAwardedMatch = false;
-      }
-
-      var rosterEl = document.getElementById("gameRoster");
-      rosterEl.innerHTML = "";
-      var myCount = 0;
-      var turnPlayerName = "";
-
-      pkt.roster.forEach(function(p) {
-        if (p.id === state.myId) myCount = p.count;
-        if (p.id === pkt.turnPlayerId) turnPlayerName = p.name;
-
-        var chip = document.createElement("div");
-        var cls = "roster-chip";
-        if (p.count === 0) cls += " eliminated";
-        else if (p.id === pkt.turnPlayerId && pkt.phase === "playing") cls += " active-turn";
-        chip.className = cls;
-        chip.textContent = p.name + (p.id === state.myId ? " (شما)" : "") + ": " + toFa(p.count) + " کارت";
-        rosterEl.appendChild(chip);
-      });
-
-      document.getElementById("myDeckInfo").textContent = "کارت‌های دست شما: " + toFa(myCount);
-
-      var potEl = document.getElementById("potBadge");
-      if (pkt.potCount > 0) {
-        potEl.style.display = "inline-block";
-        potEl.textContent = "📦 کارت‌های جمع‌شده وسط: " + toFa(pkt.potCount);
-      } else {
-        potEl.style.display = "none";
-      }
-
-      var banner = document.getElementById("turnBanner");
-      var revealMount = document.getElementById("roundResultMount");
-      var victoryMount = document.getElementById("victoryMount");
-      var cardMount = document.getElementById("activeCardMount");
-
-      revealMount.style.display = "none";
-      victoryMount.style.display = "none";
-      cardMount.style.display = "flex";
-
-      if (pkt.phase === "ended") {
-        cardMount.style.display = "none";
-        victoryMount.style.display = "block";
-        var iWon = pkt.winnerId === state.myId;
-        banner.className = "status-msg ok";
-        banner.textContent = iWon ? "🏆 تبریک! شما قهرمان این رقابت شدید و +۱ جام گرفتید!" : ("🏆 «" + pkt.winnerName + "» قهرمان این بازی شد!");
-        renderVictoryBox(pkt.winnerName, iWon);
-        return;
-      }
-
-      if (pkt.phase === "reveal" && pkt.lastReveal) {
-        cardMount.style.display = "none";
-        revealMount.style.display = "block";
-        banner.className = pkt.lastReveal.isTie ? "status-msg" : "status-msg ok";
-        banner.textContent = pkt.lastReveal.message;
-        renderRevealBox(pkt.lastReveal, pkt.seq);
-        return;
-      }
-
-      var isMyTurn = pkt.turnPlayerId === state.myId && myCount > 0;
-      if (myCount === 0) {
-        banner.className = "status-msg error";
-        banner.textContent = "کارت‌های شما تمام شد و حذف شدید! منتظر پایان رقابت بقیه بمانید...";
-        cardMount.innerHTML = "";
-        return;
-      }
-
-      if (isMyTurn) {
-        banner.className = "status-msg turn-me";
-        banner.textContent = "🔥 نوبت شماست! یکی از گزینه‌های روی کارتتان را لمس کنید";
-      } else {
-        banner.className = "status-msg";
-        banner.textContent = "⏳ نوبت «" + turnPlayerName + "» است تا یک گزینه انتخاب کند...";
-      }
-
-      var myTopCardId = pkt.topCardsByPlayer ? pkt.topCardsByPlayer[state.myId] : null;
-      var myCard = getTeamById(myTopCardId);
-      renderPlayableCard(myCard, isMyTurn);
-    }
-
-    function renderRevealBox(rev, currentSeq) {
-      var mount = document.getElementById("roundResultMount");
-      mount.innerHTML = "";
-      var box = document.createElement("div");
-      box.className = "round-result-box";
-
-      var title = document.createElement("div");
-      title.style.fontSize = "1rem";
-      title.style.fontWeight = "900";
-      title.style.color = "var(--gold-light)";
-      title.textContent = "نتیجه مقایسه: " + rev.statLabel;
-      box.appendChild(title);
-
-      var grid = document.createElement("div");
-      grid.className = "compare-grid";
-
-      rev.entries.forEach(function(e) {
-        var team = getTeamById(e.teamId);
-        var card = document.createElement("div");
-        var isWin = rev.winnerIds.indexOf(e.playerId) !== -1;
-        card.className = "compare-card" + (isWin ? (rev.isTie ? " tied" : " winner") : "");
-
-        var pl = document.createElement("div");
-        pl.className = "compare-player";
-        pl.textContent = e.playerName + (e.playerId === state.myId ? " (شما)" : "");
-
-        var fl = document.createElement("div");
-        fl.className = "compare-flag";
-        var img = document.createElement("img");
-        img.src = "https://flagcdn.com/w80/" + team.iso + ".png";
-        img.alt = team.name;
-        img.onerror = function() { img.style.display = "none"; };
-        fl.appendChild(img);
-
-        var tm = document.createElement("div");
-        tm.className = "compare-team";
-        tm.textContent = team.name;
-
-        var vl = document.createElement("div");
-        vl.className = "compare-val";
-        vl.textContent = rev.statPrefix + toFa(e.value);
-
-        card.appendChild(pl);
-        card.appendChild(fl);
-        card.appendChild(tm);
-        card.appendChild(vl);
-        grid.appendChild(card);
-      });
-
-      box.appendChild(grid);
-
-      var nextBtn = document.createElement("button");
-      nextBtn.type = "button";
-      nextBtn.className = "btn btn-play";
-      nextBtn.textContent = "بعدی ◀";
-      nextBtn.onclick = function() {
-        nextBtn.disabled = true;
-        nextBtn.textContent = "در حال رفتن به دست بعد...";
-        if (state.isHost) {
-          advanceAfterRevealHost();
-        } else {
-          publishMsg({ type: "next_round", from: state.myId, seq: currentSeq });
-        }
-      };
-      box.appendChild(nextBtn);
-
-      mount.appendChild(box);
-    }
-
-    function renderVictoryBox(winnerName, iWon) {
-      var mount = document.getElementById("victoryMount");
-      mount.innerHTML = "";
-
-      var box = document.createElement("div");
-      box.className = "victory-box";
-
-      var icon = document.createElement("div");
-      icon.style.fontSize = "3.4rem";
-      icon.textContent = "🏆";
-
-      var h = document.createElement("h2");
-      h.className = "main-title";
-      h.textContent = iWon ? "قهرمان شدی!" : ("قهرمان بازی: " + winnerName);
-
-      var p = document.createElement("p");
-      p.className = "subtitle";
-      p.textContent = iWon
-        ? ("یک جام جهانی به افتخارات شما اضافه شد! (مجموع جام‌های شما: " + toFa(loadTrophies()) + ")")
-        : "می‌توانید یک دست جدید با همین دوستان شروع کنید.";
-
-      box.appendChild(icon);
-      box.appendChild(h);
-      box.appendChild(p);
-
-      if (state.isHost) {
-        var replayBtn = document.createElement("button");
-        replayBtn.type = "button";
-        replayBtn.className = "btn btn-play";
-        replayBtn.textContent = "🔁 بازی جدید با همین اتاق";
-        replayBtn.onclick = startMatchHost;
-        box.appendChild(replayBtn);
-      }
-
-      var homeBtn = document.createElement("button");
-      homeBtn.type = "button";
-      homeBtn.className = "btn btn-ghost";
-      homeBtn.textContent = "بازگشت به صفحه اصلی";
-      homeBtn.onclick = function() { cleanupNetwork(); goScreen("screenHome"); };
-      box.appendChild(homeBtn);
-
-      mount.appendChild(box);
-    }
-
-    function buildTeamArtSvg(team) {
-      var lightList = ["#f5f5f5", "#f7f7f7", "#ffffff", "#f2f4f8", "#f0f2f5"];
-      var textCol = lightList.indexOf(team.jersey) !== -1 ? "#111827" : "#ffffff";
-      return '<svg viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
-        '<rect width="360" height="190" fill="' + team.c1 + '"/>' +
-        '<path d="M0,136 Q180,120 360,136 L360,190 L0,190 Z" fill="#0c3a1d"/>' +
-        '<g transform="translate(115, 22)">' +
-        '<path d="M36,14 L65,6 L94,14 L122,36 L108,64 L92,54 L92,124 L38,124 L38,54 L22,64 L8,36 Z" fill="' + team.jersey + '" stroke="#d4af37" stroke-width="2.5" stroke-linejoin="round"/>' +
-        '<line x1="38" y1="70" x2="92" y2="70" stroke="' + team.trim + '" stroke-width="8" opacity="0.88"/>' +
-        '<text x="65" y="104" text-anchor="middle" fill="' + textCol + '" font-family="Tahoma" font-size="22" font-weight="900">۲۶</text>' +
-        '</g></svg>';
-    }
-
-    function renderPlayableCard(team, isMyTurn) {
-      var mount = document.getElementById("activeCardMount");
-      mount.innerHTML = "";
-      if (!team) return;
-
-      var card = document.createElement("article");
-      card.className = "football-card";
-      card.style.setProperty("--c1", team.c1);
-      card.style.setProperty("--c3", team.c3);
-      card.style.setProperty("--row-odd-a", team.c1);
-      card.style.setProperty("--row-odd-b", team.c2);
-      card.style.setProperty("--row-even-b", team.c3);
-
-      var header = document.createElement("header");
-      header.className = "card-header";
-
-      var fbox = document.createElement("div");
-      fbox.className = "flag-box";
-      var fimg = document.createElement("img");
-      fimg.src = "https://flagcdn.com/w160/" + team.iso + ".png";
-      fimg.alt = team.name;
-      fimg.onerror = function() { fimg.style.display = "none"; };
-      fbox.appendChild(fimg);
-
-      var title = document
+    function shuffle(arr) {
+      var c = arr.slice();
+      for (var i=c.length-1; i

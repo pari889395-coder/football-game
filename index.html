@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" translate="no">
 <head>
   <meta charset="UTF-8" />
+  <meta name="google" content="notranslate" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>نبرد کارت‌های جام جهانی ۲۰۲۶</title>
   <style>
@@ -41,6 +42,7 @@
       width: 100%; font-family: inherit; font-size: 1rem; font-weight: 700; padding: 13px 16px;
       border-radius: 15px; border: 1.6px solid rgba(212,175,55,0.65); background: rgba(255,255,255,0.08);
       color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+      touch-action: manipulation;
     }
     .btn:hover:not(:disabled) { filter: brightness(1.13); }
     .btn:active:not(:disabled) { transform: scale(0.98); }
@@ -152,8 +154,8 @@
       <h1 class="main-title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
       <div class="trophy-pill" id="homeTrophyBadge">🏆 تعداد جام‌های شما: ۰</div>
       <p class="subtitle">بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!</p>
-      <button type="button" class="btn btn-play" id="btnPlay">▶ پلی (شروع)</button>
-      <div class="ver-tag">نسخه ۵</div>
+      <button type="button" class="btn btn-play" data-act="play">▶ پلی (شروع)</button>
+      <div class="ver-tag">نسخه ۶</div>
     </div>
   </section>
 
@@ -164,9 +166,9 @@
         <label class="field-label" for="playerNameInput">نام و نام خانوادگی شما:</label>
         <input type="text" id="playerNameInput" class="text-input" placeholder="مثلاً: هیراد عامل" maxlength="24" />
       </div>
-      <button type="button" class="btn btn-green" id="btnCreateRoomMenu">➕ ایجاد اتاق</button>
-      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu">🚪 رفتن به اتاق دوستان</button>
-      <button type="button" class="btn btn-ghost" id="btnBackHome">بازگشت به صفحه اصلی</button>
+      <button type="button" class="btn btn-green" data-act="open-create">➕ ایجاد اتاق</button>
+      <button type="button" class="btn btn-blue" data-act="open-join">🚪 رفتن به اتاق دوستان</button>
+      <button type="button" class="btn btn-ghost" data-act="home">بازگشت به صفحه اصلی</button>
     </div>
   </section>
 
@@ -174,11 +176,11 @@
     <div class="panel">
       <h2 class="main-title" style="font-size:1.35rem;">تعداد بازیکنان اتاق را انتخاب کن</h2>
       <div class="mode-grid">
-        <button type="button" class="btn btn-green mode-btn" id="btnMode2"><span>👥 بازی ۲ نفره آنلاین</span><span class="mode-meta">نفری ۲۴ کارت</span></button>
-        <button type="button" class="btn btn-green mode-btn" id="btnMode3"><span>👥 بازی ۳ نفره آنلاین</span><span class="mode-meta">نفری ۱۶ کارت</span></button>
-        <button type="button" class="btn btn-green mode-btn" id="btnMode4"><span>👥 بازی ۴ نفره آنلاین</span><span class="mode-meta">نفری ۱۲ کارت</span></button>
+        <button type="button" class="btn btn-green mode-btn" data-act="mode-2"><span>👥 بازی ۲ نفره آنلاین</span><span class="mode-meta">نفری ۲۴ کارت</span></button>
+        <button type="button" class="btn btn-green mode-btn" data-act="mode-3"><span>👥 بازی ۳ نفره آنلاین</span><span class="mode-meta">نفری ۱۶ کارت</span></button>
+        <button type="button" class="btn btn-green mode-btn" data-act="mode-4"><span>👥 بازی ۴ نفره آنلاین</span><span class="mode-meta">نفری ۱۲ کارت</span></button>
       </div>
-      <button type="button" class="btn btn-ghost" id="btnBackFromCreate">بازگشت</button>
+      <button type="button" class="btn btn-ghost" data-act="menu">بازگشت</button>
     </div>
   </section>
 
@@ -194,8 +196,8 @@
         <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" />
       </div>
       <div id="joinStatus" class="status-msg" style="display:none;"></div>
-      <button type="button" class="btn btn-blue" id="btnSubmitJoin">ورود به اتاق</button>
-      <button type="button" class="btn btn-ghost" id="btnBackFromJoin">بازگشت</button>
+      <button type="button" class="btn btn-blue" data-act="join">ورود به اتاق</button>
+      <button type="button" class="btn btn-ghost" data-act="menu">بازگشت</button>
     </div>
   </section>
 
@@ -206,14 +208,14 @@
         <span style="font-size:0.82rem; color:#cbd5e1;">کد یا لینک زیر را برای دوستانت بفرست:</span>
         <div class="room-code-num" id="lobbyRoomCode">-----</div>
         <div class="copy-row">
-          <button type="button" class="btn btn-small" id="btnCopyCode">📋 کپی کد</button>
-          <button type="button" class="btn btn-small" id="btnCopyLink">🔗 کپی لینک دعوت</button>
+          <button type="button" class="btn btn-small" data-act="copy-code">📋 کپی کد</button>
+          <button type="button" class="btn btn-small" data-act="copy-link">🔗 کپی لینک دعوت</button>
         </div>
       </div>
       <div class="status-msg" id="lobbyStatus">در حال اتصال به سرور آنلاین...</div>
       <div class="players-list" id="lobbyPlayersList"></div>
-      <button type="button" class="btn btn-ghost" id="btnFillBots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">🤖 تست سریع (بازی با ربات آزمایشی)</button>
-      <button type="button" class="btn btn-ghost" id="btnLeaveLobby">خروج از اتاق</button>
+      <button type="button" class="btn btn-ghost" id="btnFillBots" data-act="fill-bots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">🤖 تست سریع (بازی با ربات آزمایشی)</button>
+      <button type="button" class="btn btn-ghost" data-act="leave-lobby">خروج از اتاق</button>
     </div>
   </section>
 
@@ -221,7 +223,7 @@
     <div class="table-top-bar">
       <div class="top-bar-row">
         <div class="roster-chips" id="gameRoster"></div>
-        <button type="button" class="btn btn-small btn-ghost" id="btnExitGame">خروج</button>
+        <button type="button" class="btn btn-small btn-ghost" data-act="exit-home">خروج</button>
       </div>
       <div class="top-bar-row">
         <span style="font-size:0.82rem; color:#cbd5e1;" id="myDeckInfo">کارت‌های دست شما: ۰</span>
@@ -241,7 +243,7 @@
     };
 
     var MQTT_BROKER = "wss://broker.emqx.io:8084/mqtt";
-    var TOPIC_PREFIX = "wc26_persian_battle_v5/room/";
+    var TOPIC_PREFIX = "wc26_persian_battle_v6/room/";
     var TROPHY_KEY = "wc26_local_trophies_v1";
     var NAME_KEY = "wc26_local_name_v1";
     var mqttLibState = "idle";
@@ -343,7 +345,10 @@
     function statByKey(k) { for (var i=0; i<STAT_DEFS.length; i++) if (STAT_DEFS[i].key===k) return STAT_DEFS[i]; return STAT_DEFS[0]; }
     function loadTrophies() { try { return Number(localStorage.getItem(TROPHY_KEY)||"0")||0; } catch(e) { return 0; } }
     function addTrophy() { try { localStorage.setItem(TROPHY_KEY, String(loadTrophies()+1)); } catch(e) {} refreshTrophies(); }
-    function refreshTrophies() { document.getElementById("homeTrophyBadge").textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies()); }
+    function refreshTrophies() {
+      var el = document.getElementById("homeTrophyBadge");
+      if (el) el.textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies());
+    }
 
     function goScreen(id) {
       var list = document.querySelectorAll(".screen");
@@ -545,7 +550,4 @@
       var isTie = winners.length > 1, msg = "";
 
       if (isTie) {
-        for (var k=0; k<cards.length; k++) st.pot.push(cards[k]);
-        msg = "🤝 مساوی شد! کارت‌ها به «کارت‌های جمع‌شده وسط» (" + toFa(st.pot.length) + " کارت) رفتند.";
-      } else {
-        var wObj = st.players.find(function(p){ return p.id === winners[0].pl
+        for (var k=0; k<ca

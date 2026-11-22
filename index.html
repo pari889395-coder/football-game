@@ -8,17 +8,17 @@
 <style>
 :root{--gl:#f3d778;--gm:#d4af37;--bg:rgba(11,20,31,.93)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0%,#103824,#07131e 50%,#04070c);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px 28px}
-#errBar{display:none;width:100%;max-width:520px;margin-bottom:10px;padding:10px;border-radius:12px;background:#7f1d1d;border:1.5px solid #f87171;color:#fecaca;font-size:.84rem;font-weight:700;text-align:center}
-.screen{width:100%;max-width:450px;display:none;flex-direction:column;align-items:center;gap:14px}
-.screen.wide{max-width:560px}
-.panel{width:100%;background:var(--bg);border:2px solid rgba(212,175,55,.65);border-radius:24px;padding:22px 18px;box-shadow:0 20px 50px rgba(0,0,0,.72);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
-.logo{width:76px;height:76px;border-radius:50%;border:2px solid var(--gm);font-size:2.3rem;background:radial-gradient(circle,rgba(243,215,120,.3),rgba(14,58,34,.75));display:flex;align-items:center;justify-content:center}
+body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0%,#103824,#07131e 50%,#04070c);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 10px 26px}
+#errBar{display:none;width:100%;max-width:500px;margin-bottom:10px;padding:10px;border-radius:12px;background:#7f1d1d;border:1.5px solid #f87171;color:#fecaca;font-size:.84rem;font-weight:700;text-align:center}
+.screen{width:100%;max-width:440px;display:none;flex-direction:column;align-items:center;gap:13px}
+.screen.wide{max-width:540px}
+.panel{width:100%;background:var(--bg);border:2px solid rgba(212,175,55,.65);border-radius:24px;padding:22px 16px;box-shadow:0 20px 50px rgba(0,0,0,.72);display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center}
+.logo{width:74px;height:74px;border-radius:50%;border:2px solid var(--gm);font-size:2.2rem;background:radial-gradient(circle,rgba(243,215,120,.3),rgba(14,58,34,.75));display:flex;align-items:center;justify-content:center}
 .tpill{padding:8px 18px;border-radius:999px;background:rgba(212,175,55,.16);border:1.5px solid var(--gm);color:var(--gl);font-size:.95rem;font-weight:900}
-.title{font-size:1.45rem;font-weight:900;color:var(--gl);line-height:1.4}
-.sub{font-size:.88rem;color:#cbd5e1;line-height:1.8}
+.title{font-size:1.42rem;font-weight:900;color:var(--gl);line-height:1.4}
+.sub{font-size:.88rem;color:#cbd5e1;line-height:1.7}
 .ver{font-size:.72rem;color:#64748b}
-.btn{width:100%;font-family:inherit;font-size:1rem;font-weight:700;padding:13px 16px;border-radius:14px;border:1.6px solid rgba(212,175,55,.65);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
+.btn{width:100%;font-family:inherit;font-size:.98rem;font-weight:700;padding:13px 16px;border-radius:14px;border:1.6px solid rgba(212,175,55,.65);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
 .btn:hover:not(:disabled){filter:brightness(1.13)}
 .btn:disabled{opacity:.55;cursor:default}
 .bplay{font-size:1.22rem;font-weight:900;background:linear-gradient(135deg,#f3d778,#c9a227,#8c6d1f);color:#140f02;border-color:#fff3b0}
@@ -32,7 +32,7 @@ body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50
 .mgrid{width:100%;display:flex;flex-direction:column;gap:9px}
 .mbtn{justify-content:space-between}
 .mmeta{font-size:.78rem;color:var(--gl);background:rgba(0,0,0,.35);padding:4px 10px;border-radius:10px;border:1px solid rgba(212,175,55,.4)}
-.codebox{width:100%;background:rgba(0,0,0,.48);border:2px dashed var(--gm);border-radius:18px;padding:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.codebox{width:100%;background:rgba(0,0,0,.48);border:2px dashed var(--gm);border-radius:18px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
 .codenum{font-size:2.1rem;font-weight:900;letter-spacing:6px;color:var(--gl);direction:ltr}
 .crow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
 .plist{width:100%;display:flex;flex-direction:column;gap:7px}
@@ -40,7 +40,7 @@ body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50
 .pslot.on{background:rgba(24,165,88,.16);border-color:rgba(74,222,128,.55)}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-left:8px;background:#64748b}
 .pslot.on .dot{background:#4ade80}
-.msg{width:100%;min-height:36px;padding:8px 12px;border-radius:12px;background:rgba(212,175,55,.15);border:1.3px solid rgba(212,175,55,.45);color:var(--gl);font-size:.88rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.6}
+.msg{width:100%;min-height:36px;padding:8px 12px;border-radius:12px;background:rgba(212,175,55,.15);border:1.3px solid rgba(212,175,55,.45);color:var(--gl);font-size:.88rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.5}
 .msg.ok{background:rgba(24,165,88,.2);border-color:#4ade80;color:#86efac}
 .msg.err{background:rgba(217,65,78,.2);border-color:#f87171;color:#fecaca}
 .msg.turn{background:linear-gradient(90deg,rgba(212,175,55,.28),rgba(24,165,88,.28));border-color:#fff3b0;color:#fff}
@@ -53,17 +53,17 @@ body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50
 .pot{padding:5px 11px;border-radius:10px;background:rgba(234,88,12,.22);border:1.3px solid #fb923c;color:#fed7aa;font-size:.82rem;font-weight:800}
 .fcard{width:100%;max-width:410px;border-radius:24px;padding:14px;background:#050505;border:2.4px solid var(--gm);box-shadow:0 18px 46px rgba(0,0,0,.9)}
 .chd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 2px 12px;direction:rtl}
-.cname-fa{flex:1;text-align:right;font-size:1.25rem;font-weight:900;color:#fff;line-height:1.25}
-.fbox{width:76px;height:50px;border-radius:9px;overflow:hidden;border:1.8px solid var(--gm);background:#000;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.7)}
+.cfa{flex:1;text-align:right;font-size:1.25rem;font-weight:900;color:#fff;line-height:1.25}
+.fbox{width:78px;height:50px;border-radius:9px;overflow:hidden;border:1.8px solid var(--gm);background:#000;flex-shrink:0}
 .fbox img{width:100%;height:100%;object-fit:cover;display:block}
-.cname-en{flex:1;text-align:left;direction:ltr;font-size:1.05rem;font-weight:800;color:var(--gl);line-height:1.25}
-.pframe{width:100%;aspect-ratio:16/8.2;border-radius:13px;overflow:hidden;border:1.6px solid var(--gm);background:#000;position:relative;margin-bottom:10px}
+.cen{flex:1;text-align:left;direction:ltr;font-size:1.05rem;font-weight:800;color:var(--gl);line-height:1.25}
+.pframe{width:100%;aspect-ratio:16/8;border-radius:13px;overflow:hidden;border:1.6px solid var(--gm);background:#000;position:relative;margin-bottom:10px}
 .pframe img.ci{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;display:none}
 .pframe.hp img.ci{display:block}
 .art,.art svg{width:100%;height:100%;display:block}
 .slist{display:flex;flex-direction:column;gap:7px}
 .srow{width:100%;font-family:inherit;display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:13px;border:1.5px solid rgba(212,175,55,.8);color:#fff;cursor:pointer}
-.srow:nth-child(odd){background:#111111}
+.srow:nth-child(odd){background:#111}
 .srow:nth-child(even){background:#1a1a1a}
 .srow:hover:not(:disabled){background:#242013;border-color:#fff3b0}
 .srow:disabled{cursor:default;opacity:.85}
@@ -81,93 +81,7 @@ body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50
 </head>
 <body>
 <div id="errBar"></div>
-<section id="sHome" class="screen" style="display:flex">
-<div class="panel">
-<div class="logo">🏆</div>
-<h1 class="title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
-<div class="tpill" id="tBadge">🏆 تعداد جام‌های شما: ۰</div>
-<button type="button" class="btn bplay" data-a="play">▶ پلی (شروع)</button>
-<div class="ver">نسخه ۹</div>
-</div>
-</section>
-<section id="sMenu" class="screen">
-<div class="panel">
-<h2 class="title">ورود به بخش آنلاین</h2>
-<div class="fg"><label class="fl" for="n1">نام و نام خانوادگی شما:</label><input id="n1" class="inp" placeholder="مثلاً: هیراد عامل" maxlength="24"/></div>
-<button type="button" class="btn bgreen" data-a="oc">➕ ایجاد اتاق</button>
-<button type="button" class="btn bblue" data-a="oj">🚪 رفتن به اتاق دوستان</button>
-<button type="button" class="btn bghost" data-a="home">بازگشت به صفحه اصلی</button>
-</div>
-</section>
-<section id="sCreate" class="screen">
-<div class="panel">
-<h2 class="title">تعداد بازیکنان را انتخاب کن</h2>
-<div class="mgrid">
-<button type="button" class="btn bgreen mbtn" data-a="m2"><span>👥 بازی ۲ نفره</span><span class="mmeta">نفری ۲۴ کارت</span></button>
-<button type="button" class="btn bgreen mbtn" data-a="m3"><span>👥 بازی ۳ نفره</span><span class="mmeta">نفری ۱۶ کارت</span></button>
-<button type="button" class="btn bgreen mbtn" data-a="m4"><span>👥 بازی ۴ نفره</span><span class="mmeta">نفری ۱۲ کارت</span></button>
-</div>
-<button type="button" class="btn bghost" data-a="play">بازگشت</button>
-</div>
-</section>
-<section id="sJoin" class="screen">
-<div class="panel">
-<h2 class="title">رفتن به اتاق دوستان</h2>
-<div class="fg"><label class="fl" for="n2">نام شما:</label><input id="n2" class="inp" placeholder="اسم خودت را بنویس..." maxlength="24"/></div>
-<div class="fg"><label class="fl" for="jCode">کد ۵ رقمی اتاق:</label><input id="jCode" class="inp" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric"/></div>
-<div id="jMsg" class="msg" style="display:none"></div>
-<button type="button" class="btn bblue" data-a="join">ورود به اتاق</button>
-<button type="button" class="btn bghost" data-a="play">بازگشت</button>
-</div>
-</section>
-<section id="sLobby" class="screen">
-<div class="panel">
-<h2 class="title" id="lHead">اتاق انتظار آنلاین</h2>
-<div class="codebox">
-<span style="font-size:.82rem;color:#cbd5e1">کد یا لینک را برای دوستانت بفرست:</span>
-<div class="codenum" id="lCode">-----</div>
-<div class="crow"><button type="button" class="btn bsm" data-a="cc">📋 کپی کد</button><button type="button" class="btn bsm" data-a="cl">🔗 کپی لینک</button></div>
-</div>
-<div class="msg" id="lMsg">در حال اتصال...</div>
-<div class="plist" id="lList"></div>
-<button type="button" class="btn bghost" id="bBots" data-a="bots" style="display:none;border-color:rgba(243,215,120,.65);color:#f3d778">🤖 تست سریع (بازی با ربات)</button>
-<button type="button" class="btn bghost" data-a="leave">خروج از اتاق</button>
-</div>
-</section>
-<section id="sGame" class="screen wide">
-<div class="topbar">
-<div class="trow"><div class="chips" id="gRoster"></div><button type="button" class="btn bsm bghost" data-a="exit">خروج</button></div>
-<div class="trow"><span style="font-size:.82rem;color:#cbd5e1" id="dInfo">کارت‌های شما: ۰</span><span class="pot" id="pBadge" style="display:none"></span></div>
-</div>
-<div class="msg" id="tBan">در حال شروع...</div>
-<div id="rMount" style="width:100%;display:none"></div>
-<div id="vMount" style="width:100%;display:none"></div>
-<div id="cMount" style="width:100%;display:flex;justify-content:center"></div>
-</section>
-<script>
-window.onerror=function(m,u,l){var b=document.getElementById("errBar");if(b){b.style.display="block";b.textContent="خطا خط "+l+": "+m}};
-var BRK="wss://broker.emqx.io:8084/mqtt",PRE="wc26_ir_v9/",TK="wc26_t1",NK="wc26_n1",mSt="i",mW=[],acx=null;
-var RAW=[[1,"es","اسپانیا","Spain",17,2,75,122,76,38,18,19,1,1,"#c8102e","#f1bf00"],[2,"ar","آرژانتین","Argentina",19,3,96,171,109,54,17,25,1,2,"#75aadb","#ffffff"],[3,"fr","فرانسه","France",17,2,81,156,95,45,14,22,1,3,"#002395","#ed2939"],[4,"gb-eng","انگلیس","England",17,1,82,124,80,38,23,21,3,4,"#f2f4f8","#cf142b"],[5,"ma","مراکش","Morocco",7,0,29,30,33,8,9,12,5,5,"#c1272d","#006233"],[6,"pt","پرتغال","Portugal",9,0,40,69,44,19,8,13,3,6,"#da291c","#006600"],[7,"br","برزیل","Brazil",23,5,119,247,112,79,20,20,1,7,"#ffdf00","#009c3b"],[8,"be","بلژیک","Belgium",15,0,57,83,81,24,12,21,1,8,"#c8102e","#fdda24"],[9,"nl","هلند","Netherlands",12,0,59,107,57,32,16,11,1,9,"#f36c21","#21468b"],[10,"co","کلمبیا","Colombia",7,0,27,37,31,12,5,10,3,10,"#fcd116","#003893"],[11,"de","آلمان","Germany",21,4,116,243,135,70,22,24,1,11,"#f5f5f5","#dd0000"],[12,"ch","سوئیس","Switzerland",13,0,47,65,79,17,10,20,3,12,"#d52b1e","#ffffff"],[13,"mx","مکزیک","Mexico",18,0,65,72,104,21,15,29,4,13,"#006847","#ce1126"],[14,"hr","کرواسی","Croatia",7,0,34,49,40,15,8,11,3,15,"#ff0000","#ffffff"],[15,"us","آمریکا","USA",12,0,42,51,74,12,8,22,4,16,"#f0f2f5","#b22234"],[16,"jp","ژاپن","Japan",8,0,29,33,38,8,8,13,9,17,"#002395","#bc002d"],[17,"sn","سنگال","Senegal",4,0,16,26,26,6,3,7,12,18,"#00853f","#fdef42"],[18,"no","نروژ","Norway",4,0,14,20,19,6,3,5,2,19,"#ba0c2f","#00205b"],[19,"uy","اروگوئه","Uruguay",15,2,62,92,80,25,15,22,2,20,"#5fa8d3","#fcd116"],[20,"at","اتریش","Austria",8,0,33,49,56,13,5,15,10,22,"#ed2939","#ffffff"],[21,"ir","ایران","Iran",7,0,21,16,34,3,7,11,15,23,"#f7f7f7","#239f40"],[22,"ec","اکوادور","Ecuador",5,0,17,16,18,6,3,8,10,24,"#ffdd00","#034ea2"],[23,"ca","کانادا","Canada",3,0,11,11,18,2,1,8,25,25,"#d80621","#ffffff"],[24,"eg","مصر","Egypt",4,0,12,13,19,1,5,6,9,26,"#ce1126","#c09300"],[25,"au","استرالیا","Australia",7,0,24,20,40,5,6,13,14,27,"#ffcd00","#00843d"],[26,"ci","ساحل عاج","Ivory Coast",4,0,13,18,18,5,1,7,12,28,"#f77f00","#009e60"],[27,"kr","کره جنوبی","South Korea",12,0,41,41,81,8,10,23,17,30,"#cd2e3a","#0047a0"],[28,"py","پاراگوئه","Paraguay",9,0,32,33,44,8,12,12,8,31,"#d52b1e","#0038a8"],[29,"dz","الجزایر","Algeria",5,0,17,18,28,4,4,9,15,32,"#ffffff","#006233"],[30,"tr","ترکیه","Turkey",3,0,13,23,22,6,1,6,5,33,"#e30a17","#ffffff"],[31,"se","سوئد","Sweden",13,0,55,87,83,20,14,21,2,34,"#fecc00","#006aa7"],[32,"cd","کنگو (ج.د.)","DR Congo",2,0,7,5,19,1,1,5,28,39,"#007fff","#f7d618"],[33,"gb-sct","اسکاتلند","Scotland",9,0,26,26,45,5,7,14,13,44,"#00247d","#ffffff"],[34,"pa","پاناما","Panama",2,0,6,2,15,0,0,6,29,45,"#da121a","#072357"],[35,"za","آفریقای جنوبی","South Africa",4,0,13,13,20,3,5,5,16,48,"#ffb612","#007a4d"],[36,"cz","جمهوری چک","Czechia",10,0,36,49,55,12,6,18,2,53,"#d7141a","#11457e"],[37,"sa","عربستان سعودی","Saudi Arabia",7,0,22,15,49,4,4,14,21,54,"#006c35","#ffffff"],[38,"ba","بوسنی و هرزگوین","Bosnia",2,0,7,9,12,2,1,4,13,57,"#002395","#fecb00"],[39,"uz","ازبکستان","Uzbekistan",1,0,3,2,11,0,0,3,45,60,"#1eb53a","#0099b5"],[40,"qa","قطر","Qatar",2,0,6,3,17,0,1,5,34,61,"#8a1538","#ffffff"],[41,"iq","عراق","Iraq",2,0,6,2,16,0,0,6,39,62,"#007a3d","#ffffff"],[42,"tn","تونس","Tunisia",7,0,21,16,38,3,5,13,14,64,"#e70013","#ffffff"],[43,"gh","غنا","Ghana",5,0,19,20,26,6,4,9,14,69,"#f7f7f7","#fcd116"],[44,"cv","کیپ‌ورد","Cape Verde",1,0,4,4,5,0,3,1,27,71,"#003893","#f7d116"],[45,"jo","اردن","Jordan",1,0,3,3,8,0,0,3,37,72,"#ce1126","#007a3d"],[46,"cw","کوراسائو","Curacao",1,0,3,1,9,0,1,2,68,81,"#002b7f","#f9e814"],[47,"nz","نیوزیلند","New Zealand",3,0,9,8,24,0,4,5,47,84,"#f2f4f8","#111827"],[48,"ht","هائیتی","Haiti",2,0,6,4,22,0,0,6,38,86,"#00209f","#d21034"]];
-var TMS=RAW.map(function(r){return{id:r[0],iso:r[1],name:r[2],en:r[3],ap:r[4],ti:r[5],pl:r[6],gf:r[7],ga:r[8],w:r[9],d:r[10],l:r[11],hf:r[12],cf:r[13],j:r[14],tr:r[15]}});
-var STATS=[{k:"ap",lb:"حضور در جام جهانی",pr:"",m:"h"},{k:"ti",lb:"قهرمانی جام جهانی",pr:"",m:"h"},{k:"pl",lb:"تعداد بازی",pr:"",m:"h"},{k:"gf",lb:"گل زده",pr:"",m:"h"},{k:"ga",lb:"گل خورده",pr:"",m:"l"},{k:"w",lb:"برد",pr:"",m:"h"},{k:"d",lb:"مساوی",pr:"",m:"h"},{k:"l",lb:"باخت",pr:"",m:"l"},{k:"hf",lb:"بالاترین رده‌بندی فیفا",pr:"رتبه ",m:"l"},{k:"cf",lb:"رتبه فعلی فیفا",pr:"رتبه ",m:"l"}];
-var st={nm:"بازیکن",id:"p_"+Math.random().toString(36).slice(2,10),host:false,code:"",top:"",max:2,cl:null,ps:[],pot:[],turn:"",ph:"l",rev:null,wid:"",wnm:"",seq:0,lseq:-1,aw:false,vw:null,jr:null,jt:null,bt:null};
-var FA="۰۱۲۳۴۵۶۷۸۹",AR="٠١٢٣٤٥٦٧٨٩";
-function toFa(n){var s=String(n),o="";for(var i=0;i<s.length;i++)o+=(s[i]>="0"&&s[i]<="9")?FA[Number(s[i])]:s[i];return o}
-function norm(str){var s=String(str),o="";for(var i=0;i<s.length;i++){var f=FA.indexOf(s[i]),a=AR.indexOf(s[i]);if(s[i]>="0"&&s[i]<="9")o+=s[i];else if(f!==-1)o+=String(f);else if(a!==-1)o+=String(a)}return o}
-function tById(id){for(var i=0;i<TMS.length;i++)if(TMS[i].id===id)return TMS[i];return null}
-function sByK(k){for(var i=0;i<STATS.length;i++)if(STATS[i].k===k)return STATS[i];return STATS[0]}
-function getT(){try{return Number(localStorage.getItem(TK)||"0")||0}catch(e){return 0}}
-function addT(){try{localStorage.setItem(TK,String(getT()+1))}catch(e){}refT()}
-function refT(){var e=document.getElementById("tBadge");if(e)e.textContent="🏆 تعداد جام‌های شما: "+toFa(getT())}
-function unlockAud(){try{if(!acx){var A=window.AudioContext||window.webkitAudioContext;if(A)acx=new A()}if(acx&&acx.state==="suspended")acx.resume()}catch(e){}}
-function playClap(long){try{unlockAud();if(!acx)return;var now=acx.currentTime,cnt=long?34:20;for(var i=0;i<cnt;i++){var t=now+i*(long?.075:.07)+Math.random()*.04,dur=.06+Math.random()*.04,buf=acx.createBuffer(1,Math.floor(acx.sampleRate*dur),acx.sampleRate),dt=buf.getChannelData(0);for(var j=0;j<dt.length;j++)dt[j]=(Math.random()*2-1)*Math.exp(-j/(dt.length*.28));var src=acx.createBufferSource();src.buffer=buf;var flt=acx.createBiquadFilter();flt.type="bandpass";flt.frequency.value=1000+Math.random()*1200;flt.Q.value=1.4;var gn=acx.createGain();gn.gain.setValueAtTime(.32,t);gn.gain.exponentialRampToValueAtTime(.005,t+dur);src.connect(flt);flt.connect(gn);gn.connect(acx.destination);src.start(t)}var notes=[523,659,784];for(var k=0;k<notes.length;k++){var osc=acx.createOscillator(),og=acx.createGain();osc.type="triangle";osc.frequency.value=notes[k];og.gain.setValueAtTime(.14,now+k*.09);og.gain.exponentialRampToValueAtTime(.001,now+k*.09+.28);osc.connect(og);og.connect(acx.destination);osc.start(now+k*.09);osc.stop(now+k*.09+.3)}}catch(e){}}
-function speakWin(nm,champ){try{if(!("speechSynthesis"in window))return;window.speechSynthesis.cancel();var clean=String(nm||"").replace(/\(.*?\)/g,"").trim();var u=new SpeechSynthesisUtterance(champ?(clean+" قهرمان شد!"):(clean+" برد!"));u.lang="fa-IR";u.rate=.95;u.pitch=1.05;var vs=window.speechSynthesis.getVoices();for(var i=0;i<vs.length;i++){if(vs[i].lang&&vs[i].lang.toLowerCase().indexOf("fa")!==-1){u.voice=vs[i];break}}setTimeout(function(){try{window.speechSynthesis.speak(u)}catch(e){}},180)}catch(e){}}
-function go(id){var a=document.querySelectorAll(".screen");for(var i=0;i<a.length;i++)a[i].style.display="none";var t=document.getElementById(id);if(t)t.style.display="flex";if(id==="sHome")refT()}
-function rName(j){var v=document.getElementById(j?"n2":"n1").value.trim()||document.getElementById(j?"n1":"n2").value.trim();if(v){try{localStorage.setItem(NK,v)}catch(e){}}st.nm=v||("بازیکن "+toFa(Math.floor(10+Math.random()*89)));document.getElementById("n1").value=v;document.getElementById("n2").value=v;return st.nm}
-function loadM(cb){if(typeof window.mqtt!=="undefined"){cb(true);return}mW.push(cb);if(mSt==="l")return;mSt="l";function dn(ok){mSt=ok?"r":"f";var q=mW.slice();mW=[];for(var i=0;i<q.length;i++)q[i](ok)}var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";s.onload=function(){dn(typeof window.mqtt!=="undefined")};s.onerror=function(){var s2=document.createElement("script");s2.src="https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";s2.onload=function(){dn(typeof window.mqtt!=="undefined")};s2.onerror=function(){dn(false)};document.body.appendChild(s2)};document.body.appendChild(s)}
-function clrT(){if(st.jr){clearInterval(st.jr);st.jr=null}if(st.jt){clearTimeout(st.jt);st.jt=null}if(st.bt){clearTimeout(st.bt);st.bt=null}}
-function cln(){clrT();if(st.cl){try{if(!st.host&&st.top)st.cl.publish(st.top,JSON.stringify({t:"lv",f:st.id}));st.cl.end(true)}catch(e){}st.cl=null}st.ps=[];st.pot=[];st.code="";st.top="";st.host=false;st.ph="l";st.rev=null;st.wid="";st.wnm="";st.seq=0;st.lseq=-1;st.vw=null}
-function pub(o){if(!st.cl||!st.top)return;try{st.cl.publish(st.top,JSON.stringify(o),{qos:1})}catch(e){}}
-function shuf(a){var c=a.slice();for(var i=c.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=c[i];c[i]=c[j];c[j]=x}return c}
-function lMsg(t,k){var e=document.getElementById("lMsg");e.textContent=t;e.className=k==="e"?"msg err":(k==="o"?"msg ok":"msg")}
-function rLob(){var l=document.getElementById("
+<section id="sHome" class="screen" style="display:flex"><div class="panel"><div class="logo">🏆</div><h1 class="title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1><div class="tpill" id="tBadge">🏆 تعداد جام‌های شما: ۰</div><button type="button" class="btn bplay" data-a="play">▶ پلی (شروع)</button><div class="ver">نسخه ۱۰</div></div></section>
+<section id="sMenu" class="screen"><div class="panel"><h2 class="title">ورود به بخش آنلاین</h2><div class="fg"><label class="fl" for="n1">نام و نام خانوادگی شما:</label><input id="n1" class="inp" placeholder="مثلاً: هیراد عامل" maxlength="24"/></div><button type="button" class="btn bgreen" data-a="oc">➕ ایجاد اتاق</button><button type="button" class="btn bblue" data-a="oj">🚪 رفتن به اتاق دوستان</button><button type="button" class="btn bghost" data-a="home">بازگشت به صفحه اصلی</button></div></section>
+<section id="sCreate" class="screen"><div class="panel"><h2 class="title">تعداد بازیکنان را انتخاب کن</h2><div class="mgrid"><button type="button" class="btn bgreen mbtn" data-a="m2"><span>👥 بازی ۲ نفره</span><span class="mmeta">نفری ۲۴ کارت</span></button><button type="button" class="btn bgreen mbtn" data-a="m3"><span>👥 بازی ۳ نفره</span><span class="mmeta">نفری ۱۶ کارت</span></button><button type="button" class="btn bgreen mbtn" data-a="m4"><span>👥 بازی ۴ نفره</span><span class="mmeta">نفری ۱۲ کارت</span></button></div><button type="button" class="btn bghost" data-a="play">بازگشت</button></div></section>
+<section id="sJoin" class="screen"><

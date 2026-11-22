@@ -1,553 +1,180 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl" translate="no">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="google" content="notranslate" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>نبرد کارت‌های جام جهانی ۲۰۲۶</title>
-  <style>
-    :root { --gl: #f3d778; --gm: #d4af37; --bg: rgba(11, 20, 31, 0.93); }
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: Tahoma, "Segoe UI", Arial, sans-serif;
-      background: radial-gradient(circle at 50% 0%, #103824 0%, #07131e 50%, #04070c 100%);
-      color: #fff; min-height: 100vh; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 14px 10px 30px;
-    }
-    #errBar {
-      display: none; width: 100%; max-width: 520px; margin-bottom: 10px; padding: 10px 14px;
-      border-radius: 12px; background: #7f1d1d; border: 1.5px solid #f87171;
-      color: #fecaca; font-size: 0.84rem; font-weight: 700; text-align: center;
-    }
-    .screen { width: 100%; max-width: 450px; display: none; flex-direction: column; align-items: center; gap: 14px; }
-    .screen.wide { max-width: 560px; }
-    .panel {
-      width: 100%; background: var(--bg); border: 2px solid rgba(212,175,55,0.65); border-radius: 26px;
-      padding: 22px 18px; box-shadow: 0 22px 55px rgba(0,0,0,0.72);
-      display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
-    }
-    .logo-trophy {
-      width: 76px; height: 76px; border-radius: 50%; border: 2px solid var(--gm); font-size: 2.3rem;
-      background: radial-gradient(circle, rgba(243,215,120,0.3), rgba(14,58,34,0.75));
-      display: flex; align-items: center; justify-content: center;
-    }
-    .trophy-pill {
-      padding: 8px 18px; border-radius: 999px; background: rgba(212,175,55,0.16);
-      border: 1.5px solid var(--gm); color: var(--gl); font-size: 0.94rem; font-weight: 900;
-    }
-    .main-title { font-size: 1.45rem; font-weight: 900; color: var(--gl); line-height: 1.4; }
-    .subtitle { font-size: 0.88rem; color: #cbd5e1; line-height: 1.8; }
-    .ver-tag { font-size: 0.72rem; color: #64748b; }
-    .btn {
-      width: 100%; font-family: inherit; font-size: 1rem; font-weight: 700; padding: 13px 16px;
-      border-radius: 15px; border: 1.6px solid rgba(212,175,55,0.65); background: rgba(255,255,255,0.08);
-      color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-      touch-action: manipulation;
-    }
-    .btn:hover:not(:disabled) { filter: brightness(1.13); }
-    .btn:active:not(:disabled) { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.55; cursor: default; }
-    .btn-play { font-size: 1.22rem; font-weight: 900; padding: 14px 22px; background: linear-gradient(135deg,#f3d778,#c9a227,#8c6d1f); color: #140f02; border-color: #fff3b0; }
-    .btn-green { background: linear-gradient(135deg,#1b7a43,#0e4a27); border-color: #4ade80; }
-    .btn-blue { background: linear-gradient(135deg,#154c8a,#0a284d); border-color: #60a5fa; }
-    .btn-ghost { background: transparent; border-color: rgba(255,255,255,0.22); color: #cbd5e1; font-size: 0.88rem; padding: 10px 14px; }
-    .btn-small { width: auto; font-size: 0.82rem; padding: 7px 12px; border-radius: 11px; }
-    .field-group { width: 100%; text-align: right; display: flex; flex-direction: column; gap: 6px; }
-    .field-label { font-size: 0.86rem; font-weight: 700; color: var(--gl); }
-    .text-input {
-      width: 100%; font-family: inherit; font-size: 1rem; font-weight: 700; padding: 11px 14px;
-      border-radius: 13px; border: 1.6px solid rgba(212,175,55,0.5); background: rgba(0,0,0,0.45);
-      color: #fff; outline: none; text-align: center;
-    }
-    .mode-grid { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-    .mode-btn { justify-content: space-between; padding: 13px 16px; }
-    .mode-meta { font-size: 0.78rem; color: var(--gl); background: rgba(0,0,0,0.35); padding: 4px 10px; border-radius: 10px; border: 1px solid rgba(212,175,55,0.4); }
-    .room-code-box {
-      width: 100%; background: rgba(0,0,0,0.48); border: 2px dashed var(--gm); border-radius: 18px;
-      padding: 13px; display: flex; flex-direction: column; align-items: center; gap: 8px;
-    }
-    .room-code-num { font-size: 2.1rem; font-weight: 900; letter-spacing: 6px; color: var(--gl); direction: ltr; }
-    .copy-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-    .players-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-    .player-slot {
-      width: 100%; padding: 9px 13px; border-radius: 12px; background: rgba(255,255,255,0.05);
-      border: 1.2px solid rgba(255,255,255,0.14); display: flex; align-items: center; justify-content: space-between;
-      font-size: 0.88rem; font-weight: 700;
-    }
-    .player-slot.joined { background: rgba(24,165,88,0.16); border-color: rgba(74,222,128,0.55); }
-    .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-left: 8px; background: #64748b; }
-    .player-slot.joined .dot { background: #4ade80; }
-    .status-msg {
-      width: 100%; min-height: 36px; padding: 8px 12px; border-radius: 12px; background: rgba(212,175,55,0.15);
-      border: 1.3px solid rgba(212,175,55,0.45); color: var(--gl); font-size: 0.85rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.6;
-    }
-    .status-msg.ok { background: rgba(24,165,88,0.2); border-color: #4ade80; color: #86efac; }
-    .status-msg.error { background: rgba(217,65,78,0.2); border-color: #f87171; color: #fecaca; }
-    .status-msg.turn-me { background: linear-gradient(90deg,rgba(212,175,55,0.28),rgba(24,165,88,0.28)); border-color: #fff3b0; color: #fff; }
-    .table-top-bar {
-      width: 100%; background: var(--bg); border: 1.5px solid rgba(212,175,55,0.55);
-      border-radius: 18px; padding: 10px 12px; display: flex; flex-direction: column; gap: 9px;
-    }
-    .top-bar-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
-    .roster-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .roster-chip { padding: 5px 10px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1.2px solid rgba(255,255,255,0.18); font-size: 0.8rem; font-weight: 700; }
-    .roster-chip.active-turn { background: rgba(212,175,55,0.26); border-color: #fff3b0; color: #fff3b0; }
-    .roster-chip.eliminated { opacity: 0.45; text-decoration: line-through; }
-    .pot-badge { padding: 5px 11px; border-radius: 10px; background: rgba(234,88,12,0.22); border: 1.3px solid #fb923c; color: #fed7aa; font-size: 0.82rem; font-weight: 800; }
-    .football-card {
-      width: 100%; max-width: 390px; border-radius: 24px; padding: 12px;
-      background: linear-gradient(165deg, var(--c1) 0%, #070b10 48%, var(--c3) 100%);
-      border: 2.4px solid var(--gm); box-shadow: 0 18px 42px rgba(0,0,0,0.78);
-    }
-    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 2px 2px 9px; direction: ltr; }
-    .flag-box { width: 64px; height: 42px; border-radius: 8px; overflow: hidden; border: 1.5px solid rgba(243,215,120,0.7); background: #101820; flex-shrink: 0; }
-    .flag-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .country-title { flex: 1; text-align: center; font-size: 1.4rem; font-weight: 900; color: #fff; }
-    .crest-box { width: 52px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-    .crest-stars { min-height: 12px; color: var(--gl); font-size: 9px; margin-bottom: 2px; }
-    .crest-shield { width: 36px; height: 36px; border-radius: 8px 8px 18px 18px; background: var(--c1); border: 1.5px solid var(--gm); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: var(--gl); }
-    .team-photo-frame { width: 100%; aspect-ratio: 16/8.5; border-radius: 13px; overflow: hidden; border: 1.6px solid var(--gm); background: #060b10; position: relative; margin-bottom: 9px; }
-    .team-photo-frame img.custom-img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 2; display: none; }
-    .team-photo-frame.has-photo img.custom-img { display: block; }
-    .generated-art { width: 100%; height: 100%; }
-    .generated-art svg { width: 100%; height: 100%; display: block; }
-    .stats-list { display: flex; flex-direction: column; gap: 5px; }
-    .stat-row {
-      width: 100%; font-family: inherit; display: flex; align-items: center; justify-content: space-between;
-      padding: 7px 12px 7px 14px; border-radius: 11px; border: 1.3px solid rgba(212,175,55,0.75);
-      color: #fff; cursor: pointer;
-    }
-    .stat-row:nth-child(odd) { background: linear-gradient(90deg, var(--oa) 0%, var(--ob) 50%, var(--oa) 100%); }
-    .stat-row:nth-child(even) { background: linear-gradient(90deg, #08121f 0%, var(--eb) 50%, #08121f 100%); }
-    .stat-row:hover:not(:disabled) { filter: brightness(1.18); border-color: #fff3b0; }
-    .stat-row:disabled { cursor: default; opacity: 0.84; }
-    .stat-label { font-size: 0.86rem; font-weight: 700; color: #f8f4e3; }
-    .stat-value { font-size: 1rem; font-weight: 900; min-width: 52px; text-align: left; }
-    .round-result-box {
-      width: 100%; background: rgba(9,17,28,0.96); border: 2px solid var(--gm); border-radius: 22px;
-      padding: 18px 14px; display: flex; flex-direction: column; gap: 14px; text-align: center;
-    }
-    .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 10px; }
-    .compare-card { background: rgba(255,255,255,0.05); border: 1.6px solid rgba(255,255,255,0.16); border-radius: 15px; padding: 10px 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .compare-card.winner { background: rgba(24,165,88,0.24); border-color: #4ade80; }
-    .compare-card.tied { background: rgba(234,88,12,0.2); border-color: #fb923c; }
-    .compare-flag { width: 52px; height: 34px; border-radius: 6px; overflow: hidden; border: 1px solid var(--gm); }
-    .compare-flag img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .compare-player { font-size: 0.78rem; color: #cbd5e1; font-weight: 700; }
-    .compare-team { font-size: 0.95rem; font-weight: 900; color: #fff; }
-    .compare-val { font-size: 1.22rem; font-weight: 900; color: var(--gl); }
-    .victory-box {
-      width: 100%; background: radial-gradient(circle at top,rgba(212,175,55,0.28),rgba(11,20,31,0.96));
-      border: 2.5px solid #fff3b0; border-radius: 26px; padding: 26px 18px;
-      display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="google" content="notranslate"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>نبرد کارت‌های جام جهانی ۲۰۲۶</title>
+<style>
+:root{--gl:#f3d778;--gm:#d4af37;--bg:rgba(11,20,31,.93)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:Tahoma,Arial,sans-serif;background:radial-gradient(circle at 50% 0%,#103824,#07131e 50%,#04070c);color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 10px 28px}
+#errBar{display:none;width:100%;max-width:520px;margin-bottom:10px;padding:10px;border-radius:12px;background:#7f1d1d;border:1.5px solid #f87171;color:#fecaca;font-size:.84rem;font-weight:700;text-align:center}
+.screen{width:100%;max-width:450px;display:none;flex-direction:column;align-items:center;gap:14px}
+.screen.wide{max-width:560px}
+.panel{width:100%;background:var(--bg);border:2px solid rgba(212,175,55,.65);border-radius:24px;padding:22px 18px;box-shadow:0 20px 50px rgba(0,0,0,.72);display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center}
+.logo{width:74px;height:74px;border-radius:50%;border:2px solid var(--gm);font-size:2.2rem;background:radial-gradient(circle,rgba(243,215,120,.3),rgba(14,58,34,.75));display:flex;align-items:center;justify-content:center}
+.tpill{padding:8px 18px;border-radius:999px;background:rgba(212,175,55,.16);border:1.5px solid var(--gm);color:var(--gl);font-size:.94rem;font-weight:900}
+.title{font-size:1.42rem;font-weight:900;color:var(--gl);line-height:1.4}
+.sub{font-size:.87rem;color:#cbd5e1;line-height:1.8}
+.ver{font-size:.72rem;color:#64748b}
+.btn{width:100%;font-family:inherit;font-size:.98rem;font-weight:700;padding:13px 16px;border-radius:14px;border:1.6px solid rgba(212,175,55,.65);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;touch-action:manipulation}
+.btn:hover:not(:disabled){filter:brightness(1.13)}
+.btn:disabled{opacity:.55;cursor:default}
+.bplay{font-size:1.2rem;font-weight:900;background:linear-gradient(135deg,#f3d778,#c9a227,#8c6d1f);color:#140f02;border-color:#fff3b0}
+.bgreen{background:linear-gradient(135deg,#1b7a43,#0e4a27);border-color:#4ade80}
+.bblue{background:linear-gradient(135deg,#154c8a,#0a284d);border-color:#60a5fa}
+.bghost{background:transparent;border-color:rgba(255,255,255,.22);color:#cbd5e1;font-size:.88rem;padding:10px 14px}
+.bsm{width:auto;font-size:.82rem;padding:7px 12px;border-radius:11px}
+.fg{width:100%;text-align:right;display:flex;flex-direction:column;gap:5px}
+.fl{font-size:.85rem;font-weight:700;color:var(--gl)}
+.inp{width:100%;font-family:inherit;font-size:1rem;font-weight:700;padding:11px 14px;border-radius:13px;border:1.6px solid rgba(212,175,55,.5);background:rgba(0,0,0,.45);color:#fff;outline:none;text-align:center}
+.mgrid{width:100%;display:flex;flex-direction:column;gap:9px}
+.mbtn{justify-content:space-between}
+.mmeta{font-size:.78rem;color:var(--gl);background:rgba(0,0,0,.35);padding:4px 10px;border-radius:10px;border:1px solid rgba(212,175,55,.4)}
+.codebox{width:100%;background:rgba(0,0,0,.48);border:2px dashed var(--gm);border-radius:18px;padding:13px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.codenum{font-size:2.1rem;font-weight:900;letter-spacing:6px;color:var(--gl);direction:ltr}
+.crow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.plist{width:100%;display:flex;flex-direction:column;gap:7px}
+.pslot{width:100%;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.05);border:1.2px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:space-between;font-size:.88rem;font-weight:700}
+.pslot.on{background:rgba(24,165,88,.16);border-color:rgba(74,222,128,.55)}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-left:8px;background:#64748b}
+.pslot.on .dot{background:#4ade80}
+.msg{width:100%;min-height:36px;padding:8px 12px;border-radius:12px;background:rgba(212,175,55,.15);border:1.3px solid rgba(212,175,55,.45);color:var(--gl);font-size:.85rem;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.6}
+.msg.ok{background:rgba(24,165,88,.2);border-color:#4ade80;color:#86efac}
+.msg.err{background:rgba(217,65,78,.2);border-color:#f87171;color:#fecaca}
+.msg.turn{background:linear-gradient(90deg,rgba(212,175,55,.28),rgba(24,165,88,.28));border-color:#fff3b0;color:#fff}
+.topbar{width:100%;background:var(--bg);border:1.5px solid rgba(212,175,55,.55);border-radius:18px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.trow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 10px;border-radius:10px;background:rgba(255,255,255,.06);border:1.2px solid rgba(255,255,255,.18);font-size:.8rem;font-weight:700}
+.chip.act{background:rgba(212,175,55,.26);border-color:#fff3b0;color:#fff3b0}
+.chip.out{opacity:.45;text-decoration:line-through}
+.pot{padding:5px 11px;border-radius:10px;background:rgba(234,88,12,.22);border:1.3px solid #fb923c;color:#fed7aa;font-size:.82rem;font-weight:800}
+.fcard{width:100%;max-width:390px;border-radius:24px;padding:12px;background:linear-gradient(165deg,var(--c1),#070b10 48%,var(--c3));border:2.4px solid var(--gm);box-shadow:0 18px 42px rgba(0,0,0,.78)}
+.chd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 9px;direction:ltr}
+.fbox{width:64px;height:42px;border-radius:8px;overflow:hidden;border:1.5px solid rgba(243,215,120,.7);background:#101820;flex-shrink:0}
+.fbox img{width:100%;height:100%;object-fit:cover;display:block}
+.cname{flex:1;text-align:center;font-size:1.38rem;font-weight:900;color:#fff}
+.crest{width:50px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.cstars{min-height:12px;color:var(--gl);font-size:9px;margin-bottom:2px}
+.cshield{width:35px;height:35px;border-radius:8px 8px 18px 18px;background:var(--c1);border:1.5px solid var(--gm);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:900;color:var(--gl)}
+.pframe{width:100%;aspect-ratio:16/8.5;border-radius:13px;overflow:hidden;border:1.6px solid var(--gm);background:#060b10;position:relative;margin-bottom:9px}
+.pframe img.ci{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:2;display:none}
+.pframe.hp img.ci{display:block}
+.art,.art svg{width:100%;height:100%;display:block}
+.slist{display:flex;flex-direction:column;gap:5px}
+.srow{width:100%;font-family:inherit;display:flex;align-items:center;justify-content:space-between;padding:7px 12px 7px 14px;border-radius:11px;border:1.3px solid rgba(212,175,55,.75);color:#fff;cursor:pointer}
+.srow:nth-child(odd){background:linear-gradient(90deg,var(--oa),var(--ob) 50%,var(--oa))}
+.srow:nth-child(even){background:linear-gradient(90deg,#08121f,var(--eb) 50%,#08121f)}
+.srow:hover:not(:disabled){filter:brightness(1.18);border-color:#fff3b0}
+.srow:disabled{cursor:default;opacity:.84}
+.slbl{font-size:.85rem;font-weight:700;color:#f8f4e3}
+.sval{font-size:.98rem;font-weight:900;min-width:52px;text-align:left}
+.rbox{width:100%;background:rgba(9,17,28,.96);border:2px solid var(--gm);border-radius:22px;padding:18px 14px;display:flex;flex-direction:column;gap:14px;text-align:center}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.ccard{background:rgba(255,255,255,.05);border:1.6px solid rgba(255,255,255,.16);border-radius:15px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.ccard.win{background:rgba(24,165,88,.24);border-color:#4ade80}
+.ccard.tie{background:rgba(234,88,12,.2);border-color:#fb923c}
+.cflag{width:52px;height:34px;border-radius:6px;overflow:hidden;border:1px solid var(--gm)}
+.cflag img{width:100%;height:100%;object-fit:cover;display:block}
+.vbox{width:100%;background:radial-gradient(circle at top,rgba(212,175,55,.28),rgba(11,20,31,.96));border:2.5px solid #fff3b0;border-radius:26px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+</style>
 </head>
 <body>
-
-  <div id="errBar"></div>
-
-  <section id="screenHome" class="screen" style="display:flex;">
-    <div class="panel">
-      <div class="logo-trophy">🏆</div>
-      <h1 class="main-title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
-      <div class="trophy-pill" id="homeTrophyBadge">🏆 تعداد جام‌های شما: ۰</div>
-      <p class="subtitle">بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!</p>
-      <button type="button" class="btn btn-play" data-act="play">▶ پلی (شروع)</button>
-      <div class="ver-tag">نسخه ۶</div>
-    </div>
-  </section>
-
-  <section id="screenMenu" class="screen">
-    <div class="panel">
-      <h2 class="main-title" style="font-size:1.4rem;">ورود به بخش آنلاین</h2>
-      <div class="field-group">
-        <label class="field-label" for="playerNameInput">نام و نام خانوادگی شما:</label>
-        <input type="text" id="playerNameInput" class="text-input" placeholder="مثلاً: هیراد عامل" maxlength="24" />
-      </div>
-      <button type="button" class="btn btn-green" data-act="open-create">➕ ایجاد اتاق</button>
-      <button type="button" class="btn btn-blue" data-act="open-join">🚪 رفتن به اتاق دوستان</button>
-      <button type="button" class="btn btn-ghost" data-act="home">بازگشت به صفحه اصلی</button>
-    </div>
-  </section>
-
-  <section id="screenCreate" class="screen">
-    <div class="panel">
-      <h2 class="main-title" style="font-size:1.35rem;">تعداد بازیکنان اتاق را انتخاب کن</h2>
-      <div class="mode-grid">
-        <button type="button" class="btn btn-green mode-btn" data-act="mode-2"><span>👥 بازی ۲ نفره آنلاین</span><span class="mode-meta">نفری ۲۴ کارت</span></button>
-        <button type="button" class="btn btn-green mode-btn" data-act="mode-3"><span>👥 بازی ۳ نفره آنلاین</span><span class="mode-meta">نفری ۱۶ کارت</span></button>
-        <button type="button" class="btn btn-green mode-btn" data-act="mode-4"><span>👥 بازی ۴ نفره آنلاین</span><span class="mode-meta">نفری ۱۲ کارت</span></button>
-      </div>
-      <button type="button" class="btn btn-ghost" data-act="menu">بازگشت</button>
-    </div>
-  </section>
-
-  <section id="screenJoin" class="screen">
-    <div class="panel">
-      <h2 class="main-title" style="font-size:1.35rem;">رفتن به اتاق دوستان</h2>
-      <div class="field-group">
-        <label class="field-label" for="joinNameInput">نام شما:</label>
-        <input type="text" id="joinNameInput" class="text-input" placeholder="اسم خودت را بنویس..." maxlength="24" />
-      </div>
-      <div class="field-group">
-        <label class="field-label" for="joinCodeInput">کد ۵ رقمی اتاق:</label>
-        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" />
-      </div>
-      <div id="joinStatus" class="status-msg" style="display:none;"></div>
-      <button type="button" class="btn btn-blue" data-act="join">ورود به اتاق</button>
-      <button type="button" class="btn btn-ghost" data-act="menu">بازگشت</button>
-    </div>
-  </section>
-
-  <section id="screenLobby" class="screen">
-    <div class="panel">
-      <h2 class="main-title" style="font-size:1.3rem;" id="lobbyHeading">اتاق انتظار آنلاین</h2>
-      <div class="room-code-box">
-        <span style="font-size:0.82rem; color:#cbd5e1;">کد یا لینک زیر را برای دوستانت بفرست:</span>
-        <div class="room-code-num" id="lobbyRoomCode">-----</div>
-        <div class="copy-row">
-          <button type="button" class="btn btn-small" data-act="copy-code">📋 کپی کد</button>
-          <button type="button" class="btn btn-small" data-act="copy-link">🔗 کپی لینک دعوت</button>
-        </div>
-      </div>
-      <div class="status-msg" id="lobbyStatus">در حال اتصال به سرور آنلاین...</div>
-      <div class="players-list" id="lobbyPlayersList"></div>
-      <button type="button" class="btn btn-ghost" id="btnFillBots" data-act="fill-bots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">🤖 تست سریع (بازی با ربات آزمایشی)</button>
-      <button type="button" class="btn btn-ghost" data-act="leave-lobby">خروج از اتاق</button>
-    </div>
-  </section>
-
-  <section id="screenGame" class="screen wide">
-    <div class="table-top-bar">
-      <div class="top-bar-row">
-        <div class="roster-chips" id="gameRoster"></div>
-        <button type="button" class="btn btn-small btn-ghost" data-act="exit-home">خروج</button>
-      </div>
-      <div class="top-bar-row">
-        <span style="font-size:0.82rem; color:#cbd5e1;" id="myDeckInfo">کارت‌های دست شما: ۰</span>
-        <span class="pot-badge" id="potBadge" style="display:none;">📦 کارت‌های جمع‌شده وسط: ۰</span>
-      </div>
-    </div>
-    <div class="status-msg" id="turnBanner">در حال شروع مسابقه...</div>
-    <div id="roundResultMount" style="width:100%; display:none;"></div>
-    <div id="victoryMount" style="width:100%; display:none;"></div>
-    <div id="activeCardMount" style="width:100%; display:flex; justify-content:center;"></div>
-  </section>
-
-  <script>
-    window.onerror = function(msg, url, line) {
-      var b = document.getElementById("errBar");
-      if (b) { b.style.display = "block"; b.textContent = "خطا در خط " + line + ": " + msg; }
-    };
-
-    var MQTT_BROKER = "wss://broker.emqx.io:8084/mqtt";
-    var TOPIC_PREFIX = "wc26_persian_battle_v6/room/";
-    var TROPHY_KEY = "wc26_local_trophies_v1";
-    var NAME_KEY = "wc26_local_name_v1";
-    var mqttLibState = "idle";
-    var mqttWaiters = [];
-
-    var RAW_TEAMS = [
-      [1,"es","اسپانیا",17,2,75,122,76,38,18,19,1,1,"#7d0a12","#b88a0b","#380509","#c8102e","#f1bf00"],
-      [2,"ar","آرژانتین",19,3,96,171,109,54,17,25,1,2,"#145b8f","#1e4b75","#081d38","#75aadb","#ffffff"],
-      [3,"fr","فرانسه",17,2,81,156,95,45,14,22,1,3,"#0a2257","#730f1e","#05102b","#002395","#ed2939"],
-      [4,"gb-eng","انگلیس",17,1,82,124,80,38,23,21,3,4,"#7d0c17","#16243d","#2b070c","#f2f4f8","#cf142b"],
-      [5,"ma","مراکش",7,0,29,30,33,8,9,12,5,5,"#750c17","#0a4523","#33050a","#c1272d","#006233"],
-      [6,"pt","پرتغال",9,0,40,69,44,19,8,13,3,6,"#750a15","#074221","#052613","#da291c","#006600"],
-      [7,"br","برزیل",23,5,119,247,112,79,20,20,1,7,"#09381c","#545214","#061830","#ffdf00","#009c3b"],
-      [8,"be","بلژیک",15,0,57,83,81,24,12,21,1,8,"#780d18","#5e4909","#141414","#c8102e","#fdda24"],
-      [9,"nl","هلند",12,0,59,107,57,32,16,11,1,9,"#9c3e05","#0c2859","#401802","#f36c21","#21468b"],
-      [10,"co","کلمبیا",7,0,27,37,31,12,5,10,3,10,"#6e5204","#0a2154","#4a0810","#fcd116","#003893"],
-      [11,"de","آلمان",21,4,116,243,135,70,22,24,1,11,"#1f1f1f","#6e0d15","#3d2f04","#f5f5f5","#dd0000"],
-      [12,"ch","سوئیس",13,0,47,65,79,17,10,20,3,12,"#8c0c15","#4d070c","#290407","#d52b1e","#ffffff"],
-      [13,"mx","مکزیک",18,0,65,72,104,21,15,29,4,13,"#074726","#6e0e18","#042112","#006847","#ce1126"],
-      [14,"hr","کرواسی",7,0,34,49,40,15,8,11,3,15,"#820e1a","#0b2861","#071536","#ff0000","#ffffff"],
-      [15,"us","آمریکا",12,0,42,51,74,12,8,22,4,16,"#0b2252","#73101d","#07122b","#f0f2f5","#b22234"],
-      [16,"jp","ژاپن",8,0,29,33,38,8,8,13,9,17,"#092661","#750d1b","#051230","#002395","#bc002d"],
-      [17,"sn","سنگال",4,0,16,26,26,6,3,7,12,18,"#084a22","#695309","#4d0a12","#00853f","#fdef42"],
-      [18,"no","نروژ",4,0,14,20,19,6,3,5,2,19,"#7d0c1a","#0a2154","#33050b","#ba0c2f","#00205b"],
-      [19,"uy","اروگوئه",15,2,62,92,80,25,15,22,2,20,"#125785","#0a2245","#061529","#5fa8d3","#fcd116"],
-      [20,"at","اتریش",8,0,33,49,56,13,5,15,10,22,"#850d1a","#2b1619","#3b050b","#ed2939","#ffffff"],
-      [21,"ir","ایران",7,0,21,16,34,3,7,11,15,23,"#0a4a24","#730d19","#052411","#f7f7f7","#239f40"],
-      [22,"ec","اکوادور",5,0,17,16,18,6,3,8,10,24,"#705404","#0a255c","#4f0912","#ffdd00","#034ea2"],
-      [23,"ca","کانادا",3,0,11,11,18,2,1,8,25,25,"#870a15","#3b060b","#210508","#d80621","#ffffff"],
-      [24,"eg","مصر",4,0,12,13,19,1,5,6,9,26,"#780b15","#241d14","#141110","#ce1126","#c09300"],
-      [25,"au","استرالیا",7,0,24,20,40,5,6,13,14,27,"#073d21","#6b5408","#071d45","#ffcd00","#00843d"],
-      [26,"ci","ساحل عاج",4,0,13,18,18,5,1,7,12,28,"#943f06","#074a23","#381802","#f77f00","#009e60"],
-      [27,"kr","کره جنوبی",12,0,41,41,81,8,10,23,17,30,"#7d0c1c","#0a2559","#171421","#cd2e3a","#0047a0"],
-      [28,"py","پاراگوئه",9,0,32,33,44,8,12,12,8,31,"#800c18","#0a2457","#2b0912","#d52b1e","#0038a8"],
-      [29,"dz","الجزایر",5,0,17,18,28,4,4,9,15,32,"#064a24","#660d17","#032412","#ffffff","#006233"],
-      [30,"tr","ترکیه",3,0,13,23,22,6,1,6,5,33,"#8a0a15","#47050b","#240407","#e30a17","#ffffff"],
-      [31,"se","سوئد",13,0,55,87,83,20,14,21,2,34,"#0a3b75","#6e5708","#061b38","#fecc00","#006aa7"],
-      [32,"cd","کنگو (ج.د.)",2,0,7,5,19,1,1,5,28,39,"#0c4985","#6e0e1a","#061f3d","#007fff","#f7d618"],
-      [33,"gb-sct","اسکاتلند",9,0,26,26,45,5,7,14,13,44,"#092354","#133a7d","#041026","#00247d","#ffffff"],
-      [34,"pa","پاناما",2,0,6,2,15,0,0,6,29,45,"#0b2c63","#7a0e1b","#051430","#da121a","#072357"],
-      [35,"za","آفریقای جنوبی",4,0,13,13,20,3,5,5,16,48,"#074a27","#6b5409","#081c42","#ffb612","#007a4d"],
-      [36,"cz","جمهوری چک",10,0,36,49,55,12,6,18,2,53,"#7d0d19","#0a2a5e","#1a0b17","#d7141a","#11457e"],
-      [37,"sa","عربستان سعودی",7,0,22,15,49,4,4,14,21,54,"#064a23","#0b331c","#032110","#006c35","#ffffff"],
-      [38,"ba","بوسنی و هرزگوین",2,0,7,9,12,2,1,4,13,57,"#0a2969","#705909","#051436","#002395","#fecb00"],
-      [39,"uz","ازبکستان",1,0,3,2,11,0,0,3,45,60,"#09506b","#094722","#04212e","#1eb53a","#0099b5"],
-      [40,"qa","قطر",2,0,6,3,17,0,1,5,34,61,"#630b24","#3d0717","#26040e","#8a1538","#ffffff"],
-      [41,"iq","عراق",2,0,6,2,16,0,0,6,39,62,"#730c16","#083d1f","#171717","#007a3d","#ffffff"],
-      [42,"tn","تونس",7,0,21,16,38,3,5,13,14,64,"#870a17","#42050c","#240408","#e70013","#ffffff"],
-      [43,"gh","غنا",5,0,19,20,26,6,4,9,14,69,"#750c15","#6b5408","#063b1d","#f7f7f7","#fcd116"],
-      [44,"cv","کیپ‌ورد",1,0,4,4,5,0,3,1,27,71,"#0a2d6b","#6e0e1b","#051536","#003893","#f7d116"],
-      [45,"jo","اردن",1,0,3,3,8,0,0,3,37,72,"#074221","#730c16","#141414","#ce1126","#007a3d"],
-      [46,"cw","کوراسائو",1,0,3,1,9,0,1,2,68,81,"#082c6b","#735c07","#041433","#002b7f","#f9e814"],
-      [47,"nz","نیوزیلند",3,0,9,8,24,0,4,5,47,84,"#1a202c","#0a2252","#0b0e14","#f2f4f8","#111827"],
-      [48,"ht","هائیتی",2,0,6,4,22,0,0,6,38,86,"#09235c","#780c1a","#04102e","#00209f","#d21034"]
-    ];
-
-    var TEAMS = RAW_TEAMS.map(function(r) {
-      return { id:r[0], iso:r[1], name:r[2], appearances:r[3], titles:r[4], played:r[5], goalsFor:r[6], goalsAgainst:r[7], wins:r[8], draws:r[9], losses:r[10], highestFifa:r[11], currentFifa:r[12], c1:r[13], c2:r[14], c3:r[15], jersey:r[16], trim:r[17] };
-    });
-
-    var STAT_DEFS = [
-      { key:"appearances", label:"⚽ حضور در جام جهانی", prefix:"", mode:"high" },
-      { key:"titles", label:"🏆 قهرمانی جام جهانی", prefix:"", mode:"high" },
-      { key:"played", label:"🏟️ تعداد بازی", prefix:"", mode:"high" },
-      { key:"goalsFor", label:"🎯 گل زده", prefix:"", mode:"high" },
-      { key:"goalsAgainst", label:"🥅 گل خورده", prefix:"", mode:"low" },
-      { key:"wins", label:"✅ برد", prefix:"", mode:"high" },
-      { key:"draws", label:"🤝 مساوی", prefix:"", mode:"high" },
-      { key:"losses", label:"❌ باخت", prefix:"", mode:"low" },
-      { key:"highestFifa", label:"📈 بالاترین رده‌بندی فیفا", prefix:"رتبه ", mode:"low" },
-      { key:"currentFifa", label:"🌍 رتبه فعلی فیفا", prefix:"رتبه ", mode:"low" }
-    ];
-
-    var st = {
-      myName:"بازیکن", myId:"p_"+Math.random().toString(36).slice(2,10), isHost:false,
-      roomCode:"", roomTopic:"", maxPlayers:2, client:null, players:[], pot:[],
-      turnPlayerId:"", phase:"lobby", lastReveal:null, winnerId:"", winnerName:"",
-      seq:0, lastSeenSeq:-1, trophyAwarded:false, myView:null,
-      joinRetry:null, joinTimeout:null, botTimer:null
-    };
-
-    var FA = "۰۱۲۳۴۵۶۷۸۹", AR = "٠١٢٣٤٥٦٧٨٩";
-    function toFa(n) {
-      var s = String(n), o = "";
-      for (var i = 0; i < s.length; i++) o += (s[i] >= "0" && s[i] <= "9") ? FA[Number(s[i])] : s[i];
-      return o;
-    }
-    function normNum(str) {
-      var s = String(str), o = "";
-      for (var i = 0; i < s.length; i++) {
-        var f = FA.indexOf(s[i]), a = AR.indexOf(s[i]);
-        if (s[i] >= "0" && s[i] <= "9") o += s[i];
-        else if (f !== -1) o += String(f);
-        else if (a !== -1) o += String(a);
-      }
-      return o;
-    }
-    function teamById(id) { for (var i=0; i<TEAMS.length; i++) if (TEAMS[i].id===id) return TEAMS[i]; return null; }
-    function statByKey(k) { for (var i=0; i<STAT_DEFS.length; i++) if (STAT_DEFS[i].key===k) return STAT_DEFS[i]; return STAT_DEFS[0]; }
-    function loadTrophies() { try { return Number(localStorage.getItem(TROPHY_KEY)||"0")||0; } catch(e) { return 0; } }
-    function addTrophy() { try { localStorage.setItem(TROPHY_KEY, String(loadTrophies()+1)); } catch(e) {} refreshTrophies(); }
-    function refreshTrophies() {
-      var el = document.getElementById("homeTrophyBadge");
-      if (el) el.textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies());
-    }
-
-    function goScreen(id) {
-      var list = document.querySelectorAll(".screen");
-      for (var i = 0; i < list.length; i++) list[i].style.display = "none";
-      var t = document.getElementById(id);
-      if (t) t.style.display = "flex";
-      if (id === "screenHome") refreshTrophies();
-    }
-
-    function readName(fromJoin) {
-      var a = document.getElementById(fromJoin ? "joinNameInput" : "playerNameInput").value.trim();
-      if (!a) a = document.getElementById(fromJoin ? "playerNameInput" : "joinNameInput").value.trim();
-      if (a) { try { localStorage.setItem(NAME_KEY, a); } catch(e) {} }
-      st.myName = a || ("بازیکن " + toFa(Math.floor(10 + Math.random()*89)));
-      document.getElementById("playerNameInput").value = a;
-      document.getElementById("joinNameInput").value = a;
-      return st.myName;
-    }
-
-    function loadMqtt(cb) {
-      if (typeof window.mqtt !== "undefined") { cb(true); return; }
-      mqttWaiters.push(cb);
-      if (mqttLibState === "loading") return;
-      mqttLibState = "loading";
-      function done(ok) {
-        mqttLibState = ok ? "ready" : "failed";
-        var w = mqttWaiters.slice(); mqttWaiters = [];
-        for (var i=0; i<w.length; i++) w[i](ok);
-      }
-      var s = document.createElement("script");
-      s.src = "https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";
-      s.onload = function() { done(typeof window.mqtt !== "undefined"); };
-      s.onerror = function() {
-        var s2 = document.createElement("script");
-        s2.src = "https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";
-        s2.onload = function() { done(typeof window.mqtt !== "undefined"); };
-        s2.onerror = function() { done(false); };
-        document.body.appendChild(s2);
-      };
-      document.body.appendChild(s);
-    }
-
-    function clearTimers() {
-      if (st.joinRetry) { clearInterval(st.joinRetry); st.joinRetry = null; }
-      if (st.joinTimeout) { clearTimeout(st.joinTimeout); st.joinTimeout = null; }
-      if (st.botTimer) { clearTimeout(st.botTimer); st.botTimer = null; }
-    }
-
-    function cleanup() {
-      clearTimers();
-      if (st.client) {
-        try {
-          if (!st.isHost && st.roomTopic) st.client.publish(st.roomTopic, JSON.stringify({ type:"leave", from:st.myId }));
-          st.client.end(true);
-        } catch(e) {}
-        st.client = null;
-      }
-      st.players=[]; st.pot=[]; st.roomCode=""; st.roomTopic=""; st.isHost=false;
-      st.phase="lobby"; st.lastReveal=null; st.winnerId=""; st.winnerName="";
-      st.seq=0; st.lastSeenSeq=-1; st.myView=null;
-    }
-
-    function sendMsg(obj) {
-      if (!st.client || !st.roomTopic) return;
-      try { st.client.publish(st.roomTopic, JSON.stringify(obj), { qos:1 }); } catch(e) {}
-    }
-
-    function shuffle(arr) {
-      var c = arr.slice();
-      for (var i=c.length-1; i>0; i--) { var j=Math.floor(Math.random()*(i+1)); var x=c[i]; c[i]=c[j]; c[j]=x; }
-      return c;
-    }
-
-    function setLobbyMsg(txt, kind) {
-      var el = document.getElementById("lobbyStatus");
-      el.textContent = txt;
-      el.className = kind==="err" ? "status-msg error" : (kind==="ok" ? "status-msg ok" : "status-msg");
-    }
-
-    function renderLobby() {
-      var list = document.getElementById("lobbyPlayersList");
-      list.innerHTML = "";
-      for (var i=0; i<st.maxPlayers; i++) {
-        var p = st.players[i], row = document.createElement("div");
-        row.className = p ? "player-slot joined" : "player-slot";
-        var l = document.createElement("span"), d = document.createElement("span");
-        d.className = "dot"; l.appendChild(d);
-        l.appendChild(document.createTextNode(p ? (p.name + (p.isHost ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i+1))));
-        var r = document.createElement("span");
-        r.style.color = p ? "#4ade80" : "#94a3b8";
-        r.textContent = p ? "حاضر" : "در انتظار ورود...";
-        row.appendChild(l); row.appendChild(r); list.appendChild(row);
-      }
-    }
-
-    function createRoom(maxP) {
-      cleanup(); readName(false);
-      st.isHost = true; st.maxPlayers = maxP;
-      st.roomCode = String(Math.floor(10000 + Math.random()*90000));
-      st.roomTopic = TOPIC_PREFIX + st.roomCode;
-      st.players = [{ id:st.myId, name:st.myName, isHost:true, isBot:false, deck:[] }];
-
-      goScreen("screenLobby");
-      document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(maxP) + " نفره آنلاین";
-      document.getElementById("lobbyRoomCode").textContent = toFa(st.roomCode);
-      document.getElementById("btnFillBots").style.display = "flex";
-      renderLobby();
-      setLobbyMsg("در حال اتصال به سرور آنلاین...", "info");
-
-      loadMqtt(function(ok) {
-        if (!ok) { setLobbyMsg("اتصال اینترنت برقرار نشد؛ می‌توانی با دکمه «تست سریع» زیر بازی کنی.", "err"); return; }
-        var client = window.mqtt.connect(MQTT_BROKER, { clientId:"wc26h_"+Math.random().toString(36).slice(2,10), clean:true, connectTimeout:8000, reconnectPeriod:3000 });
-        st.client = client;
-        client.on("connect", function() {
-          client.subscribe(st.roomTopic, { qos:1 }, function(err) {
-            if (err) { setLobbyMsg("خطا در ساخت اتاق.", "err"); return; }
-            setLobbyMsg("✅ اتاق آنلاین آماده است! کد (" + toFa(st.roomCode) + ") یا لینک را برای دوستانت بفرست.", "ok");
-          });
-        });
-        client.on("message", function(topic, payload) {
-          var msg; try { msg = JSON.parse(payload.toString()); } catch(e) { return; }
-          if (!msg || msg.from === st.myId) return;
-          if (msg.type === "join_req") {
-            if (st.players.find(function(p){ return p.id===msg.from; })) { broadcastLobby(); return; }
-            if (st.phase !== "lobby" || st.players.length >= st.maxPlayers) {
-              sendMsg({ type:"join_err", from:st.myId, target:msg.from, text:"ظرفیت اتاق تکمیل است." }); return;
-            }
-            st.players.push({ id:msg.from, name:msg.name||"دوست جدید", isHost:false, isBot:false, deck:[] });
-            broadcastLobby(); checkStart();
-          } else if (msg.type === "leave" && st.phase === "lobby") {
-            st.players = st.players.filter(function(p){ return p.id!==msg.from; }); broadcastLobby();
-          } else if (msg.type === "pick_stat") {
-            if (st.phase === "playing" && st.turnPlayerId === msg.from) resolveRound(msg.statKey);
-          } else if (msg.type === "next_round") {
-            if (st.phase === "reveal" && msg.seq === st.seq) nextAfterReveal();
-          }
-        });
-      });
-    }
-
-    function broadcastLobby() {
-      renderLobby();
-      sendMsg({
-        type:"lobby_update", from:st.myId, roomCode:st.roomCode, maxPlayers:st.maxPlayers,
-        players: st.players.map(function(p){ return { id:p.id, name:p.name, isHost:p.isHost, isBot:p.isBot }; })
-      });
-    }
-
-    function checkStart() {
-      if (st.players.length === st.maxPlayers && st.phase === "lobby") {
-        setLobbyMsg("🎉 ظرفیت پر شد! در حال پخش مساوی ۴۸ کارت...", "ok");
-        setTimeout(startMatch, 700);
-      }
-    }
-
-    function startMatch() {
-      clearTimers();
-      var deck = shuffle(TEAMS), per = Math.floor(deck.length / st.players.length);
-      st.players.forEach(function(p, i) { p.deck = deck.slice(i*per, (i+1)*per).map(function(t){ return t.id; }); });
-      st.pot = []; st.phase = "playing"; st.lastReveal = null; st.winnerId = ""; st.winnerName = "";
-      st.trophyAwarded = false; st.turnPlayerId = st.players[0].id;
-      syncGame(); maybeBotTurn();
-    }
-
-    function syncGame() {
-      st.seq++;
-      var tops = {};
-      st.players.forEach(function(p){ tops[p.id] = p.deck.length ? p.deck[0] : null; });
-      var pkt = {
-        type:"state_sync", from:st.myId, seq:st.seq, phase:st.phase, turnPlayerId:st.turnPlayerId,
-        potCount:st.pot.length, topCardsByPlayer:tops, lastReveal:st.lastReveal,
-        winnerId:st.winnerId, winnerName:st.winnerName,
-        roster: st.players.map(function(p){ return { id:p.id, name:p.name, count:p.deck.length }; })
-      };
-      sendMsg(pkt);
-      setTimeout(function(){ if (st.seq === pkt.seq) sendMsg(pkt); }, 280);
-      applyState(pkt);
-    }
-
-    function resolveRound(statKey) {
-      if (st.phase !== "playing") return;
-      clearTimers();
-      var def = statByKey(statKey);
-      var alive = st.players.filter(function(p){ return p.deck.length > 0; });
-      if (alive.length <= 1) { finishMatch(); return; }
-
-      var entries = [], cards = [];
-      alive.forEach(function(p) {
-        var cid = p.deck.shift(), tm = teamById(cid);
-        cards.push(cid);
-        entries.push({ playerId:p.id, playerName:p.name, teamId:cid, value:tm[statKey] });
-      });
-
-      var best = entries[0].value;
-      for (var i=1; i<entries.length; i++) {
-        if (def.mode === "high" ? entries[i].value > best : entries[i].value < best) best = entries[i].value;
-      }
-      var winners = entries.filter(function(e){ return e.value === best; });
-      var isTie = winners.length > 1, msg = "";
-
-      if (isTie) {
-        for (var k=0; k<ca
+<div id="errBar"></div>
+<section id="sHome" class="screen" style="display:flex">
+<div class="panel">
+<div class="logo">🏆</div>
+<h1 class="title">نبرد کارت‌های جام جهانی ۲۰۲۶</h1>
+<div class="tpill" id="tBadge">🏆 تعداد جام‌های شما: ۰</div>
+<p class="sub">بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br/>کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!</p>
+<button type="button" class="btn bplay" data-a="play">▶ پلی (شروع)</button>
+<div class="ver">نسخه ۷</div>
+</div>
+</section>
+<section id="sMenu" class="screen">
+<div class="panel">
+<h2 class="title">ورود به بخش آنلاین</h2>
+<div class="fg"><label class="fl" for="n1">نام و نام خانوادگی شما:</label><input id="n1" class="inp" placeholder="مثلاً: هیراد عامل" maxlength="24"/></div>
+<button type="button" class="btn bgreen" data-a="oc">➕ ایجاد اتاق</button>
+<button type="button" class="btn bblue" data-a="oj">🚪 رفتن به اتاق دوستان</button>
+<button type="button" class="btn bghost" data-a="home">بازگشت به صفحه اصلی</button>
+</div>
+</section>
+<section id="sCreate" class="screen">
+<div class="panel">
+<h2 class="title">تعداد بازیکنان را انتخاب کن</h2>
+<div class="mgrid">
+<button type="button" class="btn bgreen mbtn" data-a="m2"><span>👥 بازی ۲ نفره</span><span class="mmeta">نفری ۲۴ کارت</span></button>
+<button type="button" class="btn bgreen mbtn" data-a="m3"><span>👥 بازی ۳ نفره</span><span class="mmeta">نفری ۱۶ کارت</span></button>
+<button type="button" class="btn bgreen mbtn" data-a="m4"><span>👥 بازی ۴ نفره</span><span class="mmeta">نفری ۱۲ کارت</span></button>
+</div>
+<button type="button" class="btn bghost" data-a="play">بازگشت</button>
+</div>
+</section>
+<section id="sJoin" class="screen">
+<div class="panel">
+<h2 class="title">رفتن به اتاق دوستان</h2>
+<div class="fg"><label class="fl" for="n2">نام شما:</label><input id="n2" class="inp" placeholder="اسم خودت را بنویس..." maxlength="24"/></div>
+<div class="fg"><label class="fl" for="jCode">کد ۵ رقمی اتاق:</label><input id="jCode" class="inp" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric"/></div>
+<div id="jMsg" class="msg" style="display:none"></div>
+<button type="button" class="btn bblue" data-a="join">ورود به اتاق</button>
+<button type="button" class="btn bghost" data-a="play">بازگشت</button>
+</div>
+</section>
+<section id="sLobby" class="screen">
+<div class="panel">
+<h2 class="title" id="lHead">اتاق انتظار آنلاین</h2>
+<div class="codebox">
+<span style="font-size:.82rem;color:#cbd5e1">کد یا لینک را برای دوستانت بفرست:</span>
+<div class="codenum" id="lCode">-----</div>
+<div class="crow"><button type="button" class="btn bsm" data-a="cc">📋 کپی کد</button><button type="button" class="btn bsm" data-a="cl">🔗 کپی لینک</button></div>
+</div>
+<div class="msg" id="lMsg">در حال اتصال...</div>
+<div class="plist" id="lList"></div>
+<button type="button" class="btn bghost" id="bBots" data-a="bots" style="display:none;border-color:rgba(243,215,120,.65);color:#f3d778">🤖 تست سریع (بازی با ربات)</button>
+<button type="button" class="btn bghost" data-a="leave">خروج از اتاق</button>
+</div>
+</section>
+<section id="sGame" class="screen wide">
+<div class="topbar">
+<div class="trow"><div class="chips" id="gRoster"></div><button type="button" class="btn bsm bghost" data-a="exit">خروج</button></div>
+<div class="trow"><span style="font-size:.82rem;color:#cbd5e1" id="dInfo">کارت‌های شما: ۰</span><span class="pot" id="pBadge" style="display:none"></span></div>
+</div>
+<div class="msg" id="tBan">در حال شروع...</div>
+<div id="rMount" style="width:100%;display:none"></div>
+<div id="vMount" style="width:100%;display:none"></div>
+<div id="cMount" style="width:100%;display:flex;justify-content:center"></div>
+</section>
+<script>
+window.onerror=function(m,u,l){var b=document.getElementById("errBar");if(b){b.style.display="block";b.textContent="خطا خط "+l+": "+m}};
+var BRK="wss://broker.emqx.io:8084/mqtt",PRE="wc26_ir_v7/",TK="wc26_t1",NK="wc26_n1",mSt="i",mW=[];
+var RAW=[[1,"es","اسپانیا",17,2,75,122,76,38,18,19,1,1,"#7d0a12","#b88a0b","#380509","#c8102e","#f1bf00"],[2,"ar","آرژانتین",19,3,96,171,109,54,17,25,1,2,"#145b8f","#1e4b75","#081d38","#75aadb","#ffffff"],[3,"fr","فرانسه",17,2,81,156,95,45,14,22,1,3,"#0a2257","#730f1e","#05102b","#002395","#ed2939"],[4,"gb-eng","انگلیس",17,1,82,124,80,38,23,21,3,4,"#7d0c17","#16243d","#2b070c","#f2f4f8","#cf142b"],[5,"ma","مراکش",7,0,29,30,33,8,9,12,5,5,"#750c17","#0a4523","#33050a","#c1272d","#006233"],[6,"pt","پرتغال",9,0,40,69,44,19,8,13,3,6,"#750a15","#074221","#052613","#da291c","#006600"],[7,"br","برزیل",23,5,119,247,112,79,20,20,1,7,"#09381c","#545214","#061830","#ffdf00","#009c3b"],[8,"be","بلژیک",15,0,57,83,81,24,12,21,1,8,"#780d18","#5e4909","#141414","#c8102e","#fdda24"],[9,"nl","هلند",12,0,59,107,57,32,16,11,1,9,"#9c3e05","#0c2859","#401802","#f36c21","#21468b"],[10,"co","کلمبیا",7,0,27,37,31,12,5,10,3,10,"#6e5204","#0a2154","#4a0810","#fcd116","#003893"],[11,"de","آلمان",21,4,116,243,135,70,22,24,1,11,"#1f1f1f","#6e0d15","#3d2f04","#f5f5f5","#dd0000"],[12,"ch","سوئیس",13,0,47,65,79,17,10,20,3,12,"#8c0c15","#4d070c","#290407","#d52b1e","#ffffff"],[13,"mx","مکزیک",18,0,65,72,104,21,15,29,4,13,"#074726","#6e0e18","#042112","#006847","#ce1126"],[14,"hr","کرواسی",7,0,34,49,40,15,8,11,3,15,"#820e1a","#0b2861","#071536","#ff0000","#ffffff"],[15,"us","آمریکا",12,0,42,51,74,12,8,22,4,16,"#0b2252","#73101d","#07122b","#f0f2f5","#b22234"],[16,"jp","ژاپن",8,0,29,33,38,8,8,13,9,17,"#092661","#750d1b","#051230","#002395","#bc002d"],[17,"sn","سنگال",4,0,16,26,26,6,3,7,12,18,"#084a22","#695309","#4d0a12","#00853f","#fdef42"],[18,"no","نروژ",4,0,14,20,19,6,3,5,2,19,"#7d0c1a","#0a2154","#33050b","#ba0c2f","#00205b"],[19,"uy","اروگوئه",15,2,62,92,80,25,15,22,2,20,"#125785","#0a2245","#061529","#5fa8d3","#fcd116"],[20,"at","اتریش",8,0,33,49,56,13,5,15,10,22,"#850d1a","#2b1619","#3b050b","#ed2939","#ffffff"],[21,"ir","ایران",7,0,21,16,34,3,7,11,15,23,"#0a4a24","#730d19","#052411","#f7f7f7","#239f40"],[22,"ec","اکوادور",5,0,17,16,18,6,3,8,10,24,"#705404","#0a255c","#4f0912","#ffdd00","#034ea2"],[23,"ca","کانادا",3,0,11,11,18,2,1,8,25,25,"#870a15","#3b060b","#210508","#d80621","#ffffff"],[24,"eg","مصر",4,0,12,13,19,1,5,6,9,26,"#780b15","#241d14","#141110","#ce1126","#c09300"],[25,"au","استرالیا",7,0,24,20,40,5,6,13,14,27,"#073d21","#6b5408","#071d45","#ffcd00","#00843d"],[26,"ci","ساحل عاج",4,0,13,18,18,5,1,7,12,28,"#943f06","#074a23","#381802","#f77f00","#009e60"],[27,"kr","کره جنوبی",12,0,41,41,81,8,10,23,17,30,"#7d0c1c","#0a2559","#171421","#cd2e3a","#0047a0"],[28,"py","پاراگوئه",9,0,32,33,44,8,12,12,8,31,"#800c18","#0a2457","#2b0912","#d52b1e","#0038a8"],[29,"dz","الجزایر",5,0,17,18,28,4,4,9,15,32,"#064a24","#660d17","#032412","#ffffff","#006233"],[30,"tr","ترکیه",3,0,13,23,22,6,1,6,5,33,"#8a0a15","#47050b","#240407","#e30a17","#ffffff"],[31,"se","سوئد",13,0,55,87,83,20,14,21,2,34,"#0a3b75","#6e5708","#061b38","#fecc00","#006aa7"],[32,"cd","کنگو (ج.د.)",2,0,7,5,19,1,1,5,28,39,"#0c4985","#6e0e1a","#061f3d","#007fff","#f7d618"],[33,"gb-sct","اسکاتلند",9,0,26,26,45,5,7,14,13,44,"#092354","#133a7d","#041026","#00247d","#ffffff"],[34,"pa","پاناما",2,0,6,2,15,0,0,6,29,45,"#0b2c63","#7a0e1b","#051430","#da121a","#072357"],[35,"za","آفریقای جنوبی",4,0,13,13,20,3,5,5,16,48,"#074a27","#6b5409","#081c42","#ffb612","#007a4d"],[36,"cz","جمهوری چک",10,0,36,49,55,12,6,18,2,53,"#7d0d19","#0a2a5e","#1a0b17","#d7141a","#11457e"],[37,"sa","عربستان سعودی",7,0,22,15,49,4,4,14,21,54,"#064a23","#0b331c","#032110","#006c35","#ffffff"],[38,"ba","بوسنی و هرزگوین",2,0,7,9,12,2,1,4,13,57,"#0a2969","#705909","#051436","#002395","#fecb00"],[39,"uz","ازبکستان",1,0,3,2,11,0,0,3,45,60,"#09506b","#094722","#04212e","#1eb53a","#0099b5"],[40,"qa","قطر",2,0,6,3,17,0,1,5,34,61,"#630b24","#3d0717","#26040e","#8a1538","#ffffff"],[41,"iq","عراق",2,0,6,2,16,0,0,6,39,62,"#730c16","#083d1f","#171717","#007a3d","#ffffff"],[42,"tn","تونس",7,0,21,16,38,3,5,13,14,64,"#870a17","#42050c","#240408","#e70013","#ffffff"],[43,"gh","غنا",5,0,19,20,26,6,4,9,14,69,"#750c15","#6b5408","#063b1d","#f7f7f7","#fcd116"],[44,"cv","کیپ‌ورد",1,0,4,4,5,0,3,1,27,71,"#0a2d6b","#6e0e1b","#051536","#003893","#f7d116"],[45,"jo","اردن",1,0,3,3,8,0,0,3,37,72,"#074221","#730c16","#141414","#ce1126","#007a3d"],[46,"cw","کوراسائو",1,0,3,1,9,0,1,2,68,81,"#082c6b","#735c07","#041433","#002b7f","#f9e814"],[47,"nz","نیوزیلند",3,0,9,8,24,0,4,5,47,84,"#1a202c","#0a2252","#0b0e14","#f2f4f8","#111827"],[48,"ht","هائیتی",2,0,6,4,22,0,0,6,38,86,"#09235c","#780c1a","#04102e","#00209f","#d21034"]];
+var TMS=RAW.map(function(r){return{id:r[0],iso:r[1],name:r[2],ap:r[3],ti:r[4],pl:r[5],gf:r[6],ga:r[7],w:r[8],d:r[9],l:r[10],hf:r[11],cf:r[12],c1:r[13],c2:r[14],c3:r[15],j:r[16],tr:r[17]}});
+var STATS=[{k:"ap",lb:"⚽ حضور در جام جهانی",pr:"",m:"h"},{k:"ti",lb:"🏆 قهرمانی جام جهانی",pr:"",m:"h"},{k:"pl",lb:"🏟️ تعداد بازی",pr:"",m:"h"},{k:"gf",lb:"🎯 گل زده",pr:"",m:"h"},{k:"ga",lb:"🥅 گل خورده",pr:"",m:"l"},{k:"w",lb:"✅ برد",pr:"",m:"h"},{k:"d",lb:"🤝 مساوی",pr:"",m:"h"},{k:"l",lb:"❌ باخت",pr:"",m:"l"},{k:"hf",lb:"📈 بالاترین رده‌بندی فیفا",pr:"رتبه ",m:"l"},{k:"cf",lb:"🌍 رتبه فعلی فیفا",pr:"رتبه ",m:"l"}];
+var st={nm:"بازیکن",id:"p_"+Math.random().toString(36).slice(2,10),host:false,code:"",top:"",max:2,cl:null,ps:[],pot:[],turn:"",ph:"l",rev:null,wid:"",wnm:"",seq:0,lseq:-1,aw:false,vw:null,jr:null,jt:null,bt:null};
+var FA="۰۱۲۳۴۵۶۷۸۹",AR="٠١٢٣٤٥٦٧٨٩";
+function toFa(n){var s=String(n),o="";for(var i=0;i<s.length;i++)o+=(s[i]>="0"&&s[i]<="9")?FA[Number(s[i])]:s[i];return o}
+function norm(str){var s=String(str),o="";for(var i=0;i<s.length;i++){var f=FA.indexOf(s[i]),a=AR.indexOf(s[i]);if(s[i]>="0"&&s[i]<="9")o+=s[i];else if(f!==-1)o+=String(f);else if(a!==-1)o+=String(a)}return o}
+function tById(id){for(var i=0;i<TMS.length;i++)if(TMS[i].id===id)return TMS[i];return null}
+function sByK(k){for(var i=0;i<STATS.length;i++)if(STATS[i].k===k)return STATS[i];return STATS[0]}
+function getT(){try{return Number(localStorage.getItem(TK)||"0")||0}catch(e){return 0}}
+function addT(){try{localStorage.setItem(TK,String(getT()+1))}catch(e){}refT()}
+function refT(){var e=document.getElementById("tBadge");if(e)e.textContent="🏆 تعداد جام‌های شما: "+toFa(getT())}
+function go(id){var a=document.querySelectorAll(".screen");for(var i=0;i<a.length;i++)a[i].style.display="none";var t=document.getElementById(id);if(t)t.style.display="flex";if(id==="sHome")refT()}
+function rName(j){var v=document.getElementById(j?"n2":"n1").value.trim()||document.getElementById(j?"n1":"n2").value.trim();if(v){try{localStorage.setItem(NK,v)}catch(e){}}st.nm=v||("بازیکن "+toFa(Math.floor(10+Math.random()*89)));document.getElementById("n1").value=v;document.getElementById("n2").value=v;return st.nm}
+function loadM(cb){if(typeof window.mqtt!=="undefined"){cb(true);return}mW.push(cb);if(mSt==="l")return;mSt="l";function dn(ok){mSt=ok?"r":"f";var q=mW.slice();mW=[];for(var i=0;i<q.length;i++)q[i](ok)}var s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";s.onload=function(){dn(typeof window.mqtt!=="undefined")};s.onerror=function(){var s2=document.createElement("script");s2.src="https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";s2.onload=function(){dn(typeof window.mqtt!=="undefined")};s2.onerror=function(){dn(false)};document.body.appendChild(s2)};document.body.appendChild(s)}
+function clrT(){if(st.jr){clearInterval(st.jr);st.jr=null}if(st.jt){clearTimeout(st.jt);st.jt=null}if(st.bt){clearTimeout(st.bt);st.bt=null}}
+function cln(){clrT();if(st.cl){try{if(!st.host&&st.top)st.cl.publish(st.top,JSON.stringify({t:"lv",f:st.id}));st.cl.end(true)}catch(e){}st.cl=null}st.ps=[];st.pot=[];st.code="";st.top="";st.host=false;st.ph="l";st.rev=null;st.wid="";st.wnm="";st.seq=0;st.lseq=-1;st.vw=null}
+function pub(o){if(!st.cl||!st.top)return;try{st.cl.publish(st.top,JSON.stringify(o),{qos:1})}catch(e){}}
+function shuf(a){var c=a.slice();for(var i=c.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=c[i];c[i]=c[j];c[j]=x}return c}
+function lMsg(t,k){var e=document.getElementById("lMsg");e.textContent=t;e.className=k==="e"?"msg err":(k==="o"?"msg ok":"msg")}
+function rLob(){var l=document.getElementById("lList");l.innerHTML="";for(var i=0;i<st.max;i++){var p=st.ps[i],r=document.createElement("div");r.className=p?"pslot on":"pslot";var a=document.createElement("span"),d=document.createElement("span");d.className="dot";a.appendChild(d);a.appendChild(document.createTextNode(p?(p.nm+(p.h?" (سازنده)":"")):("جایگاه "+toFa(i+1))));var b=document.createElement("span");b.style.color=p?"#4ade80":"#94a3b8";b.textContent=p?"حاضر":"در انتظار...";r.appendChild(a);r.appendChild(b);l.appendChild(r)}}
+function mkRoom(mx){cln();rName(false);st.host=true;st.max=mx;st.code=String(Math.floor(10000+Math.random()*90000));st.top=PRE+st.code;st.ps=[{id:st.id,nm:st.nm,h:true,b:false,dk:[]}];go("sLobby");document.getElementById("lHead").textContent="اتاق "+toFa(mx)+" نفره آنلاین";document.getElementById("lCode").textContent=toFa(st.code);document.getElementById("bBots").style.display="flex";rLob();lMsg("در حال اتصال...","");loadM(function(ok){if(!ok){lMsg("اینترنت وصل نشد؛ از دکمه تست سریع استفاده کن.","e");return}var c=window.mqtt.connect(BRK,{clientId:"w7h_"+Math.random().toString(36).slice(2,9),clean:true,connectTimeout:8000,reconnectPeriod:3000});st.cl=c;c.on("connect",function(){c.subscribe(st.top,{qos:1},function(er){if(er){lMsg("خطا در ساخت اتاق.","e");return}lMsg("✅ اتاق آماده است! کد ("+toFa(st.code)+") را بفرست.","o")})});c.on("message",function(tp,pl){var m;try{m=JSON.parse(pl.toString())}catch(e){return}if(!m||m.f===st.id)return;if(m.t==="jr"){if(st.ps.find(function(p){return p.id===m.f})){bLob();return}if(st.ph!=="l"||st.ps.length>=st.max){pub({t:"je",f:st.id,tg:m.f,tx:"ظرفیت اتاق تکمیل است."});return}st.ps.push({id:m.f,nm:m.nm||"دوست",h:false,b:false,dk:[]});bLob();chkSt()}else if(m.t==="lv"&&st.ph==="l"){st.ps=st.ps.filter(function(p){return p.id!==m.f});bLob()}else if(m.t==="pk"&&st.ph==="p"&&st.turn===m.f){resRnd(m.k)}else if(m.t==="nx"&&st.ph==="r"&&m.q===st.seq){nxRnd()}})})}
+function bLob(){rLob();pub({t:"lu",f:st.id,c:st.code,mx:st.max,ps:st.ps.map(function(p){return{id:p.id,nm:p.nm,h:p.h,b:p.b}})})}
+function chkSt(){if(st.ps.length===st.max&&st.ph==="l"){lMsg("🎉 ظرفیت پر شد! پخش ۴۸ کارت...","o");setTimeout(stMatch,650)}}
+function stMatch(){clrT();var d=shuf(TMS),per=Math.floor(d.length/st.ps.length);st.ps.forEach(function(p,i){p.dk=d.slice(i*per,(i+1)*per).map(function(x){return x.id})});st.pot=[];st.ph="p";st.rev=null;st.wid="";st.wnm="";st.aw=false;st.turn=st.ps[0].id;sync();botGo()}
+function sync(){st.seq++;var tops={};st.ps.forEach(function(p){tops[p.id]=p.dk.length?p.dk[0]:null});var pk={t:"sy",f:st.id,q:st.seq,ph:st.ph,tn:st.turn,pc:st.pot.length,tp:tops,rv:st.rev,wi:st.wid,wn:st.wnm,rs:st.ps.map(function(p){return{id:p.id,nm:p.nm,ct:p.dk.length}})};pub(pk);setTimeout(function(){if(st.seq===pk.q)pub(pk)},280);appSt(pk)}
+function resRnd(k){if(st.ph!=="p")return;clrT();var df=sByK(k),al=st.ps.filter(function(p){return p.dk.length>0});if(al.length<=1){endM();return}var en=[],cs=[];al.forEach(function(p){var ci=p.dk.shift(),tm=tById(ci);cs.push(ci);en.push({pi:p.id,pn:p.nm,ti:ci,v:tm[k]})});var bs=en[0].v;for(var i=1;i<en.length;i++)if(df.m==="h"?en[i].v>bs:en[i].v<bs)bs=en[i].v;var ws=en.filter(function(e){return e.v===bs}),tie=ws.length>1,tx="";if(tie){for(var z=0;z<cs.length;z++)st.pot.push(cs[z]);tx="🤝 مساوی شد! کارت‌ها به «کارت‌های جمع‌شده وسط» ("+toFa(st.pot.length)+" کارت) رفتند."}else{var wo=st.ps.find(function(p){return p.id===ws[0].pi}),wn=st.pot.concat(cs);st.pot=[];for(var j=0;j<wn.length;j++)wo.dk.push(wn[j]);st.turn=wo.id;tx="🎉 «"+wo.nm+"» این دست را برد و "+toFa(wn.length)+" کارت گرفت!"}st.rev={lb:df.lb,pr:df.pr,ti:tie,wi:ws.map(function(x){return x.pi}),en:en,tx:tx};st.ph="r";sync()}
+function nxRnd(){if(st.ph!=="r")return;clrT();var al=st.ps.filter(function(p){return p.dk.length>0});if(al.length<=1){endM();return}if(!al.find(function(p){return p.id===st.turn}))st.turn=al[0].id;st.ph="p";

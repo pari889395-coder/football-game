@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>نبرد کارت‌های جام جهانی ۲۰۲۶</title>
   <style>
     :root {
@@ -108,6 +111,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      touch-action: manipulation;
     }
 
     .btn:hover:not(:disabled) { filter: brightness(1.13); }
@@ -391,7 +395,7 @@
         بازی آنلاین ۲، ۳ و ۴ نفره با ۴۸ تیم ملی جام جهانی ۲۰۲۶<br />
         کارت رویی دستت را بازی کن و همه کارت‌ها را ببر!
       </p>
-      <button type="button" class="btn btn-play" id="btnPlay">▶ پلی (شروع)</button>
+      <button type="button" class="btn btn-play" id="btnPlay" onclick="goScreen('screenMenu')">▶ پلی (شروع)</button>
     </div>
   </section>
 
@@ -403,9 +407,9 @@
         <label class="field-label" for="playerNameInput">نام و نام خانوادگی شما:</label>
         <input type="text" id="playerNameInput" class="text-input" placeholder="مثلاً: هیراد عامل" maxlength="24" />
       </div>
-      <button type="button" class="btn btn-green" id="btnCreateRoomMenu">➕ ایجاد اتاق</button>
-      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu">🚪 رفتن به اتاق دوستان</button>
-      <button type="button" class="btn btn-ghost" id="btnBackHome">بازگشت به صفحه اصلی</button>
+      <button type="button" class="btn btn-green" id="btnCreateRoomMenu" onclick="openCreatePage()">➕ ایجاد اتاق</button>
+      <button type="button" class="btn btn-blue" id="btnJoinRoomMenu" onclick="openJoinPage()">🚪 رفتن به اتاق دوستان</button>
+      <button type="button" class="btn btn-ghost" id="btnBackHome" onclick="goScreen('screenHome')">بازگشت به صفحه اصلی</button>
     </div>
   </section>
 
@@ -414,20 +418,20 @@
     <div class="panel">
       <h2 class="main-title" style="font-size:1.35rem;">تعداد بازیکنان اتاق را انتخاب کن</h2>
       <div class="mode-grid">
-        <button type="button" class="btn btn-green mode-btn" id="btnMode2">
+        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(2)">
           <span>👥 بازی ۲ نفره آنلاین</span>
           <span class="mode-meta">نفری ۲۴ کارت</span>
         </button>
-        <button type="button" class="btn btn-green mode-btn" id="btnMode3">
+        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(3)">
           <span>👥 بازی ۳ نفره آنلاین</span>
           <span class="mode-meta">نفری ۱۶ کارت</span>
         </button>
-        <button type="button" class="btn btn-green mode-btn" id="btnMode4">
+        <button type="button" class="btn btn-green mode-btn" onclick="createRoom(4)">
           <span>👥 بازی ۴ نفره آنلاین</span>
           <span class="mode-meta">نفری ۱۲ کارت</span>
         </button>
       </div>
-      <button type="button" class="btn btn-ghost" id="btnBackFromCreate">بازگشت</button>
+      <button type="button" class="btn btn-ghost" onclick="goScreen('screenMenu')">بازگشت</button>
     </div>
   </section>
 
@@ -441,11 +445,11 @@
       </div>
       <div class="field-group">
         <label class="field-label" for="joinCodeInput">کد ۵ رقمی اتاق:</label>
-        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" />
+        <input type="text" id="joinCodeInput" class="text-input" placeholder="مثلاً: ۴۸۲۹۱" maxlength="8" inputmode="numeric" onkeydown="if(event.key==='Enter') joinRoom()" />
       </div>
       <div id="joinStatus" class="status-msg" style="display:none;"></div>
-      <button type="button" class="btn btn-blue" id="btnSubmitJoin">ورود به اتاق</button>
-      <button type="button" class="btn btn-ghost" id="btnBackFromJoin">بازگشت</button>
+      <button type="button" class="btn btn-blue" onclick="joinRoom()">ورود به اتاق</button>
+      <button type="button" class="btn btn-ghost" onclick="goScreen('screenMenu')">بازگشت</button>
     </div>
   </section>
 
@@ -457,16 +461,16 @@
         <span style="font-size:0.82rem; color:#cbd5e1;">کد یا لینک زیر را برای دوستانت بفرست:</span>
         <div class="room-code-num" id="lobbyRoomCode">-----</div>
         <div class="copy-row">
-          <button type="button" class="btn btn-small" id="btnCopyCode">📋 کپی کد</button>
-          <button type="button" class="btn btn-small" id="btnCopyLink">🔗 کپی لینک دعوت</button>
+          <button type="button" class="btn btn-small" onclick="copyRoomCode()">📋 کپی کد</button>
+          <button type="button" class="btn btn-small" onclick="copyInviteLink()">🔗 کپی لینک دعوت</button>
         </div>
       </div>
       <div class="status-msg" id="lobbyStatus">در حال اتصال به سرور آنلاین...</div>
       <div class="players-list" id="lobbyPlayersList"></div>
-      <button type="button" class="btn btn-ghost" id="btnFillBots" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">
+      <button type="button" class="btn btn-ghost" id="btnFillBots" onclick="fillWithBots()" style="display:none; border-color:rgba(243,215,120,0.65); color:#f3d778;">
         🤖 تست سریع (بازی با ربات آزمایشی)
       </button>
-      <button type="button" class="btn btn-ghost" id="btnLeaveLobby">خروج از اتاق</button>
+      <button type="button" class="btn btn-ghost" onclick="leaveToMenu()">خروج از اتاق</button>
     </div>
   </section>
 
@@ -475,7 +479,7 @@
     <div class="table-top-bar">
       <div class="top-bar-row">
         <div class="roster-chips" id="gameRoster"></div>
-        <button type="button" class="btn btn-small btn-ghost" id="btnExitGame">خروج</button>
+        <button type="button" class="btn btn-small btn-ghost" onclick="exitToHome()">خروج</button>
       </div>
       <div class="top-bar-row">
         <span style="font-size:0.82rem; color:#cbd5e1;" id="myDeckInfo">کارت‌های دست شما: ۰</span>
@@ -488,6 +492,17 @@
     <div id="victoryMount" style="width:100%; display:none;"></div>
     <div id="activeCardMount" style="width:100%; display:flex; justify-content:center;"></div>
   </section>
+
+  <!-- اسکریپت فوری جابه‌جایی صفحات (همیشه در لحظه فعال حتی پس از رفرش) -->
+  <script>
+    function goScreen(id) {
+      var list = document.querySelectorAll(".screen");
+      for (var i = 0; i < list.length; i++) list[i].style.display = "none";
+      var target = document.getElementById(id);
+      if (target) target.style.display = "flex";
+      if (id === "screenHome" && typeof refreshHomeTrophies === "function") refreshHomeTrophies();
+    }
+  </script>
 
   <script>
     window.onerror = function(msg, url, line) {
@@ -540,4 +555,834 @@
       [32,"cd","کنگو (ج.د.)",2,0,7,5,19,1,1,5,28,39,"#0c4985","#6e0e1a","#061f3d","#007fff","#f7d618"],
       [33,"gb-sct","اسکاتلند",9,0,26,26,45,5,7,14,13,44,"#092354","#133a7d","#041026","#00247d","#ffffff"],
       [34,"pa","پاناما",2,0,6,2,15,0,0,6,29,45,"#0b2c63","#7a0e1b","#051430","#da121a","#072357"],
-      [35,"za","آفریقای جنوبی",4,0,13,13,20,3,5,5,16,48,"#074a27","#6b5
+      [35,"za","آفریقای جنوبی",4,0,13,13,20,3,5,5,16,48,"#074a27","#6b5409","#081c42","#ffb612","#007a4d"],
+      [36,"cz","جمهوری چک",10,0,36,49,55,12,6,18,2,53,"#7d0d19","#0a2a5e","#1a0b17","#d7141a","#11457e"],
+      [37,"sa","عربستان سعودی",7,0,22,15,49,4,4,14,21,54,"#064a23","#0b331c","#032110","#006c35","#ffffff"],
+      [38,"ba","بوسنی و هرزگوین",2,0,7,9,12,2,1,4,13,57,"#0a2969","#705909","#051436","#002395","#fecb00"],
+      [39,"uz","ازبکستان",1,0,3,2,11,0,0,3,45,60,"#09506b","#094722","#04212e","#1eb53a","#0099b5"],
+      [40,"qa","قطر",2,0,6,3,17,0,1,5,34,61,"#630b24","#3d0717","#26040e","#8a1538","#ffffff"],
+      [41,"iq","عراق",2,0,6,2,16,0,0,6,39,62,"#730c16","#083d1f","#171717","#007a3d","#ffffff"],
+      [42,"tn","تونس",7,0,21,16,38,3,5,13,14,64,"#870a17","#42050c","#240408","#e70013","#ffffff"],
+      [43,"gh","غنا",5,0,19,20,26,6,4,9,14,69,"#750c15","#6b5408","#063b1d","#f7f7f7","#fcd116"],
+      [44,"cv","کیپ‌ورد",1,0,4,4,5,0,3,1,27,71,"#0a2d6b","#6e0e1b","#051536","#003893","#f7d116"],
+      [45,"jo","اردن",1,0,3,3,8,0,0,3,37,72,"#074221","#730c16","#141414","#ce1126","#007a3d"],
+      [46,"cw","کوراسائو",1,0,3,1,9,0,1,2,68,81,"#082c6b","#735c07","#041433","#002b7f","#f9e814"],
+      [47,"nz","نیوزیلند",3,0,9,8,24,0,4,5,47,84,"#1a202c","#0a2252","#0b0e14","#f2f4f8","#111827"],
+      [48,"ht","هائیتی",2,0,6,4,22,0,0,6,38,86,"#09235c","#780c1a","#04102e","#00209f","#d21034"]
+    ];
+
+    var TEAMS_2026 = RAW_TEAMS.map(function(r) {
+      return {
+        id: r[0], iso: r[1], name: r[2], appearances: r[3], titles: r[4],
+        played: r[5], goalsFor: r[6], goalsAgainst: r[7], wins: r[8], draws: r[9],
+        losses: r[10], highestFifa: r[11], currentFifa: r[12],
+        c1: r[13], c2: r[14], c3: r[15], jersey: r[16], trim: r[17]
+      };
+    });
+
+    var STAT_DEFS = [
+      { key: "appearances", label: "⚽ حضور در جام جهانی", prefix: "", mode: "high" },
+      { key: "titles", label: "🏆 قهرمانی جام جهانی", prefix: "", mode: "high" },
+      { key: "played", label: "🏟️ تعداد بازی", prefix: "", mode: "high" },
+      { key: "goalsFor", label: "🎯 گل زده", prefix: "", mode: "high" },
+      { key: "goalsAgainst", label: "🥅 گل خورده", prefix: "", mode: "low" },
+      { key: "wins", label: "✅ برد", prefix: "", mode: "high" },
+      { key: "draws", label: "🤝 مساوی", prefix: "", mode: "high" },
+      { key: "losses", label: "❌ باخت", prefix: "", mode: "low" },
+      { key: "highestFifa", label: "📈 بالاترین رده‌بندی فیفا", prefix: "رتبه ", mode: "low" },
+      { key: "currentFifa", label: "🌍 رتبه فعلی فیفا", prefix: "رتبه ", mode: "low" }
+    ];
+
+    var state = {
+      myName: "بازیکن",
+      myId: "p_" + Math.random().toString(36).slice(2, 10),
+      isHost: false,
+      roomCode: "",
+      roomTopic: "",
+      maxPlayers: 2,
+      client: null,
+      players: [],
+      pot: [],
+      turnPlayerId: "",
+      phase: "lobby",
+      lastReveal: null,
+      winnerId: "",
+      winnerName: "",
+      seq: 0,
+      lastSeenSeq: -1,
+      trophyAwardedMatch: false,
+      myView: null,
+      joinRetryTimer: null,
+      joinTimeoutTimer: null,
+      botTimer: null
+    };
+
+    var FA_DIGITS = "۰۱۲۳۴۵۶۷۸۹";
+    var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+
+    function toFa(num) {
+      var s = String(num);
+      var out = "";
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        if (ch >= "0" && ch <= "9") out += FA_DIGITS.charAt(Number(ch));
+        else out += ch;
+      }
+      return out;
+    }
+
+    function normalizeDigits(str) {
+      var s = String(str);
+      var out = "";
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        var faIdx = FA_DIGITS.indexOf(ch);
+        var arIdx = AR_DIGITS.indexOf(ch);
+        if (ch >= "0" && ch <= "9") out += ch;
+        else if (faIdx !== -1) out += String(faIdx);
+        else if (arIdx !== -1) out += String(arIdx);
+      }
+      return out;
+    }
+
+    function getTeamById(id) {
+      for (var i = 0; i < TEAMS_2026.length; i++) {
+        if (TEAMS_2026[i].id === id) return TEAMS_2026[i];
+      }
+      return null;
+    }
+
+    function getStatDef(key) {
+      for (var i = 0; i < STAT_DEFS.length; i++) {
+        if (STAT_DEFS[i].key === key) return STAT_DEFS[i];
+      }
+      return STAT_DEFS[0];
+    }
+
+    function loadTrophies() {
+      try { return Number(localStorage.getItem(TROPHY_KEY) || "0") || 0; } catch (e) { return 0; }
+    }
+
+    function addTrophy() {
+      var next = loadTrophies() + 1;
+      try { localStorage.setItem(TROPHY_KEY, String(next)); } catch (e) {}
+      refreshHomeTrophies();
+    }
+
+    function refreshHomeTrophies() {
+      var el = document.getElementById("homeTrophyBadge");
+      if (el) el.textContent = "🏆 تعداد جام‌های شما: " + toFa(loadTrophies());
+    }
+
+    function getPlayerName(fromJoin) {
+      var inputId = fromJoin ? "joinNameInput" : "playerNameInput";
+      var val = document.getElementById(inputId).value.trim();
+      if (!val) val = document.getElementById(fromJoin ? "playerNameInput" : "joinNameInput").value.trim();
+      if (val) {
+        try { localStorage.setItem(NAME_KEY, val); } catch (e) {}
+      }
+      state.myName = val || ("بازیکن " + toFa(Math.floor(10 + Math.random() * 89)));
+      document.getElementById("playerNameInput").value = val;
+      document.getElementById("joinNameInput").value = val;
+      return state.myName;
+    }
+
+    function openCreatePage() {
+      getPlayerName(false);
+      goScreen("screenCreate");
+    }
+
+    function openJoinPage() {
+      getPlayerName(false);
+      document.getElementById("joinStatus").style.display = "none";
+      goScreen("screenJoin");
+    }
+
+    function ensureMqttLoaded(cb) {
+      if (typeof window.mqtt !== "undefined") { cb(true); return; }
+      mqttWaiters.push(cb);
+      if (mqttLibState === "loading") return;
+      mqttLibState = "loading";
+
+      function finish(ok) {
+        mqttLibState = ok ? "ready" : "failed";
+        var list = mqttWaiters.slice();
+        mqttWaiters = [];
+        for (var i = 0; i < list.length; i++) list[i](ok);
+      }
+
+      var s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/mqtt@4.3.7/dist/mqtt.min.js";
+      s.onload = function() { finish(typeof window.mqtt !== "undefined"); };
+      s.onerror = function() {
+        var s2 = document.createElement("script");
+        s2.src = "https://unpkg.com/mqtt@4.3.7/dist/mqtt.min.js";
+        s2.onload = function() { finish(typeof window.mqtt !== "undefined"); };
+        s2.onerror = function() { finish(false); };
+        document.body.appendChild(s2);
+      };
+      document.body.appendChild(s);
+    }
+
+    function clearTimers() {
+      if (state.joinRetryTimer) { clearInterval(state.joinRetryTimer); state.joinRetryTimer = null; }
+      if (state.joinTimeoutTimer) { clearTimeout(state.joinTimeoutTimer); state.joinTimeoutTimer = null; }
+      if (state.botTimer) { clearTimeout(state.botTimer); state.botTimer = null; }
+    }
+
+    function cleanupNetwork() {
+      clearTimers();
+      if (state.client) {
+        try {
+          if (!state.isHost && state.roomTopic) {
+            state.client.publish(state.roomTopic, JSON.stringify({ type: "leave", from: state.myId }));
+          }
+          state.client.end(true);
+        } catch (e) {}
+        state.client = null;
+      }
+      state.players = [];
+      state.pot = [];
+      state.roomCode = "";
+      state.roomTopic = "";
+      state.isHost = false;
+      state.phase = "lobby";
+      state.lastReveal = null;
+      state.winnerId = "";
+      state.winnerName = "";
+      state.seq = 0;
+      state.lastSeenSeq = -1;
+      state.myView = null;
+    }
+
+    function publishMsg(obj) {
+      if (!state.client || !state.roomTopic) return;
+      try { state.client.publish(state.roomTopic, JSON.stringify(obj), { qos: 1 }); } catch (e) {}
+    }
+
+    function shuffleDeck(arr) {
+      var copy = arr.slice();
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = copy[i]; copy[i] = copy[j]; copy[j] = t;
+      }
+      return copy;
+    }
+
+    function setLobbyStatus(text, kind) {
+      var el = document.getElementById("lobbyStatus");
+      el.textContent = text;
+      el.className = kind === "err" ? "status-msg error" : (kind === "ok" ? "status-msg ok" : "status-msg");
+    }
+
+    function renderLobbyPlayers() {
+      var list = document.getElementById("lobbyPlayersList");
+      list.innerHTML = "";
+      for (var i = 0; i < state.maxPlayers; i++) {
+        var p = state.players[i];
+        var row = document.createElement("div");
+        row.className = p ? "player-slot joined" : "player-slot";
+        var left = document.createElement("span");
+        var dot = document.createElement("span");
+        dot.className = "dot";
+        left.appendChild(dot);
+        left.appendChild(document.createTextNode(p ? (p.name + (p.isHost ? " (سازنده)" : "")) : ("جایگاه بازیکن " + toFa(i + 1))));
+        var right = document.createElement("span");
+        right.style.color = p ? "#4ade80" : "#94a3b8";
+        right.textContent = p ? "حاضر" : "در انتظار ورود...";
+        row.appendChild(left);
+        row.appendChild(right);
+        list.appendChild(row);
+      }
+    }
+
+    function createRoom(maxPlayers) {
+      cleanupNetwork();
+      getPlayerName(false);
+      state.isHost = true;
+      state.maxPlayers = maxPlayers;
+      state.roomCode = String(Math.floor(10000 + Math.random() * 90000));
+      state.roomTopic = TOPIC_PREFIX + state.roomCode;
+      state.players = [{ id: state.myId, name: state.myName, isHost: true, isBot: false, deck: [] }];
+
+      goScreen("screenLobby");
+      document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(maxPlayers) + " نفره آنلاین";
+      document.getElementById("lobbyRoomCode").textContent = toFa(state.roomCode);
+      document.getElementById("btnFillBots").style.display = "flex";
+      renderLobbyPlayers();
+      setLobbyStatus("در حال اتصال به سرور آنلاین...", "info");
+
+      ensureMqttLoaded(function(ok) {
+        if (!ok) {
+          setLobbyStatus("اتصال اینترنت برقرار نشد؛ می‌توانی با دکمه «تست سریع» زیر با ربات بازی کنی.", "err");
+          return;
+        }
+        var client = window.mqtt.connect(MQTT_BROKER, {
+          clientId: "wc26_h_" + Math.random().toString(36).slice(2, 10),
+          clean: true,
+          connectTimeout: 8000,
+          reconnectPeriod: 3000
+        });
+        state.client = client;
+
+        client.on("connect", function() {
+          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
+            if (err) { setLobbyStatus("خطا در ساخت اتاق.", "err"); return; }
+            setLobbyStatus("✅ اتاق آنلاین آماده است! کد (" + toFa(state.roomCode) + ") یا لینک را برای دوستانت بفرست.", "ok");
+          });
+        });
+
+        client.on("message", function(topic, payload) {
+          var msg;
+          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+          if (!msg || msg.from === state.myId) return;
+
+          if (msg.type === "join_req") {
+            var existing = state.players.find(function(p) { return p.id === msg.from; });
+            if (existing) { broadcastLobbyState(); return; }
+            if (state.phase !== "lobby" || state.players.length >= state.maxPlayers) {
+              publishMsg({ type: "join_err", from: state.myId, target: msg.from, text: "ظرفیت این اتاق تکمیل شده است." });
+              return;
+            }
+            state.players.push({ id: msg.from, name: msg.name || "دوست جدید", isHost: false, isBot: false, deck: [] });
+            broadcastLobbyState();
+            checkAutoStart();
+          } else if (msg.type === "leave" && state.phase === "lobby") {
+            state.players = state.players.filter(function(p) { return p.id !== msg.from; });
+            broadcastLobbyState();
+          } else if (msg.type === "pick_stat") {
+            if (state.phase === "playing" && state.turnPlayerId === msg.from) {
+              resolveRoundHost(msg.statKey);
+            }
+          } else if (msg.type === "next_round") {
+            if (state.phase === "reveal" && msg.seq === state.seq) {
+              advanceAfterRevealHost();
+            }
+          }
+        });
+      });
+    }
+
+    function broadcastLobbyState() {
+      renderLobbyPlayers();
+      var summary = state.players.map(function(p) {
+        return { id: p.id, name: p.name, isHost: p.isHost, isBot: p.isBot };
+      });
+      publishMsg({
+        type: "lobby_update",
+        from: state.myId,
+        roomCode: state.roomCode,
+        maxPlayers: state.maxPlayers,
+        players: summary
+      });
+    }
+
+    function checkAutoStart() {
+      if (state.players.length === state.maxPlayers && state.phase === "lobby") {
+        setLobbyStatus("🎉 ظرفیت پر شد! در حال بُر زدن و پخش مساوی ۴۸ کارت...", "ok");
+        setTimeout(startMatchHost, 750);
+      }
+    }
+
+    function startMatchHost() {
+      clearTimers();
+      var shuffled = shuffleDeck(TEAMS_2026);
+      var count = state.players.length;
+      var perPlayer = Math.floor(shuffled.length / count);
+
+      state.players.forEach(function(p, idx) {
+        p.deck = shuffled.slice(idx * perPlayer, (idx + 1) * perPlayer).map(function(t) { return t.id; });
+      });
+
+      state.pot = [];
+      state.phase = "playing";
+      state.lastReveal = null;
+      state.winnerId = "";
+      state.winnerName = "";
+      state.trophyAwardedMatch = false;
+      state.turnPlayerId = state.players[0].id;
+
+      broadcastGameState();
+      scheduleBotIfNeeded();
+    }
+
+    function broadcastGameState() {
+      state.seq++;
+      var roster = state.players.map(function(p) {
+        return { id: p.id, name: p.name, count: p.deck.length, isHost: p.isHost };
+      });
+
+      var topCardsByPlayer = {};
+      state.players.forEach(function(p) {
+        topCardsByPlayer[p.id] = p.deck.length > 0 ? p.deck[0] : null;
+      });
+
+      var packet = {
+        type: "state_sync",
+        from: state.myId,
+        seq: state.seq,
+        phase: state.phase,
+        turnPlayerId: state.turnPlayerId,
+        potCount: state.pot.length,
+        roster: roster,
+        topCardsByPlayer: topCardsByPlayer,
+        lastReveal: state.lastReveal,
+        winnerId: state.winnerId,
+        winnerName: state.winnerName
+      };
+
+      publishMsg(packet);
+      setTimeout(function() {
+        if (state.seq === packet.seq) publishMsg(packet);
+      }, 280);
+
+      applyGameStateToView(packet);
+    }
+
+    function resolveRoundHost(statKey) {
+      if (state.phase !== "playing") return;
+      clearTimers();
+
+      var statDef = getStatDef(statKey);
+      var activePlayers = state.players.filter(function(p) { return p.deck.length > 0; });
+      if (activePlayers.length <= 1) { finishMatchHost(); return; }
+
+      var playedEntries = [];
+      var roundCardIds = [];
+
+      activePlayers.forEach(function(p) {
+        var cardId = p.deck.shift();
+        var team = getTeamById(cardId);
+        roundCardIds.push(cardId);
+        playedEntries.push({
+          playerId: p.id,
+          playerName: p.name,
+          teamId: cardId,
+          value: team[statKey]
+        });
+      });
+
+      var bestVal = playedEntries[0].value;
+      for (var i = 1; i < playedEntries.length; i++) {
+        if (statDef.mode === "high") {
+          if (playedEntries[i].value > bestVal) bestVal = playedEntries[i].value;
+        } else {
+          if (playedEntries[i].value < bestVal) bestVal = playedEntries[i].value;
+        }
+      }
+
+      var winners = playedEntries.filter(function(e) { return e.value === bestVal; });
+      var isTie = winners.length > 1;
+      var revealMsg = "";
+
+      if (isTie) {
+        for (var k = 0; k < roundCardIds.length; k++) state.pot.push(roundCardIds[k]);
+        revealMsg = "🤝 مساوی شد! کارت‌ها به «کارت‌های جمع‌شده وسط» (" + toFa(state.pot.length) + " کارت) رفتند.";
+      } else {
+        var winEntry = winners[0];
+        var winnerObj = state.players.find(function(p) { return p.id === winEntry.playerId; });
+        var wonCards = state.pot.concat(roundCardIds);
+        state.pot = [];
+        for (var w = 0; w < wonCards.length; w++) winnerObj.deck.push(wonCards[w]);
+        state.turnPlayerId = winnerObj.id;
+        revealMsg = "🎉 «" + winnerObj.name + "» این دست را برد و " + toFa(wonCards.length) + " کارت گرفت!";
+      }
+
+      state.lastReveal = {
+        statKey: statKey,
+        statLabel: statDef.label,
+        statPrefix: statDef.prefix,
+        isTie: isTie,
+        winnerIds: winners.map(function(x) { return x.playerId; }),
+        entries: playedEntries,
+        message: revealMsg
+      };
+
+      state.phase = "reveal";
+      broadcastGameState();
+    }
+
+    function advanceAfterRevealHost() {
+      if (state.phase !== "reveal") return;
+      clearTimers();
+
+      var alive = state.players.filter(function(p) { return p.deck.length > 0; });
+      if (alive.length <= 1) {
+        finishMatchHost();
+        return;
+      }
+
+      var currentAlive = alive.find(function(p) { return p.id === state.turnPlayerId; });
+      if (!currentAlive) state.turnPlayerId = alive[0].id;
+
+      state.phase = "playing";
+      state.lastReveal = null;
+      broadcastGameState();
+      scheduleBotIfNeeded();
+    }
+
+    function finishMatchHost() {
+      var alive = state.players.filter(function(p) { return p.deck.length > 0; });
+      var champ = alive.length === 1 ? alive[0] : state.players[0];
+
+      if (state.pot.length > 0 && champ) {
+        for (var i = 0; i < state.pot.length; i++) champ.deck.push(state.pot[i]);
+        state.pot = [];
+      }
+
+      state.phase = "ended";
+      state.winnerId = champ ? champ.id : "";
+      state.winnerName = champ ? champ.name : "برنده";
+      state.lastReveal = null;
+      broadcastGameState();
+    }
+
+    function scheduleBotIfNeeded() {
+      if (!state.isHost || state.phase !== "playing") return;
+      var turnPlayer = state.players.find(function(p) { return p.id === state.turnPlayerId; });
+      if (!turnPlayer || !turnPlayer.isBot) return;
+
+      state.botTimer = setTimeout(function() {
+        if (state.phase !== "playing" || state.turnPlayerId !== turnPlayer.id) return;
+        var card = getTeamById(turnPlayer.deck[0]);
+        var pickKey = STAT_DEFS[Math.floor(Math.random() * STAT_DEFS.length)].key;
+        if (card) {
+          if (card.currentFifa <= 10) pickKey = "currentFifa";
+          else if (card.titles >= 2) pickKey = "titles";
+          else if (card.goalsFor >= 80) pickKey = "goalsFor";
+          else if (card.losses <= 5) pickKey = "losses";
+        }
+        resolveRoundHost(pickKey);
+      }, 1400);
+    }
+
+    function joinRoom() {
+      var code = normalizeDigits(document.getElementById("joinCodeInput").value);
+      var joinStatus = document.getElementById("joinStatus");
+
+      if (code.length < 4) {
+        joinStatus.style.display = "flex";
+        joinStatus.className = "status-msg error";
+        joinStatus.textContent = "لطفاً کد ۵ رقمی اتاق دوستت را درست وارد کن.";
+        return;
+      }
+
+      cleanupNetwork();
+      getPlayerName(true);
+      state.isHost = false;
+      state.roomCode = code;
+      state.roomTopic = TOPIC_PREFIX + code;
+
+      joinStatus.style.display = "flex";
+      joinStatus.className = "status-msg";
+      joinStatus.textContent = "در حال اتصال سریع به اتاق (" + toFa(code) + ")...";
+
+      ensureMqttLoaded(function(ok) {
+        if (!ok) {
+          joinStatus.className = "status-msg error";
+          joinStatus.textContent = "اتصال اینترنت برقرار نشد.";
+          return;
+        }
+
+        var client = window.mqtt.connect(MQTT_BROKER, {
+          clientId: "wc26_g_" + Math.random().toString(36).slice(2, 10),
+          clean: true,
+          connectTimeout: 8000,
+          reconnectPeriod: 3000
+        });
+        state.client = client;
+
+        client.on("connect", function() {
+          client.subscribe(state.roomTopic, { qos: 1 }, function(err) {
+            if (err) { joinStatus.className = "status-msg error"; joinStatus.textContent = "خطا در ورود به اتاق."; return; }
+            var sendReq = function() {
+              publishMsg({ type: "join_req", from: state.myId, name: state.myName });
+            };
+            sendReq();
+            state.joinRetryTimer = setInterval(sendReq, 1800);
+            state.joinTimeoutTimer = setTimeout(function() {
+              clearTimers();
+              if (state.players.length === 0 && !state.myView) {
+                joinStatus.style.display = "flex";
+                joinStatus.className = "status-msg error";
+                joinStatus.textContent = "اتاقی با کد (" + toFa(code) + ") پیدا نشد!";
+                cleanupNetwork();
+              }
+            }, 9000);
+          });
+        });
+
+        client.on("message", function(topic, payload) {
+          var msg;
+          try { msg = JSON.parse(payload.toString()); } catch (e) { return; }
+          if (!msg || msg.from === state.myId) return;
+
+          if (msg.type === "join_err" && msg.target === state.myId) {
+            clearTimers();
+            goScreen("screenJoin");
+            joinStatus.style.display = "flex";
+            joinStatus.className = "status-msg error";
+            joinStatus.textContent = msg.text;
+            cleanupNetwork();
+          } else if (msg.type === "lobby_update") {
+            clearTimers();
+            state.maxPlayers = msg.maxPlayers;
+            state.players = msg.players;
+            goScreen("screenLobby");
+            document.getElementById("lobbyHeading").textContent = "اتاق " + toFa(msg.maxPlayers) + " نفره آنلاین";
+            document.getElementById("lobbyRoomCode").textContent = toFa(code);
+            document.getElementById("btnFillBots").style.display = "none";
+            renderLobbyPlayers();
+            setLobbyStatus("✅ وارد اتاق شدی! (" + toFa(state.players.length) + " از " + toFa(state.maxPlayers) + " نفر حاضرند)", "ok");
+          } else if (msg.type === "state_sync") {
+            clearTimers();
+            applyGameStateToView(msg);
+          }
+        });
+      });
+    }
+
+    function applyGameStateToView(pkt) {
+      if (pkt.seq <= state.lastSeenSeq) return;
+      state.lastSeenSeq = pkt.seq;
+      state.myView = pkt;
+
+      goScreen("screenGame");
+
+      if (pkt.phase === "ended") {
+        if (pkt.winnerId === state.myId && !state.trophyAwardedMatch) {
+          state.trophyAwardedMatch = true;
+          addTrophy();
+        }
+      } else {
+        state.trophyAwardedMatch = false;
+      }
+
+      var rosterEl = document.getElementById("gameRoster");
+      rosterEl.innerHTML = "";
+      var myCount = 0;
+      var turnPlayerName = "";
+
+      pkt.roster.forEach(function(p) {
+        if (p.id === state.myId) myCount = p.count;
+        if (p.id === pkt.turnPlayerId) turnPlayerName = p.name;
+
+        var chip = document.createElement("div");
+        var cls = "roster-chip";
+        if (p.count === 0) cls += " eliminated";
+        else if (p.id === pkt.turnPlayerId && pkt.phase === "playing") cls += " active-turn";
+        chip.className = cls;
+        chip.textContent = p.name + (p.id === state.myId ? " (شما)" : "") + ": " + toFa(p.count) + " کارت";
+        rosterEl.appendChild(chip);
+      });
+
+      document.getElementById("myDeckInfo").textContent = "کارت‌های دست شما: " + toFa(myCount);
+
+      var potEl = document.getElementById("potBadge");
+      if (pkt.potCount > 0) {
+        potEl.style.display = "inline-block";
+        potEl.textContent = "📦 کارت‌های جمع‌شده وسط: " + toFa(pkt.potCount);
+      } else {
+        potEl.style.display = "none";
+      }
+
+      var banner = document.getElementById("turnBanner");
+      var revealMount = document.getElementById("roundResultMount");
+      var victoryMount = document.getElementById("victoryMount");
+      var cardMount = document.getElementById("activeCardMount");
+
+      revealMount.style.display = "none";
+      victoryMount.style.display = "none";
+      cardMount.style.display = "flex";
+
+      if (pkt.phase === "ended") {
+        cardMount.style.display = "none";
+        victoryMount.style.display = "block";
+        var iWon = pkt.winnerId === state.myId;
+        banner.className = "status-msg ok";
+        banner.textContent = iWon ? "🏆 تبریک! شما قهرمان این رقابت شدید و +۱ جام گرفتید!" : ("🏆 «" + pkt.winnerName + "» قهرمان این بازی شد!");
+        renderVictoryBox(pkt.winnerName, iWon);
+        return;
+      }
+
+      if (pkt.phase === "reveal" && pkt.lastReveal) {
+        cardMount.style.display = "none";
+        revealMount.style.display = "block";
+        banner.className = pkt.lastReveal.isTie ? "status-msg" : "status-msg ok";
+        banner.textContent = pkt.lastReveal.message;
+        renderRevealBox(pkt.lastReveal, pkt.seq);
+        return;
+      }
+
+      var isMyTurn = pkt.turnPlayerId === state.myId && myCount > 0;
+      if (myCount === 0) {
+        banner.className = "status-msg error";
+        banner.textContent = "کارت‌های شما تمام شد و حذف شدید! منتظر پایان رقابت بقیه بمانید...";
+        cardMount.innerHTML = "";
+        return;
+      }
+
+      if (isMyTurn) {
+        banner.className = "status-msg turn-me";
+        banner.textContent = "🔥 نوبت شماست! یکی از گزینه‌های روی کارتتان را لمس کنید";
+      } else {
+        banner.className = "status-msg";
+        banner.textContent = "⏳ نوبت «" + turnPlayerName + "» است تا یک گزینه انتخاب کند...";
+      }
+
+      var myTopCardId = pkt.topCardsByPlayer ? pkt.topCardsByPlayer[state.myId] : null;
+      var myCard = getTeamById(myTopCardId);
+      renderPlayableCard(myCard, isMyTurn);
+    }
+
+    function renderRevealBox(rev, currentSeq) {
+      var mount = document.getElementById("roundResultMount");
+      mount.innerHTML = "";
+      var box = document.createElement("div");
+      box.className = "round-result-box";
+
+      var title = document.createElement("div");
+      title.style.fontSize = "1rem";
+      title.style.fontWeight = "900";
+      title.style.color = "var(--gold-light)";
+      title.textContent = "نتیجه مقایسه: " + rev.statLabel;
+      box.appendChild(title);
+
+      var grid = document.createElement("div");
+      grid.className = "compare-grid";
+
+      rev.entries.forEach(function(e) {
+        var team = getTeamById(e.teamId);
+        var card = document.createElement("div");
+        var isWin = rev.winnerIds.indexOf(e.playerId) !== -1;
+        card.className = "compare-card" + (isWin ? (rev.isTie ? " tied" : " winner") : "");
+
+        var pl = document.createElement("div");
+        pl.className = "compare-player";
+        pl.textContent = e.playerName + (e.playerId === state.myId ? " (شما)" : "");
+
+        var fl = document.createElement("div");
+        fl.className = "compare-flag";
+        var img = document.createElement("img");
+        img.src = "https://flagcdn.com/w80/" + team.iso + ".png";
+        img.alt = team.name;
+        img.onerror = function() { img.style.display = "none"; };
+        fl.appendChild(img);
+
+        var tm = document.createElement("div");
+        tm.className = "compare-team";
+        tm.textContent = team.name;
+
+        var vl = document.createElement("div");
+        vl.className = "compare-val";
+        vl.textContent = rev.statPrefix + toFa(e.value);
+
+        card.appendChild(pl);
+        card.appendChild(fl);
+        card.appendChild(tm);
+        card.appendChild(vl);
+        grid.appendChild(card);
+      });
+
+      box.appendChild(grid);
+
+      var nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "btn btn-play";
+      nextBtn.textContent = "بعدی ◀";
+      nextBtn.onclick = function() {
+        nextBtn.disabled = true;
+        nextBtn.textContent = "در حال رفتن به دست بعد...";
+        if (state.isHost) {
+          advanceAfterRevealHost();
+        } else {
+          publishMsg({ type: "next_round", from: state.myId, seq: currentSeq });
+        }
+      };
+      box.appendChild(nextBtn);
+
+      mount.appendChild(box);
+    }
+
+    function renderVictoryBox(winnerName, iWon) {
+      var mount = document.getElementById("victoryMount");
+      mount.innerHTML = "";
+
+      var box = document.createElement("div");
+      box.className = "victory-box";
+
+      var icon = document.createElement("div");
+      icon.style.fontSize = "3.4rem";
+      icon.textContent = "🏆";
+
+      var h = document.createElement("h2");
+      h.className = "main-title";
+      h.textContent = iWon ? "قهرمان شدی!" : ("قهرمان بازی: " + winnerName);
+
+      var p = document.createElement("p");
+      p.className = "subtitle";
+      p.textContent = iWon
+        ? ("یک جام جهانی به افتخارات شما اضافه شد! (مجموع جام‌های شما: " + toFa(loadTrophies()) + ")")
+        : "می‌توانید یک دست جدید با همین دوستان شروع کنید.";
+
+      box.appendChild(icon);
+      box.appendChild(h);
+      box.appendChild(p);
+
+      if (state.isHost) {
+        var replayBtn = document.createElement("button");
+        replayBtn.type = "button";
+        replayBtn.className = "btn btn-play";
+        replayBtn.textContent = "🔁 بازی جدید با همین اتاق";
+        replayBtn.onclick = startMatchHost;
+        box.appendChild(replayBtn);
+      }
+
+      var homeBtn = document.createElement("button");
+      homeBtn.type = "button";
+      homeBtn.className = "btn btn-ghost";
+      homeBtn.textContent = "بازگشت به صفحه اصلی";
+      homeBtn.onclick = function() { cleanupNetwork(); goScreen("screenHome"); };
+      box.appendChild(homeBtn);
+
+      mount.appendChild(box);
+    }
+
+    function buildTeamArtSvg(team) {
+      var lightList = ["#f5f5f5", "#f7f7f7", "#ffffff", "#f2f4f8", "#f0f2f5"];
+      var textCol = lightList.indexOf(team.jersey) !== -1 ? "#111827" : "#ffffff";
+      return '<svg viewBox="0 0 360 190" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+        '<rect width="360" height="190" fill="' + team.c1 + '"/>' +
+        '<path d="M0,136 Q180,120 360,136 L360,190 L0,190 Z" fill="#0c3a1d"/>' +
+        '<g transform="translate(115, 22)">' +
+        '<path d="M36,14 L65,6 L94,14 L122,36 L108,64 L92,54 L92,124 L38,124 L38,54 L22,64 L8,36 Z" fill="' + team.jersey + '" stroke="#d4af37" stroke-width="2.5" stroke-linejoin="round"/>' +
+        '<line x1="38" y1="70" x2="92" y2="70" stroke="' + team.trim + '" stroke-width="8" opacity="0.88"/>' +
+        '<text x="65" y="104" text-anchor="middle" fill="' + textCol + '" font-family="Tahoma" font-size="22" font-weight="900">۲۶</text>' +
+        '</g></svg>';
+    }
+
+    function renderPlayableCard(team, isMyTurn) {
+      var mount = document.getElementById("activeCardMount");
+      mount.innerHTML = "";
+      if (!team) return;
+
+      var card = document.createElement("article");
+      card.className = "football-card";
+      card.style.setProperty("--c1", team.c1);
+      card.style.setProperty("--c3", team.c3);
+      card.style.setProperty("--row-odd-a", team.c1);
+      card.style.setProperty("--row-odd-b", team.c2);
+      card.style.setProperty("--row-even-b", team.c3);
+
+      var header = document.createElement("header");
+      header.className = "card-header";
+
+      var fbox = document.createElement("div");
+      fbox.className = "flag-box";
+      var fimg = document.createElement("img");
+      fimg.src = "https://flagcdn.com/w160/" + team.iso + ".png";
+      fimg.alt = team.name;
+      fimg.onerror = function() { fimg.style.display = "none"; };
+      fbox.appendChild(fimg);
+
+      var title = document
